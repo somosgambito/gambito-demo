@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>gamb1t0_ · demo</title>
+<link rel="icon" type="image/png" href="img/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bk:#07070f;--gd:#c9a84c;--cy:#00e5ff;--ac:#7f6af0;
+  --ok:#00c896;--dg:#ff4d6d;--tx:#dddaf0;--mt:#6a6882;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;background:var(--bk);color:var(--tx);font-family:'Fira Code','Courier New',monospace;}
+
+/* ══ SCREEN ENGINE ══ */
+.screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:var(--bk);overflow-y:auto;overflow-x:hidden;}
+.screen.active{display:flex;}
+
+/* ══ S00 ENTRADA — OJOS ══ */
+#s00{background:#000;cursor:pointer;}
+#s00 img{width:100%;max-width:600px;height:auto;opacity:0;transition:opacity .6s ease-in;}
+#s00 img.show{opacity:1;}
+#s00 .tap-hint{position:absolute;bottom:32px;font-size:10px;color:rgba(0,229,255,.3);letter-spacing:.12em;animation:fadePulse 2s ease-in-out infinite;}
+@keyframes fadePulse{0%,100%{opacity:.3}50%{opacity:.8}}
+
+/* ══ S01 TERMINAL ══ */
+#s01{background:#fff;justify-content:center;}
+#s01 .terminal-line{font-size:clamp(16px,4vw,24px);color:#07070f;letter-spacing:.08em;text-align:center;opacity:0;transition:opacity .5s;}
+#s01 .terminal-line.show{opacity:1;}
+
+/* ══ S02 REGISTRO ══ */
+#s02{padding:32px 20px;justify-content:flex-start;padding-top:48px;}
+.reg-wrap{width:100%;max-width:400px;}
+.reg-logo{font-size:28px;font-weight:700;color:var(--gd);letter-spacing:.14em;margin-bottom:4px;}
+.reg-sub{font-size:10px;color:var(--mt);letter-spacing:.1em;margin-bottom:28px;}
+.f-label{font-size:9px;color:var(--mt);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;}
+.f-input{width:100%;background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.12);border-radius:6px;padding:11px 14px;font-family:'Fira Code',monospace;font-size:13px;color:var(--tx);outline:none;transition:border-color .2s;margin-bottom:14px;}
+.f-input:focus{border-color:rgba(201,168,76,.5);}
+.f-input::placeholder{color:var(--mt);}
+.date-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;}
+.date-row input{margin-bottom:0;}
+.trust-block{background:rgba(0,229,255,.05);border:.5px solid rgba(0,229,255,.15);border-radius:8px;padding:14px;margin-bottom:14px;display:none;}
+.trust-block.show{display:block;}
+.trust-title{font-size:10px;color:var(--cy);letter-spacing:.1em;margin-bottom:10px;}
+.trust-row{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center;margin-bottom:8px;}
+.trust-row:last-child{margin-bottom:0;}
+.trust-flag{font-size:11px;color:var(--mt);}
+.skin-badge{font-size:9px;color:var(--ok);background:rgba(0,200,150,.1);border:.5px solid rgba(0,200,150,.2);border-radius:4px;padding:3px 8px;margin-left:6px;vertical-align:middle;}
+.btn-main{width:100%;background:var(--gd);color:var(--bk);font-family:'Fira Code',monospace;font-size:16px;font-weight:700;letter-spacing:.08em;border:none;border-radius:6px;padding:15px;cursor:pointer;transition:opacity .2s,transform .1s;margin-top:4px;}
+.btn-main:hover{opacity:.9}
+.btn-main:active{transform:scale(.98)}
+.btn-main:disabled{opacity:.4;cursor:not-allowed}
+.err-msg{font-size:11px;color:#ff4d6d;margin-top:8px;display:none;text-align:center;}
+
+/* ══ ARCANOS S03 ══ */
+#s03{padding:24px 16px;}
+.arc-wrap{width:100%;max-width:420px;}
+.arc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.arc-title{font-size:11px;color:var(--mt);letter-spacing:.1em;text-transform:uppercase;}
+.arc-timer{font-size:13px;color:var(--gd);font-weight:700;}
+.arc-timer.urgent{color:var(--dg);animation:timerPulse .5s step-start infinite;}
+@keyframes timerPulse{0%,100%{opacity:1}50%{opacity:.3}}
+.arc-gi{font-size:13px;color:var(--cy);margin-bottom:16px;line-height:1.6;}
+.arc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.arc-card{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:10px;padding:14px;cursor:pointer;transition:all .2s;text-align:center;position:relative;}
+.arc-card:hover{border-color:rgba(201,168,76,.4);}
+.arc-card.selected{border-color:var(--gd);background:rgba(201,168,76,.08);}
+.arc-card img{width:64px;height:64px;object-fit:contain;margin-bottom:8px;border-radius:6px;}
+.arc-card .arc-emoji{font-size:40px;margin-bottom:8px;display:block;}
+.arc-card .arc-name{font-size:12px;font-weight:700;color:var(--tx);margin-bottom:2px;}
+.arc-card .arc-bonus{font-size:10px;color:var(--mt);}
+.arc-card .arc-energy{font-size:9px;color:var(--cy);margin-top:4px;}
+.arc-check{position:absolute;top:8px;right:8px;width:18px;height:18px;background:var(--gd);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:10px;color:var(--bk);}
+.arc-card.selected .arc-check{display:flex;}
+
+/* ══ PERSONALIZACIÓN S03a/b/c ══ */
+#s03a,#s03b,#s03c{padding:32px 20px;}
+.pers-wrap{width:100%;max-width:400px;}
+.gi-bubble{display:flex;gap:12px;align-items:flex-start;margin-bottom:24px;}
+.gi-avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;border:.5px solid rgba(0,229,255,.3);flex-shrink:0;}
+.gi-text{background:rgba(0,229,255,.06);border:.5px solid rgba(0,229,255,.15);border-radius:0 10px 10px 10px;padding:12px 14px;font-size:13px;color:var(--tx);line-height:1.6;}
+.gender-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px;}
+.gender-btn{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.12);border-radius:8px;padding:12px 8px;cursor:pointer;text-align:center;font-family:'Fira Code',monospace;font-size:12px;color:var(--mt);transition:all .2s;}
+.gender-btn:hover{border-color:rgba(201,168,76,.3);}
+.gender-btn.sel{border-color:var(--gd);background:rgba(201,168,76,.08);color:var(--gd);}
+.gender-icon{font-size:20px;display:block;margin-bottom:4px;}
+.eye-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;}
+.eye-btn{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.12);border-radius:8px;padding:12px;cursor:pointer;text-align:center;font-family:'Fira Code',monospace;font-size:11px;transition:all .2s;}
+.eye-btn:hover{border-color:rgba(221,218,240,.25);}
+.eye-btn.sel{border-color:var(--gd);background:rgba(201,168,76,.06);}
+.eye-dot{width:20px;height:20px;border-radius:50%;margin:0 auto 6px;border:2px solid rgba(255,255,255,.15);}
+
+/* ══ DESPERTAR ══ */
+#s-despertar{background:#000;}
+.desp-wrap{text-align:center;padding:32px 20px;width:100%;max-width:400px;}
+.desp-img{width:200px;height:200px;object-fit:contain;border-radius:16px;margin:0 auto 20px;display:block;transition:filter .8s ease;}
+.desp-name{font-size:22px;font-weight:700;color:var(--gd);letter-spacing:.1em;margin-bottom:4px;}
+.desp-sub{font-size:11px;color:var(--mt);margin-bottom:20px;}
+.desp-gi{font-size:13px;color:var(--cy);line-height:1.6;margin-bottom:20px;}
+.desp-stats{display:flex;gap:16px;justify-content:center;margin-bottom:24px;}
+.desp-stat{text-align:center;}
+.desp-stat-n{font-size:18px;font-weight:700;color:var(--gd);}
+.desp-stat-l{font-size:9px;color:var(--mt);text-transform:uppercase;letter-spacing:.08em;}
+
+/* ══ DASHBOARD S04 ══ */
+#s04{padding:0;justify-content:flex-start;overflow-y:auto;}
+.dash-wrap{width:100%;max-width:420px;min-height:100%;display:flex;flex-direction:column;}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:.5px solid rgba(221,218,240,.08);position:sticky;top:0;background:var(--bk);z-index:10;}
+.nav-logo{font-size:16px;font-weight:700;color:var(--gd);letter-spacing:.12em;}
+.nav-tokens{font-size:11px;color:var(--mt);}
+.nav-tokens span{color:var(--cy);}
+
+/* HERO CARD */
+.hero-card{margin:16px;background:rgba(255,255,255,.03);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:16px;}
+.hero-top{display:flex;gap:14px;align-items:center;margin-bottom:14px;}
+.hero-avatar{width:56px;height:56px;border-radius:50%;object-fit:cover;border:1.5px solid var(--gd);}
+.hero-info{flex:1;}
+.hero-name{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:2px;}
+.hero-arcano{font-size:10px;color:var(--gd);}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.stat-box{background:rgba(255,255,255,.03);border-radius:8px;padding:8px;text-align:center;}
+.stat-n{font-size:16px;font-weight:700;color:var(--gd);}
+.stat-l{font-size:8px;color:var(--mt);text-transform:uppercase;letter-spacing:.08em;}
+.stat-n.xp{color:var(--ac);}
+.stat-n.tok{color:var(--cy);}
+
+/* GI CONTACT */
+.gi-contact{margin:0 16px 16px;background:rgba(0,229,255,.05);border:.5px solid rgba(0,229,255,.15);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .2s;}
+.gi-contact:hover{background:rgba(0,229,255,.08);}
+.gi-contact img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:.5px solid rgba(0,229,255,.3);}
+.gi-contact-text{flex:1;}
+.gi-contact-name{font-size:12px;color:var(--cy);font-weight:700;margin-bottom:2px;}
+.gi-contact-hint{font-size:10px;color:var(--mt);}
+.gi-contact-wsp{font-size:10px;color:var(--ok);padding:4px 10px;border:.5px solid rgba(0,200,150,.3);border-radius:4px;}
+
+/* ACCIONES */
+.actions-title{font-size:9px;color:var(--mt);letter-spacing:.1em;text-transform:uppercase;padding:0 16px;margin-bottom:10px;}
+.actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px;margin-bottom:16px;}
+.action-btn{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:10px;padding:16px 12px;cursor:pointer;transition:all .2s;text-align:center;font-family:'Fira Code',monospace;}
+.action-btn:hover{border-color:rgba(201,168,76,.35);background:rgba(201,168,76,.06);}
+.action-icon{font-size:22px;display:block;margin-bottom:6px;}
+.action-label{font-size:11px;color:var(--tx);font-weight:700;display:block;margin-bottom:2px;}
+.action-sub{font-size:9px;color:var(--mt);}
+
+/* RENOVACIÓN */
+.renov{text-align:center;font-size:10px;color:var(--mt);padding:8px 16px 20px;letter-spacing:.06em;}
+.renov span{color:var(--cy);}
+
+/* ══ MISIONES ══ */
+#s-misiones{padding:0;justify-content:flex-start;overflow-y:auto;}
+.mis-wrap{width:100%;max-width:420px;}
+.screen-header{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:.5px solid rgba(221,218,240,.08);position:sticky;top:0;background:var(--bk);z-index:10;}
+.back-btn{font-size:18px;cursor:pointer;color:var(--mt);transition:color .2s;padding:4px;}
+.back-btn:hover{color:var(--gd);}
+.screen-title{font-size:14px;font-weight:700;color:var(--tx);}
+.mis-list{padding:16px;}
+.mis-card{background:rgba(255,255,255,.03);border:.5px solid rgba(221,218,240,.08);border-radius:10px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all .2s;}
+.mis-card:hover{border-color:rgba(201,168,76,.3);}
+.mis-card.active{border-color:var(--gd);background:rgba(201,168,76,.05);}
+.mis-card.done{border-color:rgba(0,200,150,.3);opacity:.6;}
+.mis-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.mis-name{font-size:13px;font-weight:700;color:var(--tx);}
+.mis-tokens{font-size:10px;color:var(--cy);}
+.mis-desc{font-size:11px;color:var(--mt);line-height:1.5;margin-bottom:8px;}
+.mis-rewards{display:flex;gap:8px;}
+.mis-reward{font-size:10px;padding:3px 8px;border-radius:4px;}
+.mis-xp{background:rgba(127,106,240,.1);color:var(--ac);border:.5px solid rgba(127,106,240,.2);}
+.mis-gus{background:rgba(201,168,76,.1);color:var(--gd);border:.5px solid rgba(201,168,76,.2);}
+
+/* DETALLE MISIÓN */
+#s-mis-detalle{padding:0;justify-content:flex-start;overflow-y:auto;}
+.mis-det-wrap{width:100%;max-width:420px;padding:16px;}
+.mis-det-card{background:rgba(255,255,255,.03);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:18px;margin-bottom:16px;}
+.mis-det-num{font-size:9px;color:var(--mt);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
+.mis-det-name{font-size:18px;font-weight:700;color:var(--gd);margin-bottom:8px;}
+.mis-det-desc{font-size:12px;color:var(--mt);line-height:1.6;margin-bottom:14px;}
+.mis-det-rewards{display:flex;gap:10px;margin-bottom:16px;}
+.mis-det-tasks{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.task-item{display:flex;gap:10px;align-items:center;padding:10px;background:rgba(255,255,255,.03);border-radius:8px;cursor:pointer;transition:all .2s;}
+.task-item:hover{background:rgba(255,255,255,.06);}
+.task-check{width:20px;height:20px;border-radius:50%;border:.5px solid rgba(221,218,240,.2);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;transition:all .2s;}
+.task-item.done .task-check{background:var(--ok);border-color:var(--ok);color:var(--bk);}
+.task-label{font-size:12px;color:var(--tx);}
+.task-item.done .task-label{color:var(--mt);text-decoration:line-through;}
+.social-task{background:rgba(201,168,76,.05);border:.5px solid rgba(201,168,76,.2);border-radius:8px;padding:12px;margin-bottom:16px;}
+.social-task-text{font-size:11px;color:var(--gd);line-height:1.5;}
+.social-task-hash{font-size:10px;color:var(--mt);margin-top:4px;}
+
+/* ══ SKILL TREE ══ */
+#s-skill{padding:0;justify-content:flex-start;overflow-y:auto;}
+.skill-wrap{width:100%;max-width:420px;}
+.skill-input-area{padding:16px;}
+.skill-input-row{display:flex;gap:8px;}
+.skill-input{flex:1;background:rgba(255,255,255,.04);border:.5px solid rgba(127,106,240,.25);border-radius:6px;padding:10px 12px;font-family:'Fira Code',monospace;font-size:12px;color:var(--tx);outline:none;}
+.skill-input:focus{border-color:var(--ac);}
+.skill-input::placeholder{color:var(--mt);}
+.skill-activate{background:var(--ac);color:#fff;font-family:'Fira Code',monospace;font-size:12px;font-weight:700;border:none;border-radius:6px;padding:10px 16px;cursor:pointer;transition:opacity .2s;}
+.skill-activate:hover{opacity:.85}
+.tree-svg-wrap{width:100%;padding:0 16px 20px;overflow-x:auto;}
+#tree-svg{width:100%;min-height:380px;}
+
+/* ══ MARKET ══ */
+#s-market{padding:0;justify-content:flex-start;overflow-y:auto;}
+.market-wrap{width:100%;max-width:420px;}
+.market-tabs{display:flex;border-bottom:.5px solid rgba(221,218,240,.08);padding:0 16px;gap:4px;position:sticky;top:56px;background:var(--bk);z-index:9;}
+.m-tab{flex:1;padding:10px 4px;font-family:'Fira Code',monospace;font-size:10px;color:var(--mt);letter-spacing:.06em;cursor:pointer;text-align:center;border-bottom:1.5px solid transparent;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;}
+.m-tab.active{color:var(--gd);border-bottom-color:var(--gd);}
+.market-content{padding:16px;}
+
+/* Deposita */
+.qr-section{text-align:center;margin-bottom:20px;}
+.qr-box{display:inline-block;background:rgba(255,255,255,.06);border:.5px solid rgba(221,218,240,.12);border-radius:12px;padding:20px;margin-bottom:10px;}
+.qr-placeholder{width:120px;height:120px;background:rgba(255,255,255,.08);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--mt);letter-spacing:.06em;}
+.qr-label{font-size:12px;color:var(--gd);margin-bottom:4px;}
+.qr-hint{font-size:10px;color:var(--mt);}
+.deposit-info{background:rgba(0,200,150,.05);border:.5px solid rgba(0,200,150,.2);border-radius:8px;padding:12px;text-align:center;}
+.deposit-info-text{font-size:11px;color:var(--ok);line-height:1.6;}
+
+/* Skins */
+.skins-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.skin-card{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:10px;padding:12px;text-align:center;cursor:pointer;transition:all .2s;}
+.skin-card:hover{border-color:rgba(201,168,76,.3);}
+.skin-img{width:60px;height:60px;border-radius:8px;margin:0 auto 8px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:28px;}
+.skin-name{font-size:11px;font-weight:700;color:var(--tx);margin-bottom:4px;}
+.skin-price{font-size:10px;color:var(--gd);}
+.skin-bonus{font-size:9px;color:var(--ac);margin-top:2px;}
+
+/* Regalar */
+.gift-wrap{display:flex;flex-direction:column;gap:12px;}
+.gift-select{font-size:12px;color:var(--mt);margin-bottom:4px;}
+.gift-skin-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;}
+.gift-skin{flex-shrink:0;width:70px;text-align:center;cursor:pointer;padding:8px;border-radius:8px;border:.5px solid rgba(221,218,240,.1);transition:all .2s;}
+.gift-skin:hover,.gift-skin.sel{border-color:var(--gd);background:rgba(201,168,76,.08);}
+.gift-skin-icon{font-size:24px;display:block;margin-bottom:4px;}
+.gift-skin-name{font-size:9px;color:var(--mt);}
+.gift-to{font-size:12px;color:var(--tx);margin-bottom:4px;}
+.gift-msg-input{width:100%;background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.12);border-radius:6px;padding:10px;font-family:'Fira Code',monospace;font-size:12px;color:var(--tx);outline:none;resize:none;height:70px;}
+.gift-msg-input::placeholder{color:var(--mt);}
+.btn-gift{width:100%;background:var(--gd);color:var(--bk);font-family:'Fira Code',monospace;font-size:14px;font-weight:700;border:none;border-radius:6px;padding:13px;cursor:pointer;transition:opacity .2s;}
+.btn-gift:hover{opacity:.9}
+
+/* GIFT PREVIEW OVERLAY */
+#gift-overlay{position:fixed;inset:0;background:rgba(7,7,15,.92);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+#gift-overlay.show{display:flex;}
+.gift-preview-box{background:rgba(255,255,255,.05);border:.5px solid rgba(201,168,76,.3);border-radius:16px;padding:28px;text-align:center;width:100%;max-width:320px;animation:giftAppear .5s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes giftAppear{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.gift-preview-icon{font-size:72px;display:block;margin-bottom:12px;animation:giftFloat 2s ease-in-out infinite;}
+@keyframes giftFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.gift-preview-skin{font-size:14px;font-weight:700;color:var(--gd);margin-bottom:4px;}
+.gift-preview-msg{font-size:12px;color:var(--mt);font-style:italic;margin-bottom:16px;line-height:1.5;}
+.gift-preview-hint{font-size:10px;color:rgba(221,218,240,.3);margin-bottom:16px;}
+.gift-preview-wsp{display:flex;gap:8px;justify-content:center;}
+.btn-wsp{background:rgba(37,211,102,.15);color:#25d366;border:.5px solid rgba(37,211,102,.3);border-radius:6px;padding:10px 16px;font-family:'Fira Code',monospace;font-size:12px;cursor:pointer;transition:all .2s;}
+.btn-wsp:hover{background:rgba(37,211,102,.25);}
+.btn-close-gift{background:rgba(255,255,255,.06);color:var(--mt);border:.5px solid rgba(221,218,240,.12);border-radius:6px;padding:10px 16px;font-family:'Fira Code',monospace;font-size:12px;cursor:pointer;}
+
+/* NOTIF REGALO */
+#gift-notif{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);z-index:150;background:rgba(7,7,15,.95);border:.5px solid rgba(201,168,76,.3);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:10px;min-width:260px;max-width:340px;transition:transform .4s cubic-bezier(.175,.885,.32,1.275);pointer-events:none;}
+#gift-notif.show{transform:translateX(-50%) translateY(0);}
+.gift-notif-icon{font-size:22px;}
+.gift-notif-text{font-size:11px;color:var(--tx);line-height:1.4;}
+.gift-notif-sender{font-size:10px;color:var(--gd);margin-top:2px;}
+
+/* ══ DUELO ══ */
+#s-duelo{padding:0;justify-content:flex-start;overflow-y:auto;}
+.duelo-wrap{width:100%;max-width:420px;padding:16px;}
+.vs-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding:14px;background:rgba(255,77,109,.06);border:.5px solid rgba(255,77,109,.2);border-radius:10px;}
+.duelo-av{text-align:center;}
+.duelo-av-img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:1.5px solid var(--gd);margin:0 auto 4px;}
+.duelo-av-name{font-size:10px;color:var(--mt);}
+.vs-text{font-size:20px;font-weight:700;color:var(--dg);}
+.duelo-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.duelo-stat{background:rgba(255,255,255,.03);border-radius:8px;padding:10px;text-align:center;}
+.duelo-stat-n{font-size:16px;font-weight:700;color:var(--dg);}
+.duelo-stat-l{font-size:9px;color:var(--mt);text-transform:uppercase;}
+.btn-duelo{width:100%;background:var(--dg);color:#fff;font-family:'Fira Code',monospace;font-size:15px;font-weight:700;border:none;border-radius:6px;padding:14px;cursor:pointer;margin-bottom:12px;transition:opacity .2s;}
+.btn-duelo:hover{opacity:.85}
+.duelo-result{background:rgba(255,255,255,.04);border-radius:10px;padding:16px;text-align:center;display:none;}
+.duelo-result.show{display:block;}
+.result-icon{font-size:48px;display:block;margin-bottom:8px;}
+.result-text{font-size:14px;font-weight:700;margin-bottom:4px;}
+.result-sub{font-size:11px;color:var(--mt);}
+.rey-card{display:flex;gap:12px;align-items:center;margin-top:16px;padding:12px;background:rgba(255,255,255,.03);border-radius:8px;}
+.rey-img{width:48px;height:48px;object-fit:cover;border-radius:6px;}
+.rey-quote{font-size:11px;color:var(--mt);font-style:italic;line-height:1.5;}
+
+/* ══ UNIVERSO ══ */
+#s-universo{padding:0;justify-content:flex-start;overflow-y:auto;}
+.univ-wrap{width:100%;max-width:420px;padding:16px;}
+.rank-tabs{display:flex;gap:6px;margin-bottom:16px;}
+.rt{flex:1;padding:8px;font-family:'Fira Code',monospace;font-size:10px;color:var(--mt);background:rgba(255,255,255,.03);border:.5px solid rgba(221,218,240,.08);border-radius:6px;cursor:pointer;text-align:center;transition:all .2s;}
+.rt.on{background:rgba(201,168,76,.1);color:var(--gd);border-color:rgba(201,168,76,.3);}
+.rank-list{display:flex;flex-direction:column;gap:6px;margin-bottom:20px;}
+.rank-row{display:flex;align-items:center;gap:10px;padding:10px;background:rgba(255,255,255,.03);border-radius:8px;}
+.rank-pos{font-size:12px;font-weight:700;color:var(--mt);min-width:20px;text-align:center;}
+.rank-pos.gold{color:var(--gd);}
+.rank-av{font-size:16px;}
+.rank-nm{flex:1;font-size:12px;color:var(--tx);}
+.rank-pts{font-size:11px;color:var(--gd);}
+.social-links{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.soc-link{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:8px;padding:12px;text-align:center;text-decoration:none;transition:all .2s;cursor:pointer;}
+.soc-link:hover{border-color:rgba(201,168,76,.3);}
+.soc-icon{font-size:20px;display:block;margin-bottom:4px;}
+.soc-name{font-size:10px;color:var(--mt);}
+
+/* ══ AVATAR DORMIDO ══ */
+#sleep-overlay{position:fixed;inset:0;background:rgba(7,7,15,.95);z-index:300;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+#sleep-overlay.show{display:flex;}
+.sleep-img{width:120px;height:120px;object-fit:contain;border-radius:50%;border:1.5px solid rgba(127,106,240,.3);margin-bottom:16px;filter:brightness(.5) saturate(.3);}
+.sleep-title{font-size:18px;font-weight:700;color:var(--ac);margin-bottom:8px;}
+.sleep-msg{font-size:12px;color:var(--mt);text-align:center;line-height:1.6;margin-bottom:20px;max-width:280px;}
+.sleep-time{font-size:24px;font-weight:700;color:var(--ac);margin-bottom:8px;}
+.btn-wake{background:var(--ac);color:#fff;font-family:'Fira Code',monospace;font-size:14px;font-weight:700;border:none;border-radius:6px;padding:13px 28px;cursor:pointer;transition:opacity .2s;}
+.btn-wake:hover{opacity:.85}
+.wake-cost{font-size:10px;color:var(--mt);margin-top:8px;}
+
+/* ══ UTILS ══ */
+.hidden{display:none!important;}
+.gold{color:var(--gd);}
+.cyan{color:var(--cy);}
+.acc{color:var(--ac);}
+</style>
+</head>
+<body>
+
+<!-- ══ S00 ENTRADA ══ -->
+<div class="screen active" id="s00" onclick="startEntry()">
+  <img src="img/ojos.jpg" alt="" id="eyes-entry">
+  <div class="tap-hint">// toca para continuar</div>
+</div>
+
+<!-- ══ S01 TERMINAL ══ -->
+<div class="screen" id="s01">
+  <div id="term-lines" style="text-align:center;display:flex;flex-direction:column;gap:14px;"></div>
+</div>
+
+<!-- ══ S02 REGISTRO ══ -->
+<div class="screen" id="s02">
+  <div class="reg-wrap">
+    <div class="reg-logo">gamb1t0_</div>
+    <div class="reg-sub">// ingresa al sistema</div>
+
+    <div class="f-label">nombre en red</div>
+    <input class="f-input" id="r-user" placeholder="shadow_runner" maxlength="30" autocomplete="off">
+
+    <div class="f-label">fecha de nacimiento</div>
+    <div class="date-row">
+      <input class="f-input" id="r-dia" type="number" placeholder="día" min="1" max="31">
+      <input class="f-input" id="r-mes" type="number" placeholder="mes" min="1" max="12">
+      <input class="f-input" id="r-anio" type="number" placeholder="año" min="2000" max="2015">
+    </div>
+
+    <div class="trust-block" id="trust-block">
+      <div class="trust-title">// adulto de confianza <span class="skin-badge">+ skin gratis</span></div>
+      <div style="font-size:11px;color:var(--mt);margin-bottom:10px;line-height:1.5;">gi necesita saber que alguien te cuida. opcional, pero obtienes una skin exclusiva.</div>
+      <div class="trust-row">
+        <span class="trust-flag">país</span>
+        <input class="f-input" id="trust-pais" placeholder="Perú" style="margin-bottom:0;">
+      </div>
+      <div class="trust-row">
+        <span class="trust-flag">contacto</span>
+        <input class="f-input" id="trust-contact" placeholder="email o número" style="margin-bottom:0;">
+      </div>
+    </div>
+
+    <div class="err-msg" id="reg-err"></div>
+    <button class="btn-main" id="btn-reg" onclick="submitReg()">ingresar al sistema</button>
+  </div>
+</div>
+
+<!-- ══ S03 ARCANOS ══ -->
+<div class="screen" id="s03">
+  <div class="arc-wrap">
+    <div class="arc-header">
+      <div class="arc-title">// elige tu arcano</div>
+      <div class="arc-timer" id="arc-timer">0:30</div>
+    </div>
+    <div class="arc-gi" id="arc-gi-text">gi: cada arcano define cómo juegas. elige bien.</div>
+    <div class="arc-grid" id="arc-grid"></div>
+    <button class="btn-main" id="btn-confirm-arc" onclick="confirmArcano()" disabled>confirmar arcano</button>
+  </div>
+</div>
+
+<!-- ══ S03a NOMBRE AVATAR ══ -->
+<div class="screen" id="s03a">
+  <div class="pers-wrap">
+    <div class="gi-bubble">
+      <img src="img/gi_face.jpg" alt="gi" class="gi-avatar" onerror="this.style.background='rgba(0,229,255,.2)';this.removeAttribute('src')">
+      <div class="gi-text">ahora necesita que le pongas un nombre.... no tiene que ser el tuyo.</div>
+    </div>
+    <div class="f-label">nombre del avatar</div>
+    <input class="f-input" id="av-name" placeholder="ej: Kira, Zael, Nox..." maxlength="20" autocomplete="off">
+    <div style="font-size:10px;color:var(--mt);margin-bottom:20px;">diferente a tu nombre de usuario</div>
+    <button class="btn-main" onclick="goStep03b()">siguiente</button>
+  </div>
+</div>
+
+<!-- ══ S03b GÉNERO Y OJOS ══ -->
+<div class="screen" id="s03b">
+  <div class="pers-wrap">
+    <div class="gi-bubble">
+      <img src="img/gi_face.jpg" alt="gi" class="gi-avatar" onerror="this.style.background='rgba(0,229,255,.2)';this.removeAttribute('src')">
+      <div class="gi-text">y cómo será, elige.....</div>
+    </div>
+
+    <div class="f-label" style="margin-bottom:8px;">género</div>
+    <div class="gender-row" style="margin-bottom:20px;">
+      <div class="gender-btn" onclick="selGender('masculino',this)"><span class="gender-icon">♂</span>masculino</div>
+      <div class="gender-btn" onclick="selGender('femenino',this)"><span class="gender-icon">♀</span>femenino</div>
+      <div class="gender-btn" onclick="selGender('libre',this)"><span class="gender-icon">◈</span>libre</div>
+    </div>
+
+    <div class="f-label" style="margin-bottom:8px;">personalidad · color de ojos</div>
+    <div class="eye-row">
+      <div class="eye-btn" onclick="selEye('curioso','#00e5ff',this)">
+        <div class="eye-dot" style="background:#00e5ff;"></div>curioso
+      </div>
+      <div class="eye-btn" onclick="selEye('valiente','#c9a84c',this)">
+        <div class="eye-dot" style="background:#c9a84c;"></div>valiente
+      </div>
+      <div class="eye-btn" onclick="selEye('tranquilo','#00c896',this)">
+        <div class="eye-dot" style="background:#00c896;"></div>tranquilo
+      </div>
+      <div class="eye-btn" onclick="selEye('intenso','#ff4d6d',this)">
+        <div class="eye-dot" style="background:#ff4d6d;"></div>intenso
+      </div>
+    </div>
+    <button class="btn-main" onclick="goStep03c()" style="margin-top:8px;">siguiente</button>
+  </div>
+</div>
+
+<!-- ══ S03c MISIÓN ORIGEN ══ -->
+<div class="screen" id="s03c">
+  <div class="pers-wrap">
+    <div class="gi-bubble">
+      <img src="img/gi_face.jpg" alt="gi" class="gi-avatar" onerror="this.style.background='rgba(0,229,255,.2)';this.removeAttribute('src')">
+      <div class="gi-text">empecemos con la primera misión, despiértalo.....</div>
+    </div>
+    <div style="background:rgba(255,255,255,.03);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:16px;margin-bottom:20px;">
+      <div style="font-size:9px;color:var(--mt);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;">// misión de origen</div>
+      <div style="font-size:16px;font-weight:700;color:var(--gd);margin-bottom:6px;">despierta a tu avatar</div>
+      <div style="font-size:11px;color:var(--mt);line-height:1.5;margin-bottom:12px;">tu avatar está dormido. es hora de que despierte y elija su camino.</div>
+      <div style="display:flex;gap:8px;">
+        <span class="mis-reward mis-xp">+100 XP</span>
+        <span class="mis-reward mis-gus">+50 GUS</span>
+      </div>
+    </div>
+    <button class="btn-main" onclick="goDespertar()">despiértalo.....</button>
+  </div>
+</div>
+
+<!-- ══ DESPERTAR ══ -->
+<div class="screen" id="s-despertar" style="background:#000;">
+  <div class="desp-wrap">
+    <img src="img/avatar_base.jpg" alt="avatar" class="desp-img" id="desp-img" onerror="this.style.background='rgba(127,106,240,.2)';this.removeAttribute('src')">
+    <div class="desp-name" id="desp-name">---</div>
+    <div class="desp-sub" id="desp-sub">abriendo ojos...</div>
+    <div class="desp-gi" id="desp-gi-msg"></div>
+    <div class="desp-stats" id="desp-stats" style="display:none;">
+      <div class="desp-stat"><div class="desp-stat-n">100</div><div class="desp-stat-l">XP</div></div>
+      <div class="desp-stat"><div class="desp-stat-n">50</div><div class="desp-stat-l">GUS</div></div>
+      <div class="desp-stat"><div class="desp-stat-n">120</div><div class="desp-stat-l">tokens</div></div>
+    </div>
+    <button class="btn-main" id="btn-al-dashboard" onclick="goDashboard()" style="display:none;">al tablero</button>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ══ -->
+<div class="screen" id="s04">
+  <div class="dash-wrap">
+    <div class="nav">
+      <div class="nav-logo">gamb1t0_</div>
+      <div class="nav-tokens">tokens: <span id="nav-tok">120</span></div>
+    </div>
+
+    <div class="hero-card">
+      <div class="hero-top">
+        <img src="img/avatar_base.jpg" alt="avatar" class="hero-avatar" id="dash-avatar" onerror="this.style.background='rgba(127,106,240,.2)';this.removeAttribute('src')">
+        <div class="hero-info">
+          <div class="hero-name" id="dash-av-name">---</div>
+          <div class="hero-arcano" id="dash-arcano">arcano: ---</div>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-box"><div class="stat-n xp" id="dash-xp">100</div><div class="stat-l">XP</div></div>
+        <div class="stat-box"><div class="stat-n" id="dash-gus">50</div><div class="stat-l">GUS</div></div>
+        <div class="stat-box"><div class="stat-n tok" id="dash-tok">120</div><div class="stat-l">tokens</div></div>
+      </div>
+    </div>
+
+    <div class="gi-contact" onclick="openWsp()">
+      <img src="img/gi_face.jpg" alt="gi" onerror="this.style.background='rgba(0,229,255,.2)';this.removeAttribute('src')">
+      <div class="gi-contact-text">
+        <div class="gi-contact-name">gi</div>
+        <div class="gi-contact-hint">siempre está mirando</div>
+      </div>
+      <div class="gi-contact-wsp">WhatsApp</div>
+    </div>
+
+    <div class="actions-title">// acciones</div>
+    <div class="actions-grid">
+      <div class="action-btn" onclick="goScreen('s-misiones')">
+        <span class="action-icon">⚔</span>
+        <span class="action-label">misiones</span>
+        <span class="action-sub">5 disponibles</span>
+      </div>
+      <div class="action-btn" onclick="goScreen('s-skill')">
+        <span class="action-icon">◈</span>
+        <span class="action-label">skill tree</span>
+        <span class="action-sub">define tu camino</span>
+      </div>
+      <div class="action-btn" onclick="goScreen('s-market')">
+        <span class="action-icon">◆</span>
+        <span class="action-label">market</span>
+        <span class="action-sub">GUS · skins · P2P</span>
+      </div>
+      <div class="action-btn" onclick="goScreen('s-universo')">
+        <span class="action-icon">◉</span>
+        <span class="action-label">universo</span>
+        <span class="action-sub">rankings · comunidad</span>
+      </div>
+    </div>
+    <div class="renov">renovación de tokens: <span>17:53</span> · Lima time</div>
+  </div>
+</div>
+
+<!-- ══ MISIONES ══ -->
+<div class="screen" id="s-misiones">
+  <div class="mis-wrap">
+    <div class="screen-header">
+      <div class="back-btn" onclick="goScreen('s04')">←</div>
+      <div class="screen-title">misiones del día</div>
+    </div>
+    <div class="mis-list" id="mis-list"></div>
+  </div>
+</div>
+
+<!-- ══ DETALLE MISIÓN ══ -->
+<div class="screen" id="s-mis-detalle">
+  <div class="mis-det-wrap" id="mis-det-content">
+    <div class="screen-header" style="position:static;padding:0 0 16px;">
+      <div class="back-btn" onclick="goScreen('s-misiones')">←</div>
+      <div class="screen-title" id="mis-det-title">misión</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SKILL TREE ══ -->
+<div class="screen" id="s-skill">
+  <div class="skill-wrap">
+    <div class="screen-header">
+      <div class="back-btn" onclick="goScreen('s04')">←</div>
+      <div class="screen-title">skill tree</div>
+    </div>
+    <div class="skill-input-area">
+      <div style="font-size:11px;color:var(--mt);margin-bottom:10px;line-height:1.5;">¿cuál es tu objetivo? escríbelo y gi activará tu árbol.</div>
+      <div class="skill-input-row">
+        <input class="skill-input" id="skill-goal" placeholder="ej: ser futbolista profesional">
+        <button class="skill-activate" onclick="activateTree()">activar</button>
+      </div>
+    </div>
+    <div class="tree-svg-wrap">
+      <svg id="tree-svg" viewBox="0 0 360 400" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MARKET ══ -->
+<div class="screen" id="s-market">
+  <div class="market-wrap">
+    <div class="screen-header">
+      <div class="back-btn" onclick="goScreen('s04')">←</div>
+      <div class="screen-title">market</div>
+    </div>
+    <div class="market-tabs">
+      <button class="m-tab active" onclick="swTab('deposita',this)">DEPOSITA</button>
+      <button class="m-tab" onclick="swTab('skins',this)">SKINS</button>
+      <button class="m-tab" onclick="swTab('regalar',this)">REGALAR</button>
+      <button class="m-tab" onclick="swTab('vender',this)">VENDER</button>
+    </div>
+    <div class="market-content" id="market-content"></div>
+  </div>
+</div>
+
+<!-- ══ DUELO ══ -->
+<div class="screen" id="s-duelo">
+  <div class="duelo-wrap">
+    <div class="screen-header" style="position:static;padding:0 0 16px;">
+      <div class="back-btn" onclick="goScreen('s-misiones')">←</div>
+      <div class="screen-title">duelo</div>
+    </div>
+    <div class="vs-bar">
+      <div class="duelo-av">
+        <img src="img/avatar_base.jpg" alt="" class="duelo-av-img" id="d-my-av" onerror="this.style.background='rgba(127,106,240,.2)';this.removeAttribute('src')">
+        <div class="duelo-av-name" id="d-my-name">tú</div>
+      </div>
+      <div class="vs-text">VS</div>
+      <div class="duelo-av">
+        <div class="duelo-av-img" style="background:rgba(255,77,109,.15);display:flex;align-items:center;justify-content:center;font-size:20px;">◉</div>
+        <div class="duelo-av-name">rival</div>
+      </div>
+    </div>
+    <div class="duelo-stats">
+      <div class="duelo-stat"><div class="duelo-stat-n" id="d-xp">100</div><div class="duelo-stat-l">XP en juego</div></div>
+      <div class="duelo-stat"><div class="duelo-stat-n" id="d-gus">50</div><div class="duelo-stat-l">GUS en juego</div></div>
+    </div>
+    <button class="btn-duelo" onclick="doDuelo()">⚔ iniciar duelo · 10 tokens</button>
+    <div class="duelo-result" id="duelo-result">
+      <span class="result-icon" id="result-icon">⚔</span>
+      <div class="result-text" id="result-text">---</div>
+      <div class="result-sub" id="result-sub">---</div>
+      <div class="rey-card" id="rey-card">
+        <img src="img/rey_espadas.jpg" alt="rey" class="rey-img" onerror="this.style.background='rgba(201,168,76,.1)';this.removeAttribute('src')">
+        <div class="rey-quote" id="rey-quote">---</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ UNIVERSO ══ -->
+<div class="screen" id="s-universo">
+  <div class="univ-wrap">
+    <div class="screen-header">
+      <div class="back-btn" onclick="goScreen('s04')">←</div>
+      <div class="screen-title">universo gamb1t0</div>
+    </div>
+    <div class="rank-tabs">
+      <button class="rt on" id="rt-gen" onclick="swRank('gen')">general</button>
+      <button class="rt" id="rt-clan" onclick="swRank('clan')">clan</button>
+      <button class="rt" id="rt-dist" onclick="swRank('dist')">distrito</button>
+    </div>
+    <div class="rank-list" id="rankList"></div>
+    <div class="actions-title">// comunidad</div>
+    <div class="social-links">
+      <div class="soc-link" onclick="openLink('https://discord.gg/5mZtfFpJg')"><span class="soc-icon">💬</span><span class="soc-name">discord</span></div>
+      <div class="soc-link" onclick="openLink('https://www.instagram.com/somosgambito.oficial')"><span class="soc-icon">📷</span><span class="soc-name">instagram</span></div>
+      <div class="soc-link" onclick="openLink('https://www.tiktok.com/@somosgambito')"><span class="soc-icon">▶</span><span class="soc-name">tiktok</span></div>
+      <div class="soc-link" onclick="openLink('https://linktr.ee/somosgambito.oficial')"><span class="soc-icon">◈</span><span class="soc-name">linktree</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ GIFT OVERLAY ══ -->
+<div id="gift-overlay">
+  <div class="gift-preview-box">
+    <span class="gift-preview-icon" id="gpo-icon">🎁</span>
+    <div class="gift-preview-skin" id="gpo-skin">skin enviada</div>
+    <div class="gift-preview-msg" id="gpo-msg"></div>
+    <div class="gift-preview-hint">captura esta pantalla y envía por WhatsApp</div>
+    <div class="gift-preview-wsp">
+      <button class="btn-wsp" onclick="shareGiftWsp()">compartir por WhatsApp</button>
+      <button class="btn-close-gift" onclick="closeGiftOverlay()">cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NOTIF REGALO ══ -->
+<div id="gift-notif">
+  <span class="gift-notif-icon">🎁</span>
+  <div>
+    <div class="gift-notif-text" id="gift-notif-text">recibiste un regalo</div>
+    <div class="gift-notif-sender" id="gift-notif-sender">de: ---</div>
+  </div>
+</div>
+
+<!-- ══ AVATAR DORMIDO ══ -->
+<div id="sleep-overlay">
+  <img src="img/avatar_base.jpg" alt="avatar dormido" class="sleep-img" onerror="this.style.background='rgba(127,106,240,.2)';this.removeAttribute('src')">
+  <div class="sleep-title">avatar durmiendo</div>
+  <div class="sleep-msg" id="sleep-msg">tu avatar descansa desde las 22:00.<br>puedes despertarlo usando tokens.</div>
+  <div class="sleep-time" id="sleep-time">💤</div>
+  <button class="btn-wake" onclick="wakeAvatar()">despertar · 5 tokens</button>
+  <div class="wake-cost">tienes <span id="wake-tok">120</span> tokens disponibles</div>
+</div>
+
+<script>
+// ══ STATE ══
+const ST = {
+  user:'shadow_runner', avName:'---', arcano:null, gender:'libre',
+  eyeColor:'#00e5ff', eyePersonality:'curioso',
+  xp:0, gus:0, tokens:120, registered:false,
+  arcTimer:null, selectedArcano:null,
+  treeActivated:false, treeGoal:''
+};
+
+// ══ ARCANOS DATA ══
+const ARCANOS = [
+  {id:'guerrero',name:'el guerrero',bonus:'duelos +15%',energy:'fuego',img:'img/guerrero.png',emoji:null},
+  {id:'mercader',name:'el mercader',bonus:'GUS ×1.15',energy:'tierra',img:'img/mercader.png',emoji:null},
+  {id:'sabio',name:'el sabio',bonus:'XP ×1.2',energy:'oscuridad',img:'img/sabio.png',emoji:null},
+  {id:'explorador',name:'el explorador',bonus:'exploración +20%',energy:'viento',img:'img/explorador.png',emoji:null},
+  {id:'fenix',name:'el fénix',bonus:'resurrección ×1',energy:'renacimiento',img:null,emoji:'🔥'},
+  {id:'mago',name:'el mago',bonus:'misiones ocultas',energy:'arcano',img:null,emoji:'✨'},
+  {id:'nomada',name:'el nómada',bonus:'exploración +20%',energy:'aire',img:null,emoji:'🌬'},
+];
+
+// ══ MISIONES DATA ══
+const MISIONES = [
+  {id:1,name:'explora el mundo',desc:'visita 4 zonas del mapa de gamb1t0',tokens:12,xp:50,gus:30,tasks:['visita el mercado','entra al skill tree','reta a un rival','regresa al tablero'],type:'explore'},
+  {id:2,name:'entrena tu resistencia',desc:'mantén el cronómetro activo 20 minutos',tokens:8,xp:25,gus:20,tasks:['iniciar cronómetro','mantener 10 min','completar 20 min'],type:'timer',duration:20*60},
+  {id:3,name:'desafío de lectura',desc:'lee el fragmento y conversa con gi sobre lo que aprendiste',tokens:15,xp:60,gus:40,tasks:['leer el texto','reflexión 1 con gi','reflexión 2 con gi','reflexión 3 con gi'],type:'reading'},
+  {id:4,name:'retar un avatar',desc:'desafía a otro jugador en duelo',tokens:10,xp:'±',gus:'±',tasks:['seleccionar rival','confirmar apuesta','ejecutar duelo'],type:'duel'},
+  {id:5,name:'empieza con algo pequeño',desc:'tiende tu cama. mcRaven lo dice: la primera victoria del día es la más pequeña.',tokens:5,xp:20,gus:15,tasks:['tender la cama','confirmar completado'],type:'small',last:true},
+];
+
+const RANK_DATA = {
+  gen:[{n:'nx_lima01',pts:4820},{n:'shadow_runner',pts:3610},{n:'kira_free',pts:2990},{n:'el_mercader99',pts:2440},{n:'zael_norte',pts:1870}],
+  clan:[{n:'GI Force Alpha',pts:18400},{n:'Los Despiertos',pts:14200},{n:'Nómadas Lima',pts:9800},{n:'Clan Sabio',pts:7300},{n:'Guerreros Sur',pts:5100}],
+  dist:[{n:'San Juan de Lurigancho',pts:22100},{n:'Los Olivos',pts:18500},{n:'Ate',pts:15300},{n:'Comas',pts:12800},{n:'Miraflores',pts:9600}],
+};
+
+// ══ SCREEN ENGINE ══
+function goScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const sc=document.getElementById(id);
+  if(sc){sc.classList.add('active');sc.scrollTop=0;}
+}
+
+// ══ S00 OJOS ══
+window.addEventListener('load',()=>{
+  checkSleep();
+  setTimeout(()=>{
+    const img=document.getElementById('eyes-entry');
+    if(img)img.classList.add('show');
+  },300);
+});
+
+function startEntry(){
+  goScreen('s01');
+  runTerminal();
+}
+
+// ══ S01 TERMINAL ══
+const TERM_LINES=[
+  {t:400,text:'...te estaba esperando...'},
+  {t:1200,text:'> freedom.exe /run'},
+  {t:2200,text:'// iniciando sistema...'},
+  {t:3200,text:'bienvenido.'},
+];
+function runTerminal(){
+  const wrap=document.getElementById('term-lines');
+  wrap.innerHTML='';
+  TERM_LINES.forEach(l=>{
+    const d=document.createElement('div');
+    d.className='terminal-line';
+    d.textContent=l.text;
+    wrap.appendChild(d);
+    setTimeout(()=>d.classList.add('show'),l.t);
+  });
+  setTimeout(()=>goScreen('s02'),4400);
+}
+
+// ══ S02 REGISTRO ══
+document.getElementById('r-anio').addEventListener('input',function(){
+  const anio=parseInt(this.value)||0;
+  const edad=anio>0?new Date().getFullYear()-anio:0;
+  const tb=document.getElementById('trust-block');
+  if(edad>=15&&edad<=17)tb.classList.add('show');
+  else tb.classList.remove('show');
+});
+
+function submitReg(){
+  const user=document.getElementById('r-user').value.trim();
+  const dia=parseInt(document.getElementById('r-dia').value)||0;
+  const mes=parseInt(document.getElementById('r-mes').value)||0;
+  const anio=parseInt(document.getElementById('r-anio').value)||0;
+  const errEl=document.getElementById('reg-err');
+  errEl.style.display='none';
+
+  if(!user){errEl.textContent='// pon tu nombre en red';errEl.style.display='block';return;}
+  if(!dia||!mes||!anio){errEl.textContent='// fecha de nacimiento incompleta';errEl.style.display='block';return;}
+
+  const edad=new Date().getFullYear()-anio;
+  if(edad<15){
+    errEl.textContent='// aún no es tu momento. vuelve en '+(anio+15);
+    errEl.style.display='block';return;
+  }
+
+  ST.user=user;
+  ST.registered=true;
+  document.getElementById('btn-reg').disabled=true;
+  document.getElementById('btn-reg').textContent='// verificando...';
+  setTimeout(()=>{goScreen('s03');startArcTimer();renderArcanos();},600);
+}
+
+// ══ S03 ARCANOS ══
+function renderArcanos(){
+  const shuffled=[...ARCANOS].sort(()=>Math.random()-.5).slice(0,4);
+  const grid=document.getElementById('arc-grid');
+  grid.innerHTML='';
+  shuffled.forEach(a=>{
+    const c=document.createElement('div');
+    c.className='arc-card';
+    c.onclick=()=>selectArcano(a,c);
+    c.innerHTML=`
+      ${a.img?`<img src="${a.img}" alt="${a.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="arc-emoji" style="display:none">${a.emoji||'◈'}</span>`:`<span class="arc-emoji">${a.emoji}</span>`}
+      <div class="arc-name">${a.name}</div>
+      <div class="arc-bonus">${a.bonus}</div>
+      <div class="arc-energy">energía: ${a.energy}</div>
+      <div class="arc-check">✓</div>
+    `;
+    grid.appendChild(c);
+  });
+}
+
+function selectArcano(a,el){
+  document.querySelectorAll('.arc-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  ST.selectedArcano=a;
+  document.getElementById('btn-confirm-arc').disabled=false;
+}
+
+let arcInterval=null;
+function startArcTimer(){
+  let t=30;
+  const el=document.getElementById('arc-timer');
+  arcInterval=setInterval(()=>{
+    t--;
+    el.textContent='0:'+String(t).padStart(2,'0');
+    if(t<=10)el.classList.add('urgent');
+    if(t<=0){clearInterval(arcInterval);if(!ST.selectedArcano)autoSelectArcano();}
+  },1000);
+}
+function autoSelectArcano(){
+  const cards=document.querySelectorAll('.arc-card');
+  if(cards.length>0){
+    const idx=Math.floor(Math.random()*cards.length);
+    cards[idx].click();
+    confirmArcano();
+  }
+}
+function confirmArcano(){
+  if(!ST.selectedArcano)return;
+  clearInterval(arcInterval);
+  ST.arcano=ST.selectedArcano;
+  goScreen('s03a');
+}
+
+// ══ PERSONALIZACIÓN ══
+function goStep03b(){
+  const name=document.getElementById('av-name').value.trim();
+  if(!name)return;
+  ST.avName=name;
+  goScreen('s03b');
+}
+
+function selGender(g,el){
+  document.querySelectorAll('.gender-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');ST.gender=g;
+}
+function selEye(p,c,el){
+  document.querySelectorAll('.eye-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');ST.eyePersonality=p;ST.eyeColor=c;
+}
+
+function goStep03c(){
+  if(!ST.gender||!ST.eyeColor)return;
+  goScreen('s03c');
+}
+
+function goDespertar(){
+  goScreen('s-despertar');
+  animateDespertar();
+}
+
+function animateDespertar(){
+  const img=document.getElementById('desp-img');
+  const sub=document.getElementById('desp-sub');
+  const gi=document.getElementById('desp-gi-msg');
+  const stats=document.getElementById('desp-stats');
+  const btn=document.getElementById('btn-al-dashboard');
+  const nameEl=document.getElementById('desp-name');
+
+  nameEl.textContent=ST.avName;
+  img.style.filter=`brightness(0.2) saturate(0)`;
+
+  setTimeout(()=>{
+    img.style.filter=`brightness(0.6) saturate(0.3)`;
+    sub.textContent='procesando identidad...';
+  },800);
+  setTimeout(()=>{
+    img.style.filter=`brightness(1) saturate(1) drop-shadow(0 0 12px ${ST.eyeColor})`;
+    sub.textContent='ojos: '+ST.eyePersonality;
+  },2000);
+  setTimeout(()=>{
+    gi.textContent=`gi: ${ST.avName} ya tiene ojos. puede ver el mundo.`;
+    ST.xp=100;ST.gus=50;ST.tokens=120;
+    stats.style.display='flex';
+    btn.style.display='block';
+  },3200);
+}
+
+function goDashboard(){
+  document.getElementById('dash-av-name').textContent=ST.avName;
+  document.getElementById('dash-arcano').textContent='arcano: '+(ST.arcano?ST.arcano.name:'---');
+  updateDashStats();
+  renderMisiones();
+  renderMarket('deposita');
+  renderTree();
+  goScreen('s04');
+}
+
+function updateDashStats(){
+  document.getElementById('dash-xp').textContent=ST.xp;
+  document.getElementById('dash-gus').textContent=ST.gus;
+  document.getElementById('dash-tok').textContent=ST.tokens;
+  document.getElementById('nav-tok').textContent=ST.tokens;
+  document.getElementById('d-xp').textContent=ST.xp;
+  document.getElementById('d-gus').textContent=ST.gus;
+  document.getElementById('d-my-name').textContent=ST.avName;
+  document.getElementById('wake-tok').textContent=ST.tokens;
+}
+
+// ══ MISIONES ══
+function renderMisiones(){
+  const list=document.getElementById('mis-list');
+  list.innerHTML='';
+  MISIONES.forEach((m,i)=>{
+    const card=document.createElement('div');
+    card.className='mis-card'+(i===0?' active':'');
+    card.innerHTML=`
+      <div class="mis-top">
+        <div class="mis-name">${m.name}</div>
+        <div class="mis-tokens">${m.tokens} tokens</div>
+      </div>
+      <div class="mis-desc">${m.desc}</div>
+      <div class="mis-rewards">
+        <span class="mis-reward mis-xp">+${m.xp} XP</span>
+        <span class="mis-reward mis-gus">+${m.gus} GUS</span>
+      </div>
+    `;
+    card.onclick=()=>openMision(m);
+    list.appendChild(card);
+  });
+}
+
+function openMision(m){
+  if(m.type==='duel'){goScreen('s-duelo');return;}
+  document.getElementById('mis-det-title').textContent=m.name;
+  const wrap=document.getElementById('mis-det-content');
+  const tasksHtml=m.tasks.map((t,i)=>`
+    <div class="task-item" id="task-${m.id}-${i}" onclick="toggleTask(${m.id},${i})">
+      <div class="task-check"></div>
+      <div class="task-label">${t}</div>
+    </div>
+  `).join('');
+
+  const socialHtml=`
+    <div class="social-task">
+      <div class="social-task-text">comparte una foto con</div>
+      <div class="social-task-hash">#somosgambito &nbsp;#giforce — y espera sorpresas...</div>
+    </div>
+  `;
+
+  wrap.innerHTML=`
+    <div class="screen-header" style="position:static;padding:0 0 16px;">
+      <div class="back-btn" onclick="goScreen('s-misiones')">←</div>
+      <div class="screen-title">${m.name}</div>
+    </div>
+    <div class="mis-det-card">
+      <div class="mis-det-num">// misión ${m.id} de ${MISIONES.length}</div>
+      <div class="mis-det-name">${m.name}</div>
+      <div class="mis-det-desc">${m.desc}</div>
+      <div class="mis-det-rewards">
+        <span class="mis-reward mis-xp">+${m.xp} XP</span>
+        <span class="mis-reward mis-gus">+${m.gus} GUS</span>
+        <span class="mis-tokens" style="font-size:10px;color:var(--cy)">${m.tokens} tokens</span>
+      </div>
+    </div>
+    <div class="mis-det-tasks">${tasksHtml}</div>
+    ${socialHtml}
+    <button class="btn-main" onclick="completeMision(${m.id},${m.xp},${m.gus})">completar misión</button>
+  `;
+  goScreen('s-mis-detalle');
+}
+
+function toggleTask(mid,idx){
+  const el=document.getElementById('task-'+mid+'-'+idx);
+  if(el)el.classList.toggle('done');
+}
+
+function completeMision(id,xp,gus){
+  ST.xp+=xp;ST.gus+=gus;ST.tokens=Math.max(0,ST.tokens-MISIONES[id-1].tokens);
+  updateDashStats();
+  goScreen('s-misiones');
+}
+
+// ══ SKILL TREE ══
+function renderTree(){
+  const svg=document.getElementById('tree-svg');
+  svg.innerHTML='';
+  if(!ST.treeActivated){
+    const txt=document.createElementNS('http://www.w3.org/2000/svg','text');
+    txt.setAttribute('x','180');txt.setAttribute('y','200');
+    txt.setAttribute('text-anchor','middle');txt.setAttribute('fill','rgba(106,104,130,.4)');
+    txt.setAttribute('font-family','Fira Code');txt.setAttribute('font-size','12');
+    txt.textContent='escribe tu objetivo y activa el árbol';
+    svg.appendChild(txt);
+    return;
+  }
+  drawTree(svg,ST.treeGoal);
+}
+
+function activateTree(){
+  const goal=document.getElementById('skill-goal').value.trim();
+  if(!goal)return;
+  ST.treeActivated=true;ST.treeGoal=goal;
+  renderTree();
+}
+
+function drawTree(svg,goal){
+  const W=360,H=400;
+  const rootX=W/2,rootY=H-40;
+  const branches=getBranches(goal);
+
+  // trunk
+  const trunk=document.createElementNS('http://www.w3.org/2000/svg','line');
+  trunk.setAttribute('x1',rootX);trunk.setAttribute('y1',rootY);
+  trunk.setAttribute('x2',rootX);trunk.setAttribute('y2',rootY-80);
+  trunk.setAttribute('stroke','rgba(201,168,76,.5)');trunk.setAttribute('stroke-width','4');
+  svg.appendChild(trunk);
+
+  // root label
+  const rl=document.createElementNS('http://www.w3.org/2000/svg','text');
+  rl.setAttribute('x',rootX);rl.setAttribute('y',rootY+16);
+  rl.setAttribute('text-anchor','middle');rl.setAttribute('fill','rgba(221,218,240,.5)');
+  rl.setAttribute('font-family','Fira Code');rl.setAttribute('font-size','10');
+  rl.textContent=ST.user;svg.appendChild(rl);
+
+  branches.forEach((branch,bi)=>{
+    const bx=60+bi*(W-120)/(branches.length-1||1);
+    const mY=rootY-80,tY=100;
+    const sp=80/(branch.nodes.length+1);
+
+    const mainLine=document.createElementNS('http://www.w3.org/2000/svg','line');
+    mainLine.setAttribute('x1',rootX);mainLine.setAttribute('y1',mY);
+    mainLine.setAttribute('x2',bx);mainLine.setAttribute('y2',tY+80);
+    mainLine.setAttribute('stroke',branch.color);mainLine.setAttribute('stroke-width','3');
+    mainLine.setAttribute('opacity','.6');svg.appendChild(mainLine);
+
+    branch.nodes.forEach((nd,ni)=>{
+      const nx=bx,ny=tY+80-sp*(ni+1);
+      const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      dot.setAttribute('cx',nx);dot.setAttribute('cy',ny);dot.setAttribute('r','8');
+      dot.setAttribute('fill','rgba(127,106,240,.15)');dot.setAttribute('stroke',branch.color);
+      dot.setAttribute('stroke-width','1.5');dot.style.cursor='pointer';
+      dot.onclick=()=>openNodePanel(nd,branch.name);
+      svg.appendChild(dot);
+
+      const lbl=document.createElementNS('http://www.w3.org/2000/svg','text');
+      lbl.setAttribute('x',nx);lbl.setAttribute('y',ny-12);
+      lbl.setAttribute('text-anchor','middle');lbl.setAttribute('fill','rgba(221,218,240,.55)');
+      lbl.setAttribute('font-family','Fira Code');lbl.setAttribute('font-size','8');
+      lbl.textContent=nd.label.substring(0,12);svg.appendChild(lbl);
+    });
+
+    const bLabel=document.createElementNS('http://www.w3.org/2000/svg','text');
+    bLabel.setAttribute('x',bx);bLabel.setAttribute('y',tY+96);
+    bLabel.setAttribute('text-anchor','middle');bLabel.setAttribute('fill',branch.color);
+    bLabel.setAttribute('font-family','Fira Code');bLabel.setAttribute('font-size','9');
+    bLabel.setAttribute('font-weight','700');bLabel.textContent=branch.name;
+    svg.appendChild(bLabel);
+  });
+
+  const rootDot=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  rootDot.setAttribute('cx',rootX);rootDot.setAttribute('cy',rootY-80);
+  rootDot.setAttribute('r','8');rootDot.setAttribute('fill','rgba(201,168,76,.2)');
+  rootDot.setAttribute('stroke','#c9a84c');rootDot.setAttribute('stroke-width','2');
+  svg.appendChild(rootDot);
+}
+
+function getBranches(goal){
+  const g=goal.toLowerCase();
+  if(g.includes('futbol')||g.includes('fútbol')||g.includes('deporte')){
+    return[
+      {name:'condición',color:'#ff4d6d',nodes:[{label:'resistencia'},{label:'fuerza'},{label:'velocidad'}]},
+      {name:'técnica',color:'#c9a84c',nodes:[{label:'control'},{label:'precisión'},{label:'maestría'}]},
+      {name:'equipo',color:'#00c896',nodes:[{label:'comunicación'},{label:'confianza'},{label:'liderazgo'}]},
+    ];
+  }
+  if(g.includes('emprend')||g.includes('negocio')||g.includes('startup')){
+    return[
+      {name:'idea',color:'#7f6af0',nodes:[{label:'propuesta'},{label:'problema'},{label:'diferenciador'}]},
+      {name:'mercado',color:'#c9a84c',nodes:[{label:'cliente'},{label:'validación'},{label:'tracción'}]},
+      {name:'prototipo',color:'#00e5ff',nodes:[{label:'construir'},{label:'iterar'},{label:'lanzar'}]},
+    ];
+  }
+  return[
+    {name:'habilidades',color:'#7f6af0',nodes:[{label:'nivel 1'},{label:'nivel 2'},{label:'nivel 3'}]},
+    {name:'conocimiento',color:'#c9a84c',nodes:[{label:'base'},{label:'práctica'},{label:'dominio'}]},
+    {name:'impacto',color:'#00c896',nodes:[{label:'local'},{label:'comunidad'},{label:'global'}]},
+  ];
+}
+
+function openNodePanel(nd,branch){
+  const mis={
+    id:99,name:'misión: '+nd.label,
+    desc:'completa las tareas de este nodo para desbloquear el siguiente nivel en '+branch+'.',
+    tokens:8,xp:40,gus:25,
+    tasks:['investigar sobre '+nd.label,'practicar '+nd.label+' 20 min','documentar aprendizaje'],
+    type:'node'
+  };
+  openMision(mis);
+}
+
+// ══ MARKET ══
+function swTab(tab,el){
+  document.querySelectorAll('.m-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderMarket(tab);
+}
+
+function renderMarket(tab){
+  const c=document.getElementById('market-content');
+  if(tab==='deposita'){
+    c.innerHTML=`
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+        <div class="qr-section">
+          <div class="qr-box"><div class="qr-placeholder">QR<br>YAPE</div></div>
+          <div class="qr-label">Yape</div>
+          <div class="qr-hint">somosgambito.oficial</div>
+        </div>
+        <div class="qr-section">
+          <div class="qr-box"><div class="qr-placeholder">QR<br>PLIN</div></div>
+          <div class="qr-label">Plin</div>
+          <div class="qr-hint">somosgambito.oficial</div>
+        </div>
+      </div>
+      <div class="deposit-info">
+        <div class="deposit-info-text">acreditación &lt; 2 minutos<br>boleta al correo registrado<br>1 GUS = 1 USD paridad base</div>
+      </div>
+    `;
+  }else if(tab==='skins'){
+    const skins=[
+      {name:'armadura neón',price:'120 GUS',bonus:'duelos +10%',icon:'⚡'},
+      {name:'capa del sabio',price:'80 GUS',bonus:'XP ×1.1',icon:'🌙'},
+      {name:'guantes mercader',price:'60 GUS + 20 tok',bonus:'GUS ×1.05',icon:'💎'},
+      {name:'botas explorador',price:'90 GUS',bonus:'exploración +15%',icon:'🌿'},
+    ];
+    c.innerHTML=`<div class="skins-grid">${skins.map(s=>`
+      <div class="skin-card">
+        <div class="skin-img">${s.icon}</div>
+        <div class="skin-name">${s.name}</div>
+        <div class="skin-price">${s.price}</div>
+        <div class="skin-bonus">${s.bonus}</div>
+      </div>
+    `).join('')}</div>`;
+  }else if(tab==='regalar'){
+    const skins=[
+      {name:'armadura',icon:'⚡'},{name:'capa',icon:'🌙'},{name:'guantes',icon:'💎'},{name:'botas',icon:'🌿'}
+    ];
+    c.innerHTML=`
+      <div class="gift-wrap">
+        <div class="gift-select">// elige la skin a regalar</div>
+        <div class="gift-skin-row">
+          ${skins.map((s,i)=>`
+            <div class="gift-skin" id="gs-${i}" onclick="selGiftSkin(${i},'${s.name}','${s.icon}')">
+              <span class="gift-skin-icon">${s.icon}</span>
+              <span class="gift-skin-name">${s.name}</span>
+            </div>
+          `).join('')}
+        </div>
+        <div class="gift-to">// para quién es</div>
+        <input class="f-input" id="gift-to-input" placeholder="usuario destino (ej: kira_free)">
+        <div class="gift-to">// escribe algo</div>
+        <textarea class="gift-msg-input" id="gift-msg-input" placeholder="esto es para ti porque..."></textarea>
+        <button class="btn-gift" onclick="sendGift()">enviar regalo</button>
+      </div>
+    `;
+  }else if(tab==='vender'){
+    c.innerHTML=`
+      <div style="text-align:center;padding:32px 0;">
+        <div style="font-size:32px;margin-bottom:12px;">◆</div>
+        <div style="font-size:14px;color:var(--gd);margin-bottom:8px;">marketplace P2P</div>
+        <div style="font-size:11px;color:var(--mt);line-height:1.6;">precio libre · mínimo 60% del valor original<br>las ofertas aparecen aquí al instante</div>
+      </div>
+      <div style="background:rgba(201,168,76,.05);border:.5px solid rgba(201,168,76,.2);border-radius:8px;padding:14px;text-align:center;">
+        <div style="font-size:11px;color:var(--mt);">// próximamente · marketplace activo en lanzamiento</div>
+      </div>
+    `;
+  }
+}
+
+let selectedGiftSkin={name:'',icon:'🎁'};
+function selGiftSkin(i,name,icon){
+  document.querySelectorAll('.gift-skin').forEach(s=>s.classList.remove('sel'));
+  document.getElementById('gs-'+i).classList.add('sel');
+  selectedGiftSkin={name,icon};
+}
+
+function sendGift(){
+  const to=document.getElementById('gift-to-input').value.trim();
+  const msg=document.getElementById('gift-msg-input').value.trim();
+  if(!selectedGiftSkin.name){return;}
+  document.getElementById('gpo-icon').textContent=selectedGiftSkin.icon;
+  document.getElementById('gpo-skin').textContent=selectedGiftSkin.name+' → '+( to||'destinatario');
+  document.getElementById('gpo-msg').textContent=msg||'sin mensaje';
+  document.getElementById('gift-overlay').classList.add('show');
+  // simular notif al receptor
+  setTimeout(()=>showGiftNotif(selectedGiftSkin.icon,selectedGiftSkin.name,ST.avName),1200);
+}
+
+function closeGiftOverlay(){document.getElementById('gift-overlay').classList.remove('show');}
+
+function shareGiftWsp(){
+  const msg=document.getElementById('gpo-msg').textContent;
+  const skin=document.getElementById('gpo-skin').textContent;
+  const url='https://wa.me/?text='+encodeURIComponent('🎁 te envío '+skin+' en gamb1t0_\n"'+msg+'"\n\nÚnete: demo.somosgambito.com');
+  window.open(url,'_blank');
+}
+
+function showGiftNotif(icon,skin,sender){
+  const n=document.getElementById('gift-notif');
+  document.getElementById('gift-notif-text').textContent='recibiste una '+skin;
+  document.getElementById('gift-notif-sender').textContent='de: '+sender;
+  document.getElementById('gift-notif').querySelector('.gift-notif-icon').textContent=icon;
+  n.classList.add('show');
+  setTimeout(()=>n.classList.remove('show'),4000);
+}
+
+// ══ DUELO ══
+function doDuelo(){
+  if(ST.tokens<10)return;
+  ST.tokens-=10;updateDashStats();
+  const win=Math.random()>.45;
+  const result=document.getElementById('duelo-result');
+  result.classList.add('show');
+  if(win){
+    const gain=Math.floor(ST.xp*.1)+5;
+    ST.xp+=gain;ST.gus+=10;
+    document.getElementById('result-icon').textContent='⚡';
+    document.getElementById('result-text').textContent='victoria';
+    document.getElementById('result-sub').textContent='+'+gain+' XP · +10 GUS';
+    document.getElementById('rey-quote').textContent='el rey de espadas: quien actúa primero controla el tablero.';
+  }else{
+    const loss=Math.floor(ST.xp*.05)+2;
+    ST.xp=Math.max(0,ST.xp-loss);
+    document.getElementById('result-icon').textContent='💀';
+    document.getElementById('result-text').textContent='derrota';
+    document.getElementById('result-sub').textContent='-'+loss+' XP · vuelve más fuerte';
+    document.getElementById('rey-quote').textContent='el rey de espadas: la derrota es data. úsala.';
+  }
+  updateDashStats();
+}
+
+// ══ UNIVERSO ══
+function swRank(t){
+  ['gen','clan','dist'].forEach(k=>{document.getElementById('rt-'+k).classList.toggle('on',k===t);});
+  renderRank(t);
+}
+function renderRank(t){
+  const list=document.getElementById('rankList');
+  list.innerHTML='';
+  RANK_DATA[t].forEach((r,i)=>{
+    const row=document.createElement('div');
+    row.className='rank-row';
+    row.innerHTML=`<div class="rank-pos ${i===0?'gold':''}">${i+1}</div><div class="rank-av">${i===0?'◈':i===1?'◆':'◉'}</div><div class="rank-nm">${r.n}</div><div class="rank-pts">${r.pts.toLocaleString()} pts</div>`;
+    list.appendChild(row);
+  });
+}
+renderRank('gen');
+
+// ══ SLEEP CHECK ══
+function checkSleep(){
+  const h=new Date().getHours();
+  if(h>=22||h<6){
+    document.getElementById('sleep-overlay').classList.add('show');
+    document.getElementById('sleep-time').textContent='💤 '+new Date().toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'});
+  }
+}
+function wakeAvatar(){
+  if(ST.tokens<5)return;
+  ST.tokens-=5;updateDashStats();
+  document.getElementById('sleep-overlay').classList.remove('show');
+}
+
+// ══ UTILS ══
+function openWsp(){window.open('https://wa.me/51999999999?text=hola+gi,+soy+'+encodeURIComponent(ST.user),'_blank');}
+function openLink(url){window.open(url,'_blank');}
+</script>
+</body>
+</html>
