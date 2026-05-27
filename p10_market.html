@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>gamb1t0_ · market</title>
+<link rel="icon" href="img/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Code','Courier New',monospace;overflow-x:hidden;}
+.page{width:100%;max-width:440px;margin:0 auto;padding-bottom:80px;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;gap:12px;padding:14px 16px 10px;border-bottom:.5px solid rgba(221,218,240,.08);position:sticky;top:0;background:#07070f;z-index:10;}
+.back-btn{font-size:20px;cursor:pointer;color:rgba(221,218,240,.4);padding:4px 8px 4px 0;}
+.back-btn:hover{color:#c9a84c;}
+.top-title{font-size:15px;font-weight:700;}
+.top-gus{margin-left:auto;font-size:11px;color:rgba(221,218,240,.4);}
+.top-gus span{color:#c9a84c;font-weight:700;}
+
+/* TABS */
+.tabs{display:flex;border-bottom:.5px solid rgba(221,218,240,.08);position:sticky;top:53px;background:#07070f;z-index:9;}
+.tab{flex:1;padding:10px 4px;font-family:'Fira Code',monospace;font-size:10px;color:rgba(221,218,240,.35);letter-spacing:.06em;cursor:pointer;text-align:center;border-bottom:1.5px solid transparent;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;text-transform:uppercase;}
+.tab.on{color:#c9a84c;border-bottom-color:#c9a84c;}
+
+.tab-content{padding:16px;}
+
+/* ── DEPOSITA ── */
+.qr-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+.qr-card{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:16px;text-align:center;}
+.qr-box{width:100px;height:100px;background:rgba(255,255,255,.08);border-radius:8px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(221,218,240,.3);letter-spacing:.06em;}
+.qr-label{font-size:13px;font-weight:700;color:#c9a84c;margin-bottom:2px;}
+.qr-handle{font-size:10px;color:rgba(221,218,240,.35);}
+.dep-info{background:rgba(0,200,150,.05);border:.5px solid rgba(0,200,150,.2);border-radius:10px;padding:14px;text-align:center;}
+.dep-info-txt{font-size:12px;color:#00c896;line-height:1.8;}
+.dep-rate{font-size:11px;color:rgba(221,218,240,.35);margin-top:8px;}
+
+/* ── SKINS ── */
+.skins-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.skin-card{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:12px;padding:14px;cursor:pointer;transition:all .2s;position:relative;}
+.skin-card:hover{border-color:rgba(201,168,76,.35);transform:translateY(-2px);}
+.skin-card.owned{border-color:rgba(127,106,240,.4);background:rgba(127,106,240,.06);}
+.skin-edition{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);border:.5px solid rgba(221,218,240,.2);border-radius:10px;padding:2px 7px;font-size:9px;color:rgba(221,218,240,.5);}
+.skin-edition.first{border-color:rgba(201,168,76,.4);color:#c9a84c;}
+.skin-icon{font-size:36px;text-align:center;margin-bottom:10px;display:block;}
+.skin-img{width:56px;height:56px;object-fit:contain;margin:0 auto 10px;display:block;border-radius:8px;}
+.skin-name{font-size:12px;font-weight:700;color:#dddaf0;margin-bottom:3px;}
+.skin-bonus{font-size:10px;color:rgba(221,218,240,.4);margin-bottom:6px;}
+.skin-price{font-size:12px;color:#c9a84c;font-weight:700;}
+.skin-price.owned{color:#7f6af0;}
+.skin-btns{display:flex;gap:6px;margin-top:8px;}
+.skin-btn{flex:1;font-family:'Fira Code',monospace;font-size:10px;padding:6px 4px;border-radius:6px;cursor:pointer;text-align:center;transition:all .2s;}
+.btn-comprar{background:rgba(201,168,76,.15);color:#c9a84c;border:.5px solid rgba(201,168,76,.3);}
+.btn-comprar:hover{background:rgba(201,168,76,.25);}
+.btn-regalar{background:rgba(0,229,255,.08);color:#00e5ff;border:.5px solid rgba(0,229,255,.2);}
+.btn-regalar:hover{background:rgba(0,229,255,.15);}
+.btn-vender{background:rgba(255,77,109,.08);color:#ff4d6d;border:.5px solid rgba(255,77,109,.2);}
+.btn-vender:hover{background:rgba(255,77,109,.15);}
+
+/* ── REGALAR OVERLAY ── */
+#regalo-overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:300;display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px 20px 100px;overflow-y:auto;}
+#regalo-overlay.show{display:flex;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.regalo-close{align-self:flex-end;font-size:20px;cursor:pointer;color:rgba(221,218,240,.4);margin-bottom:16px;}
+
+/* SKIN GRANDE */
+.regalo-skin-hero{text-align:center;margin-bottom:24px;animation:skinGrow .6s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes skinGrow{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.regalo-skin-icon{font-size:80px;display:block;margin-bottom:8px;}
+.regalo-skin-name{font-size:18px;font-weight:700;color:#c9a84c;margin-bottom:4px;}
+.regalo-skin-edition{font-size:11px;color:rgba(221,218,240,.35);}
+
+.regalo-form{width:100%;max-width:360px;}
+.f-label{font-size:11px;color:rgba(221,218,240,.4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px;}
+.f-input{width:100%;background:rgba(255,255,255,.05);border:.5px solid rgba(221,218,240,.12);border-radius:8px;padding:12px 14px;font-family:'Fira Code',monospace;font-size:14px;color:#dddaf0;outline:none;transition:border-color .2s;margin-bottom:14px;}
+.f-input:focus{border-color:rgba(201,168,76,.5);}
+.f-input::placeholder{color:rgba(221,218,240,.2);}
+.f-textarea{width:100%;background:rgba(255,255,255,.05);border:.5px solid rgba(221,218,240,.12);border-radius:8px;padding:12px 14px;font-family:'Fira Code',monospace;font-size:13px;color:#dddaf0;outline:none;resize:none;height:80px;margin-bottom:14px;}
+.f-textarea::placeholder{color:rgba(221,218,240,.2);}
+.btn-enviar-regalo{width:100%;background:#c9a84c;color:#07070f;font-family:'Fira Code',monospace;font-size:15px;font-weight:700;border:none;border-radius:8px;padding:14px;cursor:pointer;margin-bottom:10px;}
+
+/* REGALO ENVIADO */
+#regalo-enviado{display:none;text-align:center;padding:20px 0;}
+#regalo-enviado.show{display:block;}
+.enviado-icon{font-size:60px;margin-bottom:14px;display:block;animation:enviFloat 2s ease-in-out infinite;}
+@keyframes enviFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.enviado-titulo{font-size:18px;font-weight:700;color:#c9a84c;margin-bottom:8px;}
+.enviado-msg{font-size:13px;color:rgba(221,218,240,.45);line-height:1.6;margin-bottom:20px;}
+.btn-wsp-regalo{width:100%;background:rgba(37,211,102,.15);color:#25d366;font-family:'Fira Code',monospace;font-size:14px;font-weight:700;border:.5px solid rgba(37,211,102,.3);border-radius:8px;padding:14px;cursor:pointer;margin-bottom:10px;}
+.btn-cerrar-regalo{width:100%;background:rgba(255,255,255,.06);color:rgba(221,218,240,.5);font-family:'Fira Code',monospace;font-size:13px;border:.5px solid rgba(221,218,240,.12);border-radius:8px;padding:12px;cursor:pointer;}
+
+/* NOTIF CAJA */
+#gift-notif{position:fixed;bottom:76px;left:50%;transform:translateX(-50%) translateY(120px);z-index:150;background:rgba(7,7,15,.97);border:.5px solid rgba(201,168,76,.3);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;min-width:280px;max-width:360px;transition:transform .4s cubic-bezier(.175,.885,.32,1.275);box-shadow:0 4px 24px rgba(0,0,0,.5);}
+#gift-notif.show{transform:translateX(-50%) translateY(0);}
+.gift-notif-icon{font-size:26px;}
+.gift-notif-info{flex:1;}
+.gift-notif-title{font-size:12px;font-weight:700;color:#c9a84c;margin-bottom:2px;}
+.gift-notif-msg{font-size:11px;color:rgba(221,218,240,.45);}
+
+/* ── VENDER ── */
+.vender-wrap{display:flex;flex-direction:column;gap:12px;}
+.vender-card{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;}
+.vender-icon{font-size:28px;flex-shrink:0;}
+.vender-info{flex:1;}
+.vender-name{font-size:13px;font-weight:700;color:#dddaf0;margin-bottom:2px;}
+.vender-meta{font-size:10px;color:rgba(221,218,240,.35);}
+.vender-precio-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.vender-precio-orig{font-size:10px;color:rgba(221,218,240,.3);text-decoration:line-through;}
+.vender-precio-min{font-size:11px;color:#ff4d6d;}
+.precio-input{width:80px;background:rgba(255,255,255,.05);border:.5px solid rgba(255,77,109,.3);border-radius:6px;padding:6px 8px;font-family:'Fira Code',monospace;font-size:12px;color:#dddaf0;outline:none;text-align:center;}
+.btn-publicar{background:rgba(255,77,109,.15);color:#ff4d6d;font-family:'Fira Code',monospace;font-size:10px;font-weight:700;border:.5px solid rgba(255,77,109,.3);border-radius:6px;padding:7px 12px;cursor:pointer;white-space:nowrap;}
+.btn-publicar:hover{background:rgba(255,77,109,.25);}
+.vender-empty{text-align:center;padding:32px 0;font-size:13px;color:rgba(221,218,240,.25);}
+.market-anuncio{background:rgba(255,77,109,.05);border:.5px solid rgba(255,77,109,.15);border-radius:10px;padding:12px;text-align:center;margin-bottom:14px;}
+.market-anuncio-txt{font-size:11px;color:rgba(221,218,240,.4);line-height:1.6;}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;background:rgba(7,7,15,.95);border-top:.5px solid rgba(221,218,240,.08);display:flex;align-items:center;justify-content:space-around;padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:100;backdrop-filter:blur(16px);}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 10px;border-radius:8px;background:none;border:none;font-family:'Fira Code',monospace;transition:all .2s;}
+.nav-btn.active{background:rgba(201,168,76,.08);}
+.nav-icon{font-size:19px;line-height:1;}
+.nav-label{font-size:9px;color:rgba(221,218,240,.35);letter-spacing:.05em;text-transform:uppercase;}
+.nav-btn.active .nav-label,.nav-btn.active .nav-icon{color:#c9a84c;}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="topbar">
+    <div class="back-btn" onclick="navTo('nodo')">←</div>
+    <div class="top-title">market</div>
+    <div class="top-gus">GUS: <span id="gus-disp">50</span></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on"  onclick="swTab('deposita',this)">DEPOSITA</button>
+    <button class="tab"     onclick="swTab('skins',this)">SKINS</button>
+    <button class="tab"     onclick="swTab('regalar',this)">REGALAR</button>
+    <button class="tab"     onclick="swTab('vender',this)">VENDER</button>
+  </div>
+
+  <div class="tab-content" id="tab-content"></div>
+</div>
+
+<!-- REGALO OVERLAY -->
+<div id="regalo-overlay">
+  <div class="regalo-close" onclick="closeRegalo()">✕</div>
+
+  <div id="regalo-form-wrap">
+    <div class="regalo-skin-hero">
+      <span class="regalo-skin-icon" id="rg-icon">🎁</span>
+      <div class="regalo-skin-name" id="rg-name">---</div>
+      <div class="regalo-skin-edition" id="rg-edition">edición #1</div>
+    </div>
+    <div class="regalo-form">
+      <div class="f-label">para quién es</div>
+      <input class="f-input" id="rg-to" placeholder="nombre de usuario o número">
+      <div class="f-label">escribe algo</div>
+      <textarea class="f-textarea" id="rg-msg" placeholder="esto es para ti porque..."></textarea>
+      <button class="btn-enviar-regalo" onclick="enviarRegalo()">enviar regalo</button>
+    </div>
+  </div>
+
+  <div id="regalo-enviado">
+    <span class="enviado-icon">🎁</span>
+    <div class="enviado-titulo">regalo enviado</div>
+    <div class="enviado-msg" id="enviado-msg">---</div>
+    <button class="btn-wsp-regalo" id="btn-wsp-regalo" onclick="shareRegaloWsp()">
+      compartir por WhatsApp
+    </button>
+    <button class="btn-cerrar-regalo" onclick="closeRegalo()">cerrar</button>
+  </div>
+</div>
+
+<!-- NOTIF CAJA -->
+<div id="gift-notif">
+  <div class="gift-notif-icon" id="gn-icon">🎁</div>
+  <div class="gift-notif-info">
+    <div class="gift-notif-title" id="gn-title">recibiste un regalo</div>
+    <div class="gift-notif-msg" id="gn-msg">---</div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-btn" onclick="navTo('nodo')"><span class="nav-icon">◈</span><span class="nav-label">nodo</span></button>
+  <button class="nav-btn" onclick="navTo('misiones')"><span class="nav-icon">⚔</span><span class="nav-label">misiones</span></button>
+  <button class="nav-btn" onclick="navTo('duelo')"><span class="nav-icon">◉</span><span class="nav-label">duelo</span></button>
+  <button class="nav-btn" onclick="navTo('skill')"><span class="nav-icon">◆</span><span class="nav-label">skill tree</span></button>
+</div>
+
+<script>
+const player = JSON.parse(localStorage.getItem('gbt_player')||'{}');
+let gus = parseInt(localStorage.getItem('gbt_gus')||'50');
+document.getElementById('gus-disp').textContent = gus;
+
+// ── SKINS DATA ──
+const SKINS = [
+  {id:'neon',    name:'armadura neón',    icon:'⚡', precio:120, bonus:'duelos +10%',  edicion:1, owned:false},
+  {id:'sabio',   name:'capa del sabio',   icon:'🌙', precio:80,  bonus:'XP ×1.1',      edicion:1, owned:false},
+  {id:'mercader',name:'guantes mercader', icon:'💎', precio:60,  bonus:'GUS ×1.05',    edicion:2, owned:false},
+  {id:'explorer',name:'botas explorador', icon:'🌿', precio:90,  bonus:'misiones +15%',edicion:1, owned:false},
+  {id:'sombra',  name:'manto sombra',     icon:'🌑', precio:150, bonus:'sigilo +20%',  edicion:1, owned:false},
+  {id:'dorado',  name:'escudo dorado',    icon:'🛡', precio:200, bonus:'resistencia +15%',edicion:1,owned:false},
+];
+
+// cargar skins propias
+const ownedSkins = JSON.parse(localStorage.getItem('gbt_owned_skins')||'[]');
+SKINS.forEach(s=>{ if(ownedSkins.includes(s.id)) s.owned=true; });
+
+let currentTab = 'deposita';
+let currentSkin = null;
+let regaloData = null;
+
+function swTab(tab, el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  currentTab = tab;
+  renderTab(tab);
+}
+
+function renderTab(tab){
+  const c = document.getElementById('tab-content');
+  if(tab==='deposita') renderDeposita(c);
+  else if(tab==='skins') renderSkins(c);
+  else if(tab==='regalar') renderRegalar(c);
+  else if(tab==='vender') renderVender(c);
+}
+
+// ── DEPOSITA ──
+function renderDeposita(c){
+  c.innerHTML=`
+    <div class="qr-grid">
+      <div class="qr-card">
+        <div class="qr-box">QR<br>YAPE</div>
+        <div class="qr-label">Yape</div>
+        <div class="qr-handle">somosgambito.oficial</div>
+      </div>
+      <div class="qr-card">
+        <div class="qr-box">QR<br>PLIN</div>
+        <div class="qr-label">Plin</div>
+        <div class="qr-handle">somosgambito.oficial</div>
+      </div>
+    </div>
+    <div class="dep-info">
+      <div class="dep-info-txt">
+        acreditación en menos de 2 minutos<br>
+        boleta al correo registrado<br>
+        mínimo S/ 5.00 · máximo S/ 500.00
+      </div>
+      <div class="dep-rate">1 GUS = S/ 1.00 paridad base</div>
+    </div>
+  `;
+}
+
+// ── SKINS ──
+function renderSkins(c){
+  c.innerHTML=`<div class="skins-grid">${SKINS.map(s=>`
+    <div class="skin-card ${s.owned?'owned':''}">
+      <div class="skin-edition ${s.edicion===1?'first':''}">#${s.edicion}</div>
+      <span class="skin-icon">${s.icon}</span>
+      <div class="skin-name">${s.name}</div>
+      <div class="skin-bonus">${s.bonus}</div>
+      <div class="skin-price ${s.owned?'owned':''}">${s.owned?'// tuya':s.precio+' GUS'}</div>
+      <div class="skin-btns">
+        ${!s.owned?`<div class="skin-btn btn-comprar" onclick="comprarSkin('${s.id}')">comprar</div>`:''}
+        <div class="skin-btn btn-regalar" onclick="abrirRegalo('${s.id}')">regalar</div>
+        ${s.owned?`<div class="skin-btn btn-vender" onclick="irVender('${s.id}')">vender</div>`:''}
+      </div>
+    </div>
+  `).join('')}</div>`;
+}
+
+function comprarSkin(id){
+  const skin = SKINS.find(s=>s.id===id);
+  if(!skin||skin.owned) return;
+  if(gus < skin.precio){ showNotif('🚫','GUS insuficientes','necesitas '+skin.precio+' GUS'); return; }
+  gus -= skin.precio;
+  skin.owned = true;
+  skin.edicion++;
+  ownedSkins.push(id);
+  localStorage.setItem('gbt_gus', gus);
+  localStorage.setItem('gbt_owned_skins', JSON.stringify(ownedSkins));
+  document.getElementById('gus-disp').textContent = gus;
+  showNotif(skin.icon,'skin adquirida',''+skin.name+' es tuya — edición #'+skin.edicion);
+  renderSkins(document.getElementById('tab-content'));
+}
+
+// ── REGALAR ──
+function renderRegalar(c){
+  c.innerHTML=`
+    <div style="font-size:12px;color:rgba(221,218,240,.4);margin-bottom:14px;line-height:1.6;">
+      elige la skin y el destinatario — el regalo llega como una caja digital con tu mensaje
+    </div>
+    <div class="skins-grid">${SKINS.map(s=>`
+      <div class="skin-card">
+        <div class="skin-edition ${s.edicion===1?'first':''}">#${s.edicion}</div>
+        <span class="skin-icon">${s.icon}</span>
+        <div class="skin-name">${s.name}</div>
+        <div class="skin-bonus">${s.bonus}</div>
+        <div class="skin-price">${s.precio} GUS</div>
+        <div class="skin-btns">
+          <div class="skin-btn btn-regalar" onclick="abrirRegalo('${s.id}')">elegir</div>
+        </div>
+      </div>
+    `).join('')}</div>
+  `;
+}
+
+function abrirRegalo(id){
+  currentSkin = SKINS.find(s=>s.id===id);
+  if(!currentSkin) return;
+  document.getElementById('rg-icon').textContent = currentSkin.icon;
+  document.getElementById('rg-name').textContent = currentSkin.name;
+  document.getElementById('rg-edition').textContent = 'edición #'+currentSkin.edicion;
+  document.getElementById('rg-to').value = '';
+  document.getElementById('rg-msg').value = '';
+  document.getElementById('regalo-form-wrap').style.display = 'block';
+  document.getElementById('regalo-enviado').classList.remove('show');
+  document.getElementById('regalo-overlay').classList.add('show');
+}
+
+function enviarRegalo(){
+  const to = document.getElementById('rg-to').value.trim();
+  const msg = document.getElementById('rg-msg').value.trim();
+  if(!to) return;
+  regaloData = {skin:currentSkin, to, msg};
+
+  // incrementar edición (la skin cambia de dueño)
+  currentSkin.edicion++;
+  localStorage.setItem('gbt_skin_editions', JSON.stringify(
+    SKINS.reduce((acc,s)=>({...acc,[s.id]:s.edicion}),{})
+  ));
+
+  document.getElementById('regalo-form-wrap').style.display = 'none';
+  const enviado = document.getElementById('regalo-enviado');
+  document.getElementById('enviado-msg').innerHTML =
+    `${currentSkin.icon} <strong>${currentSkin.name}</strong> va en camino a <strong>${to}</strong><br>`+
+    (msg?`<em>"${msg}"</em><br>`:'')+'<br>'+
+    `ahora es la edición <strong>#${currentSkin.edicion}</strong> — cada dueño suma al valor`;
+  enviado.classList.add('show');
+
+  // notif al receptor (simulada)
+  setTimeout(()=>{
+    showNotif(currentSkin.icon, to+' recibió '+currentSkin.name, msg||'un regalo de '+( player.avName||'gamb1t0'));
+  }, 800);
+}
+
+function shareRegaloWsp(){
+  if(!regaloData) return;
+  const {skin,to,msg} = regaloData;
+  const txt = encodeURIComponent(
+    `🎁 te envío la skin *${skin.name}* (edición #${skin.edicion}) en gamb1t0_\n`+
+    (msg?`"${msg}"\n`:'')+
+    `\n— ${player.avName||'un jugador de gamb1t0_'}\n\n`+
+    `#somosgambito #giforce\ndemo.somosgambito.com`
+  );
+  window.open('https://wa.me/?text='+txt,'_blank');
+}
+
+function closeRegalo(){
+  document.getElementById('regalo-overlay').classList.remove('show');
+  regaloData = null;
+}
+
+// ── VENDER ──
+function renderVender(c){
+  const owned = SKINS.filter(s=>s.owned);
+  const listed = JSON.parse(localStorage.getItem('gbt_listed_skins')||'[]');
+
+  c.innerHTML=`
+    <div class="market-anuncio">
+      <div class="market-anuncio-txt">
+        precio libre · mínimo 60% del valor original<br>
+        cuando alguien compra, los GUS llegan a tu cuenta al instante
+      </div>
+    </div>
+  `;
+
+  if(!owned.length){
+    c.innerHTML+=`<div class="vender-empty">// aún no tienes skins para vender<br><span style="font-size:11px">compra o recibe una primero</span></div>`;
+    return;
+  }
+
+  const wrap = document.createElement('div');
+  wrap.className = 'vender-wrap';
+
+  owned.forEach(s=>{
+    const isListed = listed.includes(s.id);
+    const minPrecio = Math.ceil(s.precio*.6);
+    const row = document.createElement('div');
+    row.className = 'vender-card';
+    row.innerHTML=`
+      <div class="vender-icon">${s.icon}</div>
+      <div class="vender-info">
+        <div class="vender-name">${s.name} <span style="font-size:10px;color:rgba(221,218,240,.3)">ed.#${s.edicion}</span></div>
+        <div class="vender-meta">${s.bonus}</div>
+      </div>
+      <div class="vender-precio-wrap">
+        <div class="vender-precio-orig">${s.precio} GUS original</div>
+        <div class="vender-precio-min">mín. ${minPrecio} GUS</div>
+        ${isListed
+          ? `<div style="font-size:10px;color:#00c896;padding:4px 0;">// publicada</div>`
+          : `<input class="precio-input" id="precio-${s.id}" type="number" placeholder="${minPrecio}" min="${minPrecio}">
+             <button class="btn-publicar" onclick="publicarVenta('${s.id}',${minPrecio})">publicar</button>`
+        }
+      </div>
+    `;
+    wrap.appendChild(row);
+  });
+
+  c.appendChild(wrap);
+
+  if(listed.length){
+    const listadas = document.createElement('div');
+    listadas.innerHTML=`
+      <div style="font-size:10px;color:rgba(221,218,240,.25);letter-spacing:.1em;text-transform:uppercase;margin:16px 0 10px;">// publicadas en el market</div>
+      ${listed.map(id=>{
+        const s=SKINS.find(x=>x.id===id);
+        return s?`<div style="font-size:12px;color:rgba(221,218,240,.4);padding:8px 0;border-bottom:.5px solid rgba(221,218,240,.06);">${s.icon} ${s.name} — en venta</div>`:'';
+      }).join('')}
+    `;
+    c.appendChild(listadas);
+  }
+}
+
+function publicarVenta(id, minPrecio){
+  const input = document.getElementById('precio-'+id);
+  const precio = parseInt(input?.value)||0;
+  if(precio < minPrecio){ showNotif('🚫','precio muy bajo','mínimo '+minPrecio+' GUS'); return; }
+  const listed = JSON.parse(localStorage.getItem('gbt_listed_skins')||'[]');
+  if(!listed.includes(id)) listed.push(id);
+  localStorage.setItem('gbt_listed_skins', JSON.stringify(listed));
+  showNotif('◆','skin publicada','aparece en el market por '+precio+' GUS');
+  renderVender(document.getElementById('tab-content'));
+}
+
+function irVender(id){
+  const tab = document.querySelector('.tab:nth-child(4)');
+  swTab('vender', tab);
+}
+
+// ── NOTIF ──
+function showNotif(icon, title, msg){
+  document.getElementById('gn-icon').textContent = icon;
+  document.getElementById('gn-title').textContent = title;
+  document.getElementById('gn-msg').textContent = msg;
+  const n = document.getElementById('gift-notif');
+  n.classList.add('show');
+  setTimeout(()=>n.classList.remove('show'), 4000);
+}
+
+// ── NAV ──
+function navTo(dest){
+  const routes={nodo:'p06_tablero.html',misiones:'p07_misiones.html',duelo:'p08_duelo.html',skill:'p09_skill.html',market:'p10_market.html',universo:'p11_universo.html'};
+  document.body.style.transition='opacity .25s';document.body.style.opacity='0';
+  setTimeout(()=>{ window.location.href=routes[dest]||'p06_tablero.html'; },260);
+}
+
+// ── INIT ──
+renderTab('deposita');
+</script>
+</body>
+</html>
