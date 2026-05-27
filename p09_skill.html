@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>gamb1t0_ · skill tree</title>
+<link rel="icon" href="img/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Code','Courier New',monospace;overflow:hidden;}
+
+.page{position:fixed;inset:0;display:none;flex-direction:column;}
+.page.active{display:flex;}
+
+/* NODO BG — fondo del nodo personalizado */
+#nodo-bg-skill{position:fixed;inset:0;z-index:0;opacity:.6;transition:opacity 1s;}
+#nodo-bg-skill canvas{position:absolute;inset:0;width:100%;height:100%;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;gap:12px;padding:14px 16px 10px;border-bottom:.5px solid rgba(221,218,240,.08);flex-shrink:0;z-index:10;position:relative;background:rgba(7,7,15,.7);backdrop-filter:blur(8px);}
+.back-btn{font-size:20px;cursor:pointer;color:rgba(221,218,240,.4);padding:4px 8px 4px 0;}
+.back-btn:hover{color:#c9a84c;}
+.top-title{font-size:15px;font-weight:700;}
+.top-stats{margin-left:auto;display:flex;gap:10px;font-size:11px;}
+.top-stat{color:rgba(221,218,240,.4);}
+.top-stat span{font-weight:700;}
+.top-stat.xp span{color:#7f6af0;}
+.top-stat.lvl span{color:#c9a84c;}
+
+/* ACTIVAR */
+#p-activar{align-items:center;justify-content:center;padding:32px 24px 80px;}
+.activar-wrap{width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1;}
+.gi-row{display:flex;gap:12px;align-items:flex-start;width:100%;margin-bottom:24px;}
+.gi-av{width:44px;height:44px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(0,229,255,.4);flex-shrink:0;background:rgba(0,229,255,.1);}
+.gi-bubble{background:rgba(0,229,255,.07);border:.5px solid rgba(0,229,255,.18);border-radius:0 12px 12px 12px;padding:13px 16px;font-size:15px;color:#dddaf0;line-height:1.65;flex:1;}
+.meta-input{width:100%;background:rgba(7,7,15,.8);border:.5px solid rgba(127,106,240,.3);border-radius:10px;padding:14px 16px;font-family:'Fira Code',monospace;font-size:15px;color:#dddaf0;outline:none;transition:border-color .2s;margin-bottom:14px;backdrop-filter:blur(8px);}
+.meta-input:focus{border-color:#7f6af0;}
+.meta-input::placeholder{color:rgba(221,218,240,.2);}
+.ejemplos-label{font-size:10px;color:rgba(221,218,240,.25);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;align-self:flex-start;}
+.ejemplos-grid{display:flex;flex-wrap:wrap;gap:8px;width:100%;margin-bottom:24px;}
+.ej-btn{background:rgba(127,106,240,.08);border:.5px solid rgba(127,106,240,.2);border-radius:20px;padding:7px 14px;font-family:'Fira Code',monospace;font-size:12px;color:rgba(127,106,240,.8);cursor:pointer;transition:all .2s;}
+.ej-btn:hover{background:rgba(127,106,240,.18);color:#7f6af0;}
+.btn-activar{width:100%;background:#7f6af0;color:#fff;font-family:'Fira Code',monospace;font-size:16px;font-weight:700;border:none;border-radius:8px;padding:16px;cursor:pointer;transition:opacity .2s,transform .1s;}
+.btn-activar:hover{opacity:.9;}
+.btn-activar:disabled{opacity:.3;cursor:not-allowed;}
+
+/* ÁRBOL */
+#p-arbol{flex-direction:column;}
+.arbol-header{padding:8px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:.5px solid rgba(221,218,240,.06);flex-shrink:0;background:rgba(7,7,15,.6);backdrop-filter:blur(8px);position:relative;z-index:5;}
+.arbol-meta{font-size:12px;color:#7f6af0;font-weight:700;}
+.arbol-reset{font-size:11px;color:rgba(221,218,240,.3);cursor:pointer;padding:4px 8px;border:.5px solid rgba(221,218,240,.1);border-radius:6px;}
+.canvas-wrap{flex:1;position:relative;overflow:hidden;z-index:1;}
+#tree-canvas{position:absolute;inset:0;width:100%;height:100%;}
+
+/* PANEL NODO */
+#nodo-panel{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);
+  width:100%;max-width:440px;
+  background:rgba(10,10,20,.97);border-top:.5px solid rgba(127,106,240,.3);
+  border-radius:20px 20px 0 0;padding:20px 20px 100px;
+  transition:transform .4s cubic-bezier(.175,.885,.32,1.275);
+  z-index:50;max-height:80vh;overflow-y:auto;
+  backdrop-filter:blur(16px);
+}
+#nodo-panel.open{transform:translateX(-50%) translateY(0);}
+.panel-handle{width:36px;height:4px;background:rgba(221,218,240,.15);border-radius:2px;margin:0 auto 16px;}
+.panel-close{position:absolute;top:16px;right:16px;font-size:18px;cursor:pointer;color:rgba(221,218,240,.3);}
+.panel-nodo-name{font-size:18px;font-weight:700;color:#7f6af0;margin-bottom:4px;}
+.panel-rama{font-size:11px;color:rgba(221,218,240,.35);margin-bottom:8px;}
+.panel-diff{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:3px 10px;border-radius:10px;margin-bottom:12px;}
+.diff-easy{background:rgba(0,200,150,.1);color:#00c896;border:.5px solid rgba(0,200,150,.2);}
+.diff-med{background:rgba(201,168,76,.1);color:#c9a84c;border:.5px solid rgba(201,168,76,.2);}
+.diff-hard{background:rgba(255,77,109,.1);color:#ff4d6d;border:.5px solid rgba(255,77,109,.2);}
+.panel-desc{font-size:13px;color:rgba(221,218,240,.55);line-height:1.65;margin-bottom:14px;}
+.panel-rewards{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.panel-badge{font-size:11px;padding:4px 10px;border-radius:6px;}
+.panel-xp{background:rgba(127,106,240,.12);color:#7f6af0;border:.5px solid rgba(127,106,240,.2);}
+.panel-gus{background:rgba(201,168,76,.1);color:#c9a84c;border:.5px solid rgba(201,168,76,.2);}
+.panel-tasks{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.panel-task{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;background:rgba(255,255,255,.03);border-radius:8px;cursor:pointer;transition:all .2s;}
+.panel-task:hover{background:rgba(255,255,255,.06);}
+.panel-task.done{opacity:.5;}
+.ptask-check{width:20px;height:20px;min-width:20px;border-radius:50%;border:.5px solid rgba(221,218,240,.2);display:flex;align-items:center;justify-content:center;font-size:10px;margin-top:1px;}
+.panel-task.done .ptask-check{background:#00c896;border-color:#00c896;color:#07070f;}
+.ptask-txt{font-size:12px;color:#dddaf0;flex:1;line-height:1.5;}
+.ptask-plus{font-size:10px;color:rgba(221,218,240,.3);margin-top:2px;}
+.panel-task.done .ptask-txt{text-decoration:line-through;color:rgba(221,218,240,.4);}
+.btn-completar-nodo{width:100%;background:#7f6af0;color:#fff;font-family:'Fira Code',monospace;font-size:14px;font-weight:700;border:none;border-radius:8px;padding:14px;cursor:pointer;margin-bottom:10px;}
+.btn-completar-nodo:disabled{opacity:.3;cursor:not-allowed;}
+.btn-share-wsp{width:100%;background:rgba(37,211,102,.12);color:#25d366;font-family:'Fira Code',monospace;font-size:13px;border:.5px solid rgba(37,211,102,.3);border-radius:8px;padding:12px;cursor:pointer;display:none;}
+.btn-share-wsp.show{display:block;}
+
+/* LOGRO OVERLAY */
+#logro-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px;}
+#logro-overlay.show{display:flex;animation:logroIn .5s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes logroIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+.logro-icon{font-size:72px;margin-bottom:16px;animation:logroFloat 2s ease-in-out infinite;}
+@keyframes logroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.logro-titulo{font-size:12px;color:rgba(221,218,240,.4);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;}
+.logro-nombre{font-size:24px;font-weight:700;color:#7f6af0;margin-bottom:6px;text-align:center;}
+.logro-rama{font-size:12px;color:rgba(221,218,240,.35);margin-bottom:20px;}
+.logro-rewards{display:flex;gap:12px;margin-bottom:24px;}
+.logro-reward{padding:10px 20px;border-radius:8px;font-size:14px;font-weight:700;text-align:center;}
+.logro-xp{background:rgba(127,106,240,.15);color:#7f6af0;border:.5px solid rgba(127,106,240,.3);}
+.logro-gus{background:rgba(201,168,76,.12);color:#c9a84c;border:.5px solid rgba(201,168,76,.25);}
+.logro-btns{display:flex;flex-direction:column;gap:10px;width:100%;max-width:280px;}
+.btn-logro-wsp{background:rgba(37,211,102,.15);color:#25d366;font-family:'Fira Code',monospace;font-size:14px;font-weight:700;border:.5px solid rgba(37,211,102,.3);border-radius:8px;padding:14px;cursor:pointer;}
+.btn-logro-close{background:rgba(255,255,255,.06);color:rgba(221,218,240,.6);font-family:'Fira Code',monospace;font-size:13px;border:.5px solid rgba(221,218,240,.12);border-radius:8px;padding:12px;cursor:pointer;}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;background:rgba(7,7,15,.92);border-top:.5px solid rgba(221,218,240,.08);display:flex;align-items:center;justify-content:space-around;padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:100;backdrop-filter:blur(16px);}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 10px;border-radius:8px;background:none;border:none;font-family:'Fira Code',monospace;transition:all .2s;}
+.nav-btn.active{background:rgba(127,106,240,.1);}
+.nav-icon{font-size:19px;line-height:1;}
+.nav-label{font-size:9px;color:rgba(221,218,240,.35);letter-spacing:.05em;text-transform:uppercase;}
+.nav-btn.active .nav-label,.nav-btn.active .nav-icon{color:#7f6af0;}
+</style>
+</head>
+<body>
+
+<!-- FONDO DEL NODO -->
+<div id="nodo-bg-skill"><canvas id="bg-canvas"></canvas></div>
+
+<!-- PÁGINA ACTIVAR -->
+<div class="page active" id="p-activar">
+  <div class="topbar">
+    <div class="back-btn" onclick="navTo('nodo')">←</div>
+    <div class="top-title">skill tree</div>
+    <div class="top-stats">
+      <div class="top-stat xp">XP <span id="xp-disp">100</span></div>
+      <div class="top-stat lvl">nv <span id="lvl-disp">1</span></div>
+    </div>
+  </div>
+  <div style="flex:1;overflow-y:auto;display:flex;align-items:center;justify-content:center;padding:24px 24px 80px;position:relative;z-index:1;">
+  <div class="activar-wrap">
+    <div class="gi-row">
+      <img src="img/gi_face.jpg" alt="gi" class="gi-av" onerror="this.style.background='rgba(0,229,255,.2)';this.removeAttribute('src')">
+      <div class="gi-bubble">¿qué quieres lograr?<br><span style="font-size:12px;color:rgba(221,218,240,.4);">escríbelo — tu árbol crece desde ahí</span></div>
+    </div>
+    <input class="meta-input" id="meta-input" placeholder="quiero ser futbolista profesional..." maxlength="80" oninput="checkMeta()">
+    <div class="ejemplos-label">// ejemplos para empezar</div>
+    <div class="ejemplos-grid">
+      <div class="ej-btn" onclick="setMeta('quiero ser futbolista profesional')">⚽ futbolista</div>
+      <div class="ej-btn" onclick="setMeta('quiero emprender mi propio negocio')">🚀 emprendedor</div>
+      <div class="ej-btn" onclick="setMeta('quiero aprender a tocar guitarra')">🎸 músico</div>
+      <div class="ej-btn" onclick="setMeta('quiero aprender inglés fluido')">🌐 inglés</div>
+      <div class="ej-btn" onclick="setMeta('quiero ser mejor estudiante')">📚 estudios</div>
+      <div class="ej-btn" onclick="setMeta('quiero mejorar mi condición física')">💪 físico</div>
+    </div>
+    <button class="btn-activar" id="btn-activar" onclick="activarArbol()" disabled>activar mi árbol</button>
+  </div>
+  </div>
+</div>
+
+<!-- PÁGINA ÁRBOL -->
+<div class="page" id="p-arbol">
+  <div class="topbar">
+    <div class="back-btn" onclick="showPage('p-activar')">←</div>
+    <div class="top-title" id="arbol-titulo">mi árbol</div>
+    <div class="top-stats">
+      <div class="top-stat xp">XP <span id="xp-disp2">100</span></div>
+      <div class="top-stat lvl">nv <span id="lvl-disp2">1</span></div>
+    </div>
+  </div>
+  <div class="arbol-header">
+    <div class="arbol-meta" id="arbol-meta-label">---</div>
+    <div class="arbol-reset" onclick="resetArbol()">cambiar meta</div>
+  </div>
+  <div class="canvas-wrap"><canvas id="tree-canvas"></canvas></div>
+</div>
+
+<!-- PANEL NODO -->
+<div id="nodo-panel">
+  <div class="panel-close" onclick="closePanel()">✕</div>
+  <div class="panel-handle"></div>
+  <div class="panel-nodo-name" id="panel-name">---</div>
+  <div class="panel-rama" id="panel-rama">---</div>
+  <div class="panel-diff" id="panel-diff"></div>
+  <div class="panel-desc" id="panel-desc">---</div>
+  <div class="panel-rewards" id="panel-rewards"></div>
+  <div class="panel-tasks" id="panel-tasks"></div>
+  <button class="btn-completar-nodo" id="btn-completar-nodo" onclick="completarNodo()">completar nodo</button>
+  <button class="btn-share-wsp" id="btn-share-panel" onclick="shareLogroWsp()">compartir logro por WhatsApp</button>
+</div>
+
+<!-- LOGRO OVERLAY -->
+<div id="logro-overlay">
+  <div class="logro-icon" id="logro-icon">⭐</div>
+  <div class="logro-titulo">// logro desbloqueado</div>
+  <div class="logro-nombre" id="logro-nombre">---</div>
+  <div class="logro-rama" id="logro-rama">---</div>
+  <div class="logro-rewards">
+    <div class="logro-reward logro-xp" id="logro-xp">+0 XP</div>
+    <div class="logro-reward logro-gus" id="logro-gus">+0 GUS</div>
+  </div>
+  <div class="logro-btns">
+    <button class="btn-logro-wsp" onclick="shareLogroWsp()">compartir con mis seres queridos</button>
+    <button class="btn-logro-close" onclick="closeLogro()">continuar</button>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-btn" onclick="navTo('nodo')"><span class="nav-icon">◈</span><span class="nav-label">nodo</span></button>
+  <button class="nav-btn" onclick="navTo('misiones')"><span class="nav-icon">⚔</span><span class="nav-label">misiones</span></button>
+  <button class="nav-btn" onclick="navTo('duelo')"><span class="nav-icon">◉</span><span class="nav-label">duelo</span></button>
+  <button class="nav-btn active"><span class="nav-icon">◆</span><span class="nav-label">skill tree</span></button>
+</div>
+
+<script>
+// ── ÁRBOLES PREFABRICADOS ──
+const ARBOLES = {
+  futbol:{color:'#ff4d6d',label:'futbolista',ramas:[
+    {name:'condición física',color:'#ff4d6d',nodos:[
+      {name:'resistencia base',diff:'fácil',xp:60,gus:20,
+       desc:'20 minutos de cardio sin parar — el cuerpo aprende lo que le enseñas cada día',
+       tasks:[
+         {t:'correr 20 min sin parar',plus:'graba tu tiempo — en 2 semanas lo comparas'},
+         {t:'stretching post-entreno 10 min',plus:'los pros se lesionan menos porque estiran más'},
+         {t:'comparte tu primera marca con #somosgambito',plus:'+5 GUS extra por compartir'},
+       ]},
+      {name:'fuerza explosiva',diff:'medio',xp:90,gus:35,
+       desc:'sentadillas, saltos, sprints — el poder que separa al jugador amateur del profesional',
+       tasks:[
+         {t:'20 sentadillas + 10 saltos explosivos',plus:'descansa 60 seg entre series — no más'},
+         {t:'3 sprints de 30 metros al máximo',plus:'cronometra — deberías mejorar cada semana'},
+         {t:'comparte tu circuito por WhatsApp con un amigo',plus:'invitar a alguien dobla el compromiso'},
+       ]},
+      {name:'resistencia élite',diff:'difícil',xp:140,gus:60,locked:true,
+       desc:'45 minutos de intensidad sostenida — aquí empieza la diferencia real',
+       tasks:[
+         {t:'45 min de entrenamiento sin pausas largas',plus:'el dolor en el minuto 30 es donde crecen los pros'},
+         {t:'registrar frecuencia cardíaca antes y después',plus:'la recuperación rápida es señal de progreso'},
+         {t:'video de tu entrenamiento para tus seres queridos',plus:'que vean en qué inviertes tu tiempo'},
+       ]},
+    ]},
+    {name:'técnica',color:'#c9a84c',nodos:[
+      {name:'control de balón',diff:'fácil',xp:60,gus:20,
+       desc:'30 minutos de técnica individual — el balón es una extensión de tu cuerpo, no un objeto',
+       tasks:[
+         {t:'100 toques alternando pies sin que caiga',plus:'si cae antes de 100 vuelves a 0 — así aprenden los pros'},
+         {t:'control con pecho + muslo en 20 repeticiones',plus:'graba los últimos 5 para ver tu postura'},
+         {t:'comparte tu mejor secuencia con #giforce',plus:'la comunidad te va a retar a mejorarla'},
+       ]},
+      {name:'visión de juego',diff:'medio',xp:90,gus:35,
+       desc:'ver el partido antes de que pase — el jugador inteligente llega antes que el balón',
+       tasks:[
+         {t:'ver 1 partido completo de tu posición favorita',plus:'no el equipo — sigue a 1 jugador todo el partido'},
+         {t:'anotar 3 decisiones clave que tomó ese jugador',plus:'¿por qué giró allí? ¿por qué pasó y no disparó?'},
+         {t:'explicárselas a alguien que no sabe de fútbol',plus:'si lo puedes explicar simple, lo entendiste de verdad'},
+       ]},
+      {name:'precisión de tiro',diff:'difícil',xp:120,gus:50,locked:true,
+       desc:'el gol es consecuencia — 50 tiros al arco con intención, no al azar',
+       tasks:[
+         {t:'25 tiros pierna dominante — anotar cuántos entran',plus:'el número honesto es el punto de partida'},
+         {t:'25 tiros pierna débil — sin excusas',plus:'Messi entrenó su derecha aunque todos decían que no era necesario'},
+         {t:'compartir tu porcentaje de efectividad con #somosgambito',plus:'la transparencia construye credibilidad'},
+       ]},
+    ]},
+    {name:'mentalidad',color:'#7f6af0',nodos:[
+      {name:'disciplina diaria',diff:'fácil',xp:50,gus:15,
+       desc:'los pros no esperan motivación — actúan igual sin ella — ese es el secreto',
+       tasks:[
+         {t:'entrenar aunque no tengas ganas — documentarlo',plus:'escribe "hoy no quería pero lo hice" — eso vale más que cualquier trofeo'},
+         {t:'dormir 8 horas 3 noches consecutivas',plus:'el 80% de la recuperación muscular ocurre mientras duermes'},
+         {t:'enviarle a alguien cercano lo que lograste hoy',plus:'decirlo en voz alta multiplica el compromiso'},
+       ]},
+      {name:'resiliencia',diff:'medio',xp:80,gus:30,
+       desc:'caer y levantarse más rápido — cada error es información, no un veredicto',
+       tasks:[
+         {t:'documentar tu peor entrenamiento de la semana',plus:'sin filtros — qué salió mal y por qué'},
+         {t:'escribir qué harías diferente mañana',plus:'la reflexión convierte el error en ventaja'},
+         {t:'compartir la lección aprendida con un amigo',plus:'enseñar lo que aprendiste es la mejor forma de fijarlo'},
+       ]},
+      {name:'liderazgo en cancha',diff:'difícil',xp:110,gus:45,locked:true,
+       desc:'el capitán no grita — organiza — conecta a su equipo sin perder el foco',
+       tasks:[
+         {t:'liderar un ejercicio de equipo o grupo',plus:'la autoridad real no se pide — se gana siendo el primero en hacer'},
+         {t:'dar feedback constructivo a un compañero',plus:'hazlo en privado, con respeto — como quisieras recibirlo tú'},
+         {t:'recibir feedback sin defenderte — escuchar completo',plus:'el jugador que no puede recibir crítica tiene un techo bajo'},
+       ]},
+    ]},
+  ]},
+  emprendedor:{color:'#00c896',label:'emprendedor',ramas:[
+    {name:'idea',color:'#00c896',nodos:[
+      {name:'problema real',diff:'fácil',xp:60,gus:20,
+       desc:'todo negocio nace de un problema — el tuyo ya está en tu entorno, solo hay que verlo',
+       tasks:[
+         {t:'listar 5 problemas que ves en tu día a día',plus:'no busques ideas grandes — busca molestias pequeñas que se repiten'},
+         {t:'elegir el más urgente y escribir por qué tú',plus:'¿por qué estás tú en posición única para resolverlo?'},
+         {t:'compartir la idea con alguien de confianza y escuchar sin defenderte',plus:'la primera reacción honesta vale más que 10 horas de investigación'},
+       ]},
+      {name:'propuesta de valor',diff:'medio',xp:80,gus:30,
+       desc:'¿por qué tú y no otro? — una oración que lo explique todo',
+       tasks:[
+         {t:'escribir tu propuesta en exactamente 1 oración',plus:'si necesitas más de una oración, aún no está claro'},
+         {t:'explicársela a alguien que no sabe nada del tema',plus:'si entienden en 30 segundos, la tienes — si preguntan mucho, vuelve a trabajarla'},
+         {t:'compartirla por WhatsApp con tu red cercana y pedir 1 cosa: ¿lo usarías?',plus:'la respuesta honesta de 5 personas vale más que cualquier encuesta formal'},
+       ]},
+      {name:'modelo de negocio',diff:'difícil',xp:120,gus:50,locked:true,
+       desc:'¿cómo ganas dinero? — el mapa completo de tu emprendimiento en 1 página',
+       tasks:[
+         {t:'completar un canvas básico de 9 bloques',plus:'no tiene que ser perfecto — tiene que ser honesto'},
+         {t:'identificar quién es tu cliente más específico',plus:'no "jóvenes de 15-25" — sino "Martín, 17, de Los Olivos, que quiere X"'},
+         {t:'definir cómo cobras y cuánto — sin miedo al número',plus:'compartirlo con tu mentor o adulto de confianza'},
+       ]},
+    ]},
+    {name:'ejecución',color:'#c9a84c',nodos:[
+      {name:'primer prototipo',diff:'fácil',xp:80,gus:35,
+       desc:'hecho es mejor que perfecto — lanza algo en 48 horas aunque sea feo',
+       tasks:[
+         {t:'definir la versión más simple posible',plus:'quita todo lo que no sea absolutamente necesario para probar la idea'},
+         {t:'construirla en 48 horas — no más',plus:'el reloj es parte del ejercicio — aprende a ejecutar con restricciones'},
+         {t:'mostrársela a alguien real y grabar su reacción',plus:'la cara de la persona en los primeros 10 segundos dice más que cualquier feedback verbal'},
+       ]},
+      {name:'primeros usuarios',diff:'medio',xp:100,gus:45,
+       desc:'10 usuarios reales valen más que 1000 seguidores — consíguelos',
+       tasks:[
+         {t:'hacer 10 conversaciones de 10 minutos con posibles usuarios',plus:'escucha 80%, habla 20% — las preguntas abiertas dan más info'},
+         {t:'conseguir 3 personas que usen lo que construiste',plus:'no fans — usuarios reales que lo usen sin que estés presente'},
+         {t:'documentar el feedback y compartirlo en Discord de gamb1t0',plus:'la comunidad puede ayudarte a resolver problemas que no ves'},
+       ]},
+      {name:'primera venta',diff:'difícil',xp:150,gus:70,locked:true,
+       desc:'hasta que alguien paga, es solo una idea — la primera venta cambia todo',
+       tasks:[
+         {t:'fijar un precio — aunque creas que es muy alto o muy bajo',plus:'el precio incómodo es generalmente el correcto'},
+         {t:'hacer la oferta a alguien que no sea tu familia',plus:'la venta a conocidos no cuenta — necesitas un extraño'},
+         {t:'cerrar la venta o documentar exactamente por qué no compró',plus:'ambos resultados son valiosos — compartir el aprendizaje con #somosgambito'},
+       ]},
+    ]},
+    {name:'mentalidad',color:'#7f6af0',nodos:[
+      {name:'tolerancia al error',diff:'fácil',xp:50,gus:15,
+       desc:'el emprendedor promedio falla varias veces antes de ganar — empieza a contar los tuyos',
+       tasks:[
+         {t:'documentar 1 error de esta semana sin excusas',plus:'sin "pero" — solo qué pasó y qué decidiste'},
+         {t:'escribir qué aprendiste y qué cambiarías',plus:'el error sin reflexión es solo dolor — con reflexión es ventaja'},
+         {t:'compartirlo con alguien que te inspire',plus:'la vulnerabilidad bien usada construye confianza real'},
+       ]},
+      {name:'pitch de 60 segundos',diff:'medio',xp:80,gus:35,
+       desc:'si no puedes explicarlo en 60 segundos, no lo entiendes tú mismo',
+       tasks:[
+         {t:'escribir tu pitch de exactamente 60 segundos',plus:'cronométralo — ni 55 ni 65 — 60'},
+         {t:'practicarlo en voz alta frente al espejo 5 veces',plus:'el espejo no miente — la postura, los ojos, la voz'},
+         {t:'grabarte y enviárselo a alguien de confianza por WhatsApp',plus:'pedir 1 sola cosa: ¿invertirías? — respuesta honesta'},
+       ]},
+      {name:'red de valor',diff:'difícil',xp:100,gus:45,locked:true,
+       desc:'tu red es tu activo más valioso — construirla con intención, no por accidente',
+       tasks:[
+         {t:'conectar con 1 persona que admires fuera de tu círculo',plus:'no pidas nada — primero da algo de valor'},
+         {t:'tener 1 conversación de 20 minutos que no sea small talk',plus:'preguntas reales sobre su historia, sus errores, sus aprendizajes'},
+         {t:'presentarles a dos personas de tu red que deberían conocerse',plus:'el conector tiene más valor que el experto'},
+       ]},
+    ]},
+  ]},
+  guitarra:{color:'#00e5ff',label:'músico',ramas:[
+    {name:'técnica',color:'#00e5ff',nodos:[
+      {name:'las notas',diff:'fácil',xp:50,gus:15,
+       desc:'el alfabeto de la música — sin esto nada de lo demás tiene sentido',
+       tasks:[
+         {t:'memorizar las 6 cuerdas en orden: Mi La Re Sol Si Mi',plus:'inventa una frase con las iniciales — así lo recuerdas siempre'},
+         {t:'tocar do re mi fa sol la si sin mirar los dedos',plus:'lento y limpio — la velocidad viene sola después'},
+         {t:'grabar 30 segundos y enviárselo a alguien cercano',plus:'el orgullo de mostrar el primer logro real es parte del proceso'},
+       ]},
+      {name:'tus primeros acordes',diff:'medio',xp:80,gus:30,
+       desc:'con 4 acordes se tocan miles de canciones — mástralos antes de querer más',
+       tasks:[
+         {t:'aprender La menor y Re mayor sin mirar tutorial',plus:'la memoria muscular requiere repetición — 20 veces cada uno'},
+         {t:'tocar una canción completa con 2 acordes',plus:'busca "canciones con 2 acordes guitarra" — hay cientos'},
+         {t:'tocarla para alguien — aunque sea 1 minuto',plus:'la primera vez frente a alguien es un salto de nivel real'},
+       ]},
+      {name:'velocidad y limpieza',diff:'difícil',xp:110,gus:45,locked:true,
+       desc:'lento y limpio antes que rápido y sucio — la técnica es para siempre',
+       tasks:[
+         {t:'ejercicio de velocidad progresiva: empezar muy lento e ir subiendo',plus:'usa un metrónomo — el tempo honesto revela los errores que no escuchas'},
+         {t:'grabar y escuchar sin editar — identificar 3 cosas a mejorar',plus:'los mejores músicos son sus críticos más honestos'},
+         {t:'compartir el progreso con #somosgambito y pedir feedback',plus:'la comunidad musical es generosa con quien muestra el proceso'},
+       ]},
+    ]},
+    {name:'oído musical',color:'#c9a84c',nodos:[
+      {name:'escucha activa',diff:'fácil',xp:50,gus:15,
+       desc:'un músico escucha diferente al resto — identifica lo que los demás solo sienten',
+       tasks:[
+         {t:'escuchar 1 canción 3 veces seguidas con ojos cerrados',plus:'primera vez: disfruta. Segunda: identifica instrumentos. Tercera: sigue la melodía principal'},
+         {t:'tararear la melodía principal sin la canción sonando',plus:'si puedes tararearla, tu oído ya la internalizó'},
+         {t:'describir la canción en 3 palabras y enviárselas al artista en redes',plus:'conectar con artistas que admiras siempre vale'},
+       ]},
+      {name:'copiar a tu ídolo',diff:'medio',xp:90,gus:35,
+       desc:'todos los grandes músicos copiaron primero — es el camino, no el atajo',
+       tasks:[
+         {t:'elegir 1 canción de tu ídolo y aprender el intro',plus:'el intro es la firma del artista — dominarlo es un homenaje'},
+         {t:'tocarla completa de memoria sin partitura',plus:'de memoria significa que ya es tuya'},
+         {t:'grabar una versión y enviársela a alguien que también le guste ese artista',plus:'compartir música con quien la siente igual crea vínculos reales'},
+       ]},
+      {name:'improvisar',diff:'difícil',xp:130,gus:55,locked:true,
+       desc:'cuando ya no necesitas pensar — solo sientes y tocas — ahí empieza el arte',
+       tasks:[
+         {t:'improvisar 2 minutos sobre una base de YouTube',plus:'busca "backing track guitarra" — hay miles en cualquier estilo'},
+         {t:'grabar la improvisación sin editar ni borrar',plus:'la imperfección es parte de la voz — no la escondas'},
+         {t:'compartirla con #somosgambito #giforce',plus:'la comunidad te dará perspectiva que el espejo no puede'},
+       ]},
+    ]},
+    {name:'performance',color:'#ff4d6d',nodos:[
+      {name:'primera actuación',diff:'fácil',xp:80,gus:35,
+       desc:'tocar para alguien cambia todo — aunque sea tu familia en la sala',
+       tasks:[
+         {t:'preparar 2 canciones que puedas tocar sin errores',plus:'2 buenas valen más que 10 inseguras'},
+         {t:'tocar frente a 1 persona sin parar aunque te equivoques',plus:'parar y volver a empezar es el hábito a romper'},
+         {t:'pedir 1 cosa de feedback y escucharla sin defenderte',plus:'el feedback honesto de alguien de confianza es un regalo'},
+       ]},
+      {name:'superar el miedo',diff:'medio',xp:100,gus:45,
+       desc:'el escenario se gana pisándolo — no pensándolo ni preparándolo infinitamente',
+       tasks:[
+         {t:'tocar frente a 5 personas — pueden ser amigos',plus:'5 personas que te conocen son más difíciles que 50 desconocidos'},
+         {t:'grabar un video completo de una canción',plus:'sin cortes — lo que salga es lo que es'},
+         {t:'publicarlo con #somosgambito — sin excusas de calidad',plus:'la comunidad celebra el proceso, no la perfección'},
+       ]},
+      {name:'concierto',diff:'difícil',xp:200,gus:100,locked:true,
+       desc:'el objetivo final — un setlist de 20 minutos — una audiencia real — tu momento',
+       tasks:[
+         {t:'preparar setlist de 5 canciones con transiciones',plus:'las transiciones entre canciones se ensayan tanto como las canciones mismas'},
+         {t:'ensayar el setlist completo 10 veces sin pausas',plus:'el décimo ensayo debe sentirse diferente al primero — si no, falta trabajo'},
+         {t:'dar el concierto y documentarlo para tus seres queridos',plus:'este logro merece ser compartido — es un hito real en tu vida'},
+       ]},
+    ]},
+  ]},
+  ingles:{color:'#c9a84c',label:'inglés',ramas:[
+    {name:'vocabulario',color:'#c9a84c',nodos:[
+      {name:'100 palabras clave',diff:'fácil',xp:50,gus:15,
+       desc:'las 100 palabras más usadas cubren el 50% de cualquier conversación en inglés',
+       tasks:[
+         {t:'aprender 10 palabras hoy con su pronunciación',plus:'no solo el significado — cómo suena es más importante que cómo se escribe'},
+         {t:'usar 5 de esas palabras en oraciones sobre tu día',plus:'conectar la palabra a tu vida hace que se quede'},
+         {t:'enviárselas a un amigo o familiar con una oración de ejemplo',plus:'enseñar es la mejor forma de aprender — siempre'},
+       ]},
+      {name:'vocabulario cotidiano',diff:'medio',xp:70,gus:25,
+       desc:'el inglés de la vida real — no el del libro de texto',
+       tasks:[
+         {t:'describir tu día completo en inglés — aunque sea con errores',plus:'el cerebro aprende más del error con intención que del texto perfecto'},
+         {t:'aprender 20 palabras de tu tema favorito',plus:'el vocabulario de lo que te apasiona se queda solo — sin esfuerzo'},
+         {t:'escribir un mensaje en inglés a alguien por WhatsApp',plus:'el primer mensaje en inglés a alguien real es un salto de nivel'},
+       ]},
+      {name:'vocabulario avanzado',diff:'difícil',xp:100,gus:40,locked:true,
+       desc:'matices, expresiones y slang — el inglés que suena natural, no traducido',
+       tasks:[
+         {t:'aprender 5 expresiones idiomáticas y usarlas en contexto',plus:'"break a leg" no significa romper una pierna — ese gap es donde vive el inglés real'},
+         {t:'ver 1 video en inglés sin subtítulos y entender el 60%',plus:'el 60% es el umbral — no busques el 100% todavía'},
+         {t:'compartir la experiencia con #somosgambito — qué entendiste y qué no',plus:'la honestidad sobre el proceso acelera el aprendizaje'},
+       ]},
+    ]},
+    {name:'speaking',color:'#00e5ff',nodos:[
+      {name:'pronunciación base',diff:'fácil',xp:50,gus:15,
+       desc:'el acento no importa — la claridad sí — hay sonidos que no existen en español',
+       tasks:[
+         {t:'practicar th, v, w durante 10 minutos grabándote',plus:'la th de "the" y la de "think" son sonidos diferentes — pocos lo saben'},
+         {t:'grabarte pronunciando 10 palabras difíciles',plus:'escucharte a ti mismo es incómodo y necesario'},
+         {t:'enviárselo a alguien de confianza para que te evalúe',plus:'el feedback de alguien que te conoce es más honesto que una app'},
+       ]},
+      {name:'primeras conversaciones',diff:'medio',xp:90,gus:35,
+       desc:'habla aunque te equivoques — el error en voz alta cura el miedo más rápido que cualquier libro',
+       tasks:[
+         {t:'tener 1 conversación de 5 minutos completamente en inglés',plus:'puede ser con una app, un video, o alguien que sepa inglés — lo que importa es hablar'},
+         {t:'cambiar 1 app de tu teléfono a inglés por 48 horas',plus:'el cerebro aprende inglés cuando lo necesita — no cuando lo estudia'},
+         {t:'enviar un audio de WhatsApp en inglés a alguien',plus:'el audio en voz extranjera es vulnerable y valiente al mismo tiempo'},
+       ]},
+      {name:'fluidez',diff:'difícil',xp:130,gus:60,locked:true,
+       desc:'cuando dejas de traducir en tu cabeza — piensas directamente en inglés — ese es el salto',
+       tasks:[
+         {t:'pasar 1 hora pensando en inglés — sin traducir',plus:'cuando no sepas una palabra, descríbela en inglés — no cambies al español'},
+         {t:'mantener una conversación de 20 minutos sobre un tema que te apasione',plus:'la fluidez aparece cuando el tema es más importante que el idioma'},
+         {t:'grabarla y compartirla con #somosgambito',plus:'mostrar tu inglés en la comunidad es un logro que merece ser celebrado'},
+       ]},
+    ]},
+    {name:'inmersión',color:'#00c896',nodos:[
+      {name:'cambia tu entorno',diff:'fácil',xp:40,gus:10,
+       desc:'el entorno enseña sin que te des cuenta — cambia el idioma y el cerebro se adapta',
+       tasks:[
+         {t:'cambiar el idioma de tu celular a inglés',plus:'las primeras 2 horas son confusas — después se vuelve normal'},
+         {t:'ver 1 episodio de tu serie favorita con subtítulos en inglés',plus:'no en español — en inglés — aunque no entiendas todo'},
+         {t:'enviárselo a alguien que quieras que también aprenda',plus:'aprender juntos multiplica la motivación y la consistencia'},
+       ]},
+      {name:'diario en inglés',diff:'medio',xp:60,gus:20,
+       desc:'3 oraciones al día — escribir activa el inglés de una forma que escuchar no puede',
+       tasks:[
+         {t:'escribir 3 oraciones sobre tu día en inglés',plus:'sin corrector de ortografía — la versión con errores es la más honesta'},
+         {t:'usar 2 palabras nuevas de esta semana',plus:'usar las palabras nuevas las ancla a la memoria de largo plazo'},
+         {t:'leer lo que escribiste en voz alta y enviárselo a alguien por nota de voz',plus:'escribir y hablar al mismo tiempo duplica la velocidad de aprendizaje'},
+       ]},
+      {name:'certificación',diff:'difícil',xp:150,gus:70,locked:true,
+       desc:'el papel que abre puertas — prepárate para tu primer examen real',
+       tasks:[
+         {t:'hacer una práctica de examen completa en condiciones reales',plus:'sin pausas, sin diccionario, con tiempo medido — como el día real'},
+         {t:'identificar tus 3 puntos más débiles y escribir un plan',plus:'1 semana de trabajo enfocado en debilidades vale más que 1 mes de lo que ya sabes'},
+         {t:'compartir tu fecha de examen con alguien que te acompañe',plus:'decirlo en voz alta a alguien que te importe convierte el objetivo en compromiso'},
+       ]},
+    ]},
+  ]},
+};
+
+// ── ESTADO ──
+const player = JSON.parse(localStorage.getItem('gbt_player')||'{}');
+let xp = parseInt(localStorage.getItem('gbt_xp')||'100');
+let gus = parseInt(localStorage.getItem('gbt_gus')||'50');
+let arbolActivo = localStorage.getItem('gbt_arbol_meta')||null;
+let arbolData = null;
+let nodosCompletados = JSON.parse(localStorage.getItem('gbt_nodos_completados')||'[]');
+let currentNodo = null;
+let animFrame = null;
+let nodeHitAreas = [];
+let logroActual = null;
+
+function calcNivel(x){return x<200?1:x<500?2:x<1000?3:x<2000?4:x<4000?5:Math.floor(x/1000)+1;}
+
+function updateTopStats(){
+  ['','2'].forEach(s=>{
+    const xel=document.getElementById('xp-disp'+s);
+    const lel=document.getElementById('lvl-disp'+s);
+    if(xel) xel.textContent=xp;
+    if(lel) lel.textContent=calcNivel(xp);
+  });
+}
+updateTopStats();
+
+if(arbolActivo) activarArbolExistente(arbolActivo);
+
+// ── FONDO NODO ──
+function initBg(){
+  const bgCanvas=document.getElementById('bg-canvas');
+  const ctx=bgCanvas.getContext('2d');
+  const mode=localStorage.getItem('gbt_nodo')||'auto';
+  let resolved=mode;
+  if(mode==='auto'){const h=new Date().getHours();resolved=h>=6&&h<18?'day':h>=18&&h<20?'golden':'night';}
+  bgCanvas.width=window.innerWidth;bgCanvas.height=window.innerHeight;
+  const palettes={
+    day:['#1a3a5c','#0d2a40','#07192b'],
+    night:['#000008','#04040f','#07070f'],
+    golden:['#1a0f05','#120a03','#07070f'],
+  };
+  const pal=palettes[resolved]||palettes.night;
+  const grad=ctx.createLinearGradient(0,0,0,bgCanvas.height);
+  pal.forEach((c,i)=>grad.addColorStop(i/(pal.length-1),c));
+  ctx.fillStyle=grad;ctx.fillRect(0,0,bgCanvas.width,bgCanvas.height);
+  if(resolved==='night'){
+    for(let i=0;i<40;i++){
+      ctx.beginPath();ctx.arc((i*137)%bgCanvas.width,(i*97)%(bgCanvas.height*.6),Math.random()<.3?1.5:.8,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${.2+Math.random()*.5})`;ctx.fill();
+    }
+  }
+}
+initBg();
+
+// ── ACTIVAR ──
+function checkMeta(){document.getElementById('btn-activar').disabled=document.getElementById('meta-input').value.trim().length<4;}
+function setMeta(txt){document.getElementById('meta-input').value=txt;checkMeta();}
+function getArbolKey(meta){
+  const m=meta.toLowerCase();
+  if(m.includes('futbol')||m.includes('fútbol')||m.includes('deporte')) return 'futbol';
+  if(m.includes('emprend')||m.includes('negocio')||m.includes('startup')) return 'emprendedor';
+  if(m.includes('guitar')||m.includes('música')||m.includes('musica')||m.includes('tocar')) return 'guitarra';
+  if(m.includes('inglés')||m.includes('ingles')||m.includes('english')) return 'ingles';
+  return 'emprendedor';
+}
+function activarArbol(){
+  const meta=document.getElementById('meta-input').value.trim();
+  if(!meta) return;
+  localStorage.setItem('gbt_arbol_meta',meta);
+  activarArbolExistente(meta);
+}
+function activarArbolExistente(meta){
+  const key=getArbolKey(meta);
+  arbolData=ARBOLES[key];
+  arbolActivo=meta;
+  document.getElementById('arbol-meta-label').textContent=meta;
+  document.getElementById('arbol-titulo').textContent=arbolData.label;
+  showPage('p-arbol');
+  setTimeout(()=>{initCanvas();drawTree();},100);
+}
+function resetArbol(){
+  arbolActivo=null;localStorage.removeItem('gbt_arbol_meta');
+  showPage('p-activar');if(animFrame){cancelAnimationFrame(animFrame);animFrame=null;}
+}
+
+// ── CANVAS ──
+let canvas,ctx2d,W,H;
+function initCanvas(){
+  canvas=document.getElementById('tree-canvas');
+  ctx2d=canvas.getContext('2d');
+  const wrap=canvas.parentElement;
+  W=wrap.clientWidth;H=wrap.clientHeight;
+  canvas.width=W;canvas.height=H;
+  canvas.onclick=onCanvasClick;
+}
+
+function ease(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;}
+
+let animProg=0;
+function drawTree(){
+  if(animFrame) cancelAnimationFrame(animFrame);
+  animProg=0;
+  function animate(){
+    animProg=Math.min(animProg+0.016,1);
+    renderTree(animProg);
+    if(animProg<1) animFrame=requestAnimationFrame(animate);
+    else animFrame=requestAnimationFrame(()=>renderTree(1));
+  }
+  animate();
+}
+
+function renderTree(progress){
+  ctx2d.clearRect(0,0,W,H);
+  if(!arbolData) return;
+  nodeHitAreas=[];
+  const p=ease(progress);
+  const ramas=arbolData.ramas;
+  const rootX=W/2, rootY=H-36;
+  const trunkH=70;
+  const trunkTop=rootY-trunkH;
+
+  // fondo transparente — se ve el bg del nodo a través
+  // solo overlay muy sutil
+  const bgOverlay=ctx2d.createLinearGradient(0,0,0,H);
+  bgOverlay.addColorStop(0,'rgba(7,7,15,0)');
+  bgOverlay.addColorStop(1,'rgba(7,7,15,.4)');
+  ctx2d.fillStyle=bgOverlay;ctx2d.fillRect(0,0,W,H);
+
+  // partículas flotantes
+  const t=Date.now()*.001;
+  for(let i=0;i<20;i++){
+    const px=((i*137+t*8)%W);
+    const py=((i*97+Math.sin(t+i)*.3*H)%H);
+    const alpha=(.1+Math.sin(t*.5+i)*.08)*p;
+    ctx2d.beginPath();ctx2d.arc(px,py,.8+Math.sin(t+i)*.4,0,Math.PI*2);
+    ctx2d.fillStyle=arbolData.color+Math.floor(alpha*255).toString(16).padStart(2,'0');
+    ctx2d.fill();
+  }
+
+  // TRONCO
+  const tp=Math.min(p*2.5,1);
+  const tg=ctx2d.createLinearGradient(rootX,rootY,rootX,trunkTop);
+  tg.addColorStop(0,arbolData.color+'bb');tg.addColorStop(1,arbolData.color+'33');
+  ctx2d.beginPath();
+  ctx2d.moveTo(rootX-4,rootY);ctx2d.lineTo(rootX+4,rootY);
+  ctx2d.lineTo(rootX+3,rootY-trunkH*tp);ctx2d.lineTo(rootX-3,rootY-trunkH*tp);
+  ctx2d.fillStyle=tg;ctx2d.fill();
+
+  // RAÍZ
+  const rg=ctx2d.createRadialGradient(rootX,rootY,0,rootX,rootY,28);
+  rg.addColorStop(0,arbolData.color+'cc');rg.addColorStop(1,arbolData.color+'00');
+  ctx2d.beginPath();ctx2d.arc(rootX,rootY,28,0,Math.PI*2);ctx2d.fillStyle=rg;ctx2d.fill();
+  ctx2d.beginPath();ctx2d.arc(rootX,rootY,11,0,Math.PI*2);ctx2d.fillStyle=arbolData.color;ctx2d.fill();
+  // pulso
+  const pulse=(Math.sin(t*2)*.5+.5)*p;
+  ctx2d.beginPath();ctx2d.arc(rootX,rootY,11+pulse*8,0,Math.PI*2);
+  ctx2d.strokeStyle=arbolData.color+'55';ctx2d.lineWidth=1.5;ctx2d.stroke();
+
+  // nombre avatar
+  if(p>.4){
+    ctx2d.fillStyle='rgba(221,218,240,'+(p-.4)/.6*.5+')';
+    ctx2d.font='10px "Fira Code"';ctx2d.textAlign='center';ctx2d.textBaseline='top';
+    ctx2d.fillText(player.avName||'avatar',rootX,rootY+16);
+  }
+
+  // RAMAS
+  ramas.forEach((rama,ri)=>{
+    const rp=Math.max(0,Math.min((p*2.8-ri*.35-.2),1));
+    if(rp<=0) return;
+    const totalR=ramas.length;
+    const baseAngle=(ri-(totalR-1)/2)*(Math.PI*.5/(totalR-1||1));
+    const bLen=H*.3;
+    const bx=rootX+Math.sin(baseAngle)*bLen*rp;
+    const by=trunkTop-Math.cos(baseAngle)*bLen*rp;
+
+    drawBranch(ctx2d,rootX,trunkTop,bx,by,rama.color,5,rp);
+
+    if(rp>.6){
+      ctx2d.save();ctx2d.globalAlpha=(rp-.6)/.4;
+      ctx2d.fillStyle=rama.color;ctx2d.font='bold 11px "Fira Code"';
+      ctx2d.textAlign='center';ctx2d.textBaseline='bottom';
+      ctx2d.shadowColor=rama.color;ctx2d.shadowBlur=8;
+      ctx2d.fillText(rama.name,bx,by-18);
+      ctx2d.restore();
+    }
+
+    // NODOS
+    rama.nodos.forEach((nodo,ni)=>{
+      const np=Math.max(0,Math.min((rp-ni*.28-.28)*3.5,1));
+      if(np<=0) return;
+      const nAngle=baseAngle+(ni-(rama.nodos.length-1)/2)*.4;
+      const nDist=bLen*(.32+ni*.21);
+      const nx=rootX+Math.sin(nAngle)*nDist*rp;
+      const ny=trunkTop-Math.cos(nAngle)*nDist*rp;
+
+      drawBranch(ctx2d,bx,by,nx,ny,rama.color,2.5,np*rp);
+
+      const done=nodosCompletados.includes(rama.name+'_'+nodo.name);
+      const locked=nodo.locked&&!done;
+      const nodeR=15;
+
+      // glow
+      if(!locked){
+        const ng=ctx2d.createRadialGradient(nx,ny,0,nx,ny,24);
+        ng.addColorStop(0,rama.color+(done?'55':'22'));ng.addColorStop(1,rama.color+'00');
+        ctx2d.beginPath();ctx2d.arc(nx,ny,24,0,Math.PI*2);ctx2d.fillStyle=ng;ctx2d.fill();
+      }
+
+      // círculo nodo
+      ctx2d.beginPath();ctx2d.arc(nx,ny,nodeR,0,Math.PI*2);
+      ctx2d.fillStyle=done?rama.color:locked?'rgba(255,255,255,.04)':'rgba(7,7,15,.85)';
+      ctx2d.fill();
+      ctx2d.beginPath();ctx2d.arc(nx,ny,nodeR,0,Math.PI*2);
+      ctx2d.strokeStyle=done?rama.color:locked?'rgba(221,218,240,.1)':rama.color;
+      ctx2d.lineWidth=locked?1:2.5;ctx2d.stroke();
+
+      // ícono
+      ctx2d.fillStyle=done?'#07070f':locked?'rgba(221,218,240,.2)':rama.color;
+      ctx2d.font=(locked?'11':'bold 11')+'px "Fira Code"';
+      ctx2d.textAlign='center';ctx2d.textBaseline='middle';
+      ctx2d.fillText(done?'✓':locked?'⊗':String(ni+1),nx,ny);
+
+      // etiqueta
+      if(np>.45){
+        ctx2d.save();ctx2d.globalAlpha=(np-.45)/.55;
+        ctx2d.fillStyle=locked?'rgba(221,218,240,.25)':(done?rama.color:'#dddaf0');
+        ctx2d.font='9px "Fira Code"';ctx2d.textAlign='center';ctx2d.textBaseline='top';
+        const lbl=nodo.name.length>15?nodo.name.substring(0,14)+'…':nodo.name;
+        ctx2d.fillText(lbl,nx,ny+nodeR+5);
+        ctx2d.restore();
+      }
+
+      nodeHitAreas.push({x:nx,y:ny,r:nodeR+10,rama,nodo,done,locked});
+    });
+  });
+}
+
+function drawBranch(ctx,x1,y1,x2,y2,color,width,progress){
+  const mx=x1+(x2-x1)*progress, my=y1+(y2-y1)*progress;
+  const dx=x2-x1, dy=y2-y1;
+  const cp1x=x1+dx*.25+dy*.15, cp1y=y1+dy*.25-dx*.1;
+  const cp2x=x1+dx*.75-dy*.1, cp2y=y1+dy*.75+dx*.05;
+  const grad=ctx.createLinearGradient(x1,y1,mx,my);
+  grad.addColorStop(0,color+'cc');grad.addColorStop(1,color+'44');
+  ctx.beginPath();ctx.moveTo(x1,y1);
+  ctx.bezierCurveTo(cp1x,cp1y,cp2x,cp2y,mx,my);
+  ctx.strokeStyle=grad;ctx.lineWidth=width;ctx.lineCap='round';ctx.stroke();
+}
+
+function onCanvasClick(e){
+  const rect=canvas.getBoundingClientRect();
+  const cx=e.clientX-rect.left, cy=e.clientY-rect.top;
+  for(const area of nodeHitAreas){
+    if(Math.sqrt((cx-area.x)**2+(cy-area.y)**2)<=area.r){
+      openNodo(area.rama,area.nodo,area.done,area.locked);return;
+    }
+  }
+  closePanel();
+}
+
+// ── PANEL NODO ──
+const DIFF_CLASS={fácil:'diff-easy',medio:'diff-med',difícil:'diff-hard'};
+const DIFF_EMOJI={fácil:'● fácil',medio:'●● medio',difícil:'●●● difícil'};
+
+function openNodo(rama,nodo,done,locked){
+  currentNodo={rama,nodo,done,locked};
+  document.getElementById('panel-name').textContent=nodo.name;
+  document.getElementById('panel-rama').textContent='// '+rama.name;
+  const diffEl=document.getElementById('panel-diff');
+  diffEl.className='panel-diff '+(DIFF_CLASS[nodo.diff]||'diff-easy');
+  diffEl.textContent=DIFF_EMOJI[nodo.diff]||nodo.diff;
+  document.getElementById('panel-desc').textContent=nodo.desc;
+  document.getElementById('panel-rewards').innerHTML=`
+    <span class="panel-badge panel-xp">+${nodo.xp} XP</span>
+    <span class="panel-badge panel-gus">+${nodo.gus} GUS</span>
+  `;
+
+  const savedTasks=JSON.parse(localStorage.getItem('gbt_ntasks_'+rama.name+'_'+nodo.name)||'[]');
+  document.getElementById('panel-tasks').innerHTML=nodo.tasks.map((task,i)=>`
+    <div class="panel-task ${savedTasks.includes(i)?'done':''}" id="ptask-${i}" onclick="togglePTask(${i})">
+      <div class="ptask-check">${savedTasks.includes(i)?'✓':''}</div>
+      <div style="flex:1">
+        <div class="ptask-txt">${task.t}</div>
+        <div class="ptask-plus">${task.plus}</div>
+      </div>
+    </div>
+  `).join('');
+
+  const btn=document.getElementById('btn-completar-nodo');
+  const shareBtn=document.getElementById('btn-share-panel');
+  if(locked){btn.textContent='// completa el nodo anterior primero';btn.disabled=true;shareBtn.classList.remove('show');}
+  else if(done){btn.textContent='// nodo completado ✓';btn.disabled=true;shareBtn.classList.add('show');}
+  else{btn.textContent='completar nodo';btn.disabled=false;shareBtn.classList.remove('show');}
+
+  document.getElementById('nodo-panel').classList.add('open');
+}
+
+function togglePTask(i){
+  if(!currentNodo||currentNodo.done||currentNodo.locked) return;
+  const key='gbt_ntasks_'+currentNodo.rama.name+'_'+currentNodo.nodo.name;
+  const saved=JSON.parse(localStorage.getItem(key)||'[]');
+  const pos=saved.indexOf(i);
+  if(pos===-1) saved.push(i); else saved.splice(pos,1);
+  localStorage.setItem(key,JSON.stringify(saved));
+  const el=document.getElementById('ptask-'+i);
+  if(el){el.classList.toggle('done',pos===-1);el.querySelector('.ptask-check').textContent=pos===-1?'✓':'';}
+}
+
+function completarNodo(){
+  if(!currentNodo||currentNodo.locked||currentNodo.done) return;
+  const nodo=currentNodo.nodo, rama=currentNodo.rama;
+  const key=rama.name+'_'+nodo.name;
+  nodosCompletados.push(key);
+  localStorage.setItem('gbt_nodos_completados',JSON.stringify(nodosCompletados));
+  xp+=nodo.xp; gus+=nodo.gus;
+  localStorage.setItem('gbt_xp',xp); localStorage.setItem('gbt_gus',gus);
+  localStorage.removeItem('gbt_ntasks_'+rama.name+'_'+nodo.name);
+  updateTopStats();
+  logroActual={nodo,rama};
+  closePanel();
+  showLogro(nodo,rama);
+  playComplete();
+}
+
+function closePanel(){document.getElementById('nodo-panel').classList.remove('open');currentNodo=null;}
+
+// ── LOGRO ──
+function showLogro(nodo,rama){
+  const icons={fácil:'⭐',medio:'🌟',difícil:'💫'};
+  document.getElementById('logro-icon').textContent=icons[nodo.diff]||'⭐';
+  document.getElementById('logro-nombre').textContent=nodo.name;
+  document.getElementById('logro-rama').textContent=rama.name+' · '+arbolData.label;
+  document.getElementById('logro-xp').textContent='+'+nodo.xp+' XP';
+  document.getElementById('logro-gus').textContent='+'+nodo.gus+' GUS';
+  document.getElementById('logro-overlay').classList.add('show');
+}
+
+function closeLogro(){
+  document.getElementById('logro-overlay').classList.remove('show');
+  logroActual=null;
+}
+
+function shareLogroWsp(){
+  if(!logroActual) return;
+  const {nodo,rama}=logroActual;
+  const msg=encodeURIComponent(
+    `acabo de completar "${nodo.name}" en mi skill tree de gamb1t0_ 🔥\n`+
+    `rama: ${rama.name} · ${arbolData.label}\n`+
+    `+${nodo.xp} XP · +${nodo.gus} GUS\n\n`+
+    `#somosgambito #giforce\ndemo.somosgambito.com`
+  );
+  window.open('https://wa.me/?text='+msg,'_blank');
+}
+
+function playComplete(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const now=ctx.currentTime;
+    [440,554,659,880,1108].forEach((f,i)=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.type='sine';o.frequency.value=f;
+      g.gain.setValueAtTime(0,now+i*.12);g.gain.linearRampToValueAtTime(.14,now+i*.12+.06);g.gain.exponentialRampToValueAtTime(.001,now+i*.12+.55);
+      o.connect(g);g.connect(ctx.destination);o.start(now+i*.12);o.stop(now+i*.12+.6);
+    });
+  }catch(e){}
+}
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='p-activar'&&animFrame){cancelAnimationFrame(animFrame);animFrame=null;}
+}
+
+function navTo(dest){
+  if(animFrame){cancelAnimationFrame(animFrame);animFrame=null;}
+  const routes={nodo:'p06_tablero.html',misiones:'p07_misiones.html',duelo:'p08_duelo.html',skill:'p09_skill.html',market:'p10_market.html',universo:'p11_universo.html'};
+  document.body.style.transition='opacity .25s';document.body.style.opacity='0';
+  setTimeout(()=>{window.location.href=routes[dest]||'p06_tablero.html';},260);
+}
+</script>
+</body>
+</html>
