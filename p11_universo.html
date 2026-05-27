@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>gamb1t0_ · universo</title>
+<link rel="icon" href="img/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Code','Courier New',monospace;overflow-x:hidden;}
+.page{width:100%;max-width:440px;margin:0 auto;padding-bottom:80px;}
+
+.topbar{display:flex;align-items:center;gap:12px;padding:14px 16px 10px;border-bottom:.5px solid rgba(221,218,240,.08);position:sticky;top:0;background:#07070f;z-index:10;}
+.back-btn{font-size:20px;cursor:pointer;color:rgba(221,218,240,.4);padding:4px 8px 4px 0;}
+.back-btn:hover{color:#c9a84c;}
+.top-title{font-size:15px;font-weight:700;}
+.enc-btn{margin-left:auto;background:rgba(201,168,76,.1);border:.5px solid rgba(201,168,76,.25);border-radius:8px;padding:6px 12px;font-family:'Fira Code',monospace;font-size:10px;color:#c9a84c;cursor:pointer;transition:all .2s;letter-spacing:.06em;}
+.enc-btn:hover{background:rgba(201,168,76,.2);}
+
+.tabs{display:flex;border-bottom:.5px solid rgba(221,218,240,.08);position:sticky;top:53px;background:#07070f;z-index:9;}
+.tab{flex:1;padding:10px 4px;font-family:'Fira Code',monospace;font-size:10px;color:rgba(221,218,240,.35);letter-spacing:.06em;cursor:pointer;text-align:center;border-bottom:1.5px solid transparent;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;text-transform:uppercase;}
+.tab.on{color:#c9a84c;border-bottom-color:#c9a84c;}
+
+.content{padding:16px;}
+
+/* RANKING */
+.rank-tabs{display:flex;gap:6px;margin-bottom:14px;}
+.rt{flex:1;padding:8px;font-family:'Fira Code',monospace;font-size:10px;color:rgba(221,218,240,.4);background:rgba(255,255,255,.03);border:.5px solid rgba(221,218,240,.08);border-radius:6px;cursor:pointer;text-align:center;transition:all .2s;}
+.rt.on{background:rgba(201,168,76,.1);color:#c9a84c;border-color:rgba(201,168,76,.3);}
+.rank-list{display:flex;flex-direction:column;gap:6px;margin-bottom:20px;}
+.rank-row{display:flex;align-items:center;gap:10px;padding:11px 12px;background:rgba(255,255,255,.03);border-radius:8px;transition:all .2s;}
+.rank-row.me{background:rgba(201,168,76,.06);border:.5px solid rgba(201,168,76,.2);}
+.rank-pos{font-size:13px;font-weight:700;color:rgba(221,218,240,.35);min-width:22px;text-align:center;}
+.rank-pos.g1{color:#c9a84c;}
+.rank-pos.g2{color:rgba(221,218,240,.6);}
+.rank-pos.g3{color:#c9a84c;opacity:.6;}
+.rank-av{font-size:18px;}
+.rank-info{flex:1;}
+.rank-name{font-size:12px;color:#dddaf0;font-weight:700;}
+.rank-meta{font-size:10px;color:rgba(221,218,240,.3);}
+.rank-pts{font-size:12px;color:#c9a84c;font-weight:700;}
+
+/* COMUNIDAD */
+.sec-label{font-size:10px;color:rgba(221,218,240,.25);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;}
+.soc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;}
+.soc-card{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .2s;}
+.soc-card:hover{border-color:rgba(201,168,76,.3);transform:translateY(-1px);}
+.soc-icon{font-size:22px;display:block;margin-bottom:6px;}
+.soc-name{font-size:11px;color:rgba(221,218,240,.6);}
+.soc-handle{font-size:10px;color:rgba(221,218,240,.3);margin-top:2px;}
+
+/* ACTIVIDAD */
+.feed-list{display:flex;flex-direction:column;gap:8px;}
+.feed-item{background:rgba(255,255,255,.03);border-radius:8px;padding:12px;display:flex;gap:10px;align-items:flex-start;}
+.feed-av{font-size:16px;flex-shrink:0;}
+.feed-txt{font-size:12px;color:rgba(221,218,240,.55);line-height:1.5;flex:1;}
+.feed-txt strong{color:#dddaf0;}
+.feed-time{font-size:9px;color:rgba(221,218,240,.2);margin-top:4px;}
+.feed-badge{display:inline-block;font-size:9px;padding:2px 7px;border-radius:4px;margin-top:4px;}
+.fb-vic{background:rgba(201,168,76,.1);color:#c9a84c;}
+.fb-skill{background:rgba(127,106,240,.1);color:#7f6af0;}
+.fb-mis{background:rgba(0,200,150,.1);color:#00c896;}
+
+/* ── ENCUESTA OVERLAY ── */
+#enc-overlay{position:fixed;inset:0;background:#07070f;z-index:400;display:none;flex-direction:column;overflow-y:auto;}
+#enc-overlay.show{display:flex;}
+.enc-wrap{width:100%;max-width:440px;margin:0 auto;padding:24px 20px 60px;}
+.enc-header{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+.enc-close{font-size:20px;cursor:pointer;color:rgba(221,218,240,.4);}
+.enc-title{font-size:16px;font-weight:700;color:#dddaf0;}
+
+/* SELECTOR SEGMENTO */
+.seg-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:24px;}
+.seg-btn{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:12px;padding:16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:14px;}
+.seg-btn:hover{border-color:rgba(201,168,76,.3);}
+.seg-btn.sel{border-color:#c9a84c;background:rgba(201,168,76,.07);}
+.seg-icon{font-size:28px;flex-shrink:0;}
+.seg-info{flex:1;}
+.seg-name{font-size:14px;font-weight:700;color:#dddaf0;margin-bottom:2px;}
+.seg-desc{font-size:11px;color:rgba(221,218,240,.4);}
+
+/* PREGUNTAS */
+.enc-form{display:none;flex-direction:column;gap:16px;}
+.enc-form.show{display:flex;}
+.enc-q{display:flex;flex-direction:column;gap:8px;}
+.enc-q-label{font-size:13px;color:#dddaf0;line-height:1.5;font-weight:700;}
+.enc-q-sub{font-size:11px;color:rgba(221,218,240,.4);margin-top:-4px;}
+.enc-opts{display:flex;flex-direction:column;gap:6px;}
+.enc-opt{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:8px;padding:11px 14px;cursor:pointer;font-size:13px;color:rgba(221,218,240,.6);transition:all .2s;}
+.enc-opt:hover{border-color:rgba(201,168,76,.3);color:#dddaf0;}
+.enc-opt.sel{border-color:#c9a84c;background:rgba(201,168,76,.08);color:#dddaf0;}
+.enc-textarea{width:100%;background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:8px;padding:12px;font-family:'Fira Code',monospace;font-size:13px;color:#dddaf0;outline:none;resize:none;height:80px;}
+.enc-textarea::placeholder{color:rgba(221,218,240,.2);}
+.btn-enc-enviar{width:100%;background:#c9a84c;color:#07070f;font-family:'Fira Code',monospace;font-size:15px;font-weight:700;border:none;border-radius:8px;padding:15px;cursor:pointer;margin-top:8px;}
+.btn-enc-enviar:disabled{opacity:.35;cursor:not-allowed;}
+
+/* GRACIAS */
+#enc-gracias{display:none;text-align:center;padding:40px 20px;}
+#enc-gracias.show{display:block;}
+.gracias-icon{font-size:64px;margin-bottom:16px;display:block;animation:gFloat 2s ease-in-out infinite;}
+@keyframes gFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.gracias-titulo{font-size:22px;font-weight:700;color:#c9a84c;margin-bottom:8px;}
+.gracias-msg{font-size:13px;color:rgba(221,218,240,.45);line-height:1.7;max-width:280px;margin:0 auto 24px;}
+.btn-gracias-wsp{width:100%;background:rgba(37,211,102,.12);color:#25d366;font-family:'Fira Code',monospace;font-size:14px;font-weight:700;border:.5px solid rgba(37,211,102,.3);border-radius:8px;padding:14px;cursor:pointer;margin-bottom:10px;}
+.btn-gracias-close{width:100%;background:rgba(255,255,255,.06);color:rgba(221,218,240,.5);font-family:'Fira Code',monospace;font-size:13px;border:.5px solid rgba(221,218,240,.12);border-radius:8px;padding:12px;cursor:pointer;}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;background:rgba(7,7,15,.95);border-top:.5px solid rgba(221,218,240,.08);display:flex;align-items:center;justify-content:space-around;padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:100;backdrop-filter:blur(16px);}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 10px;border-radius:8px;background:none;border:none;font-family:'Fira Code',monospace;transition:all .2s;}
+.nav-btn.active{background:rgba(201,168,76,.08);}
+.nav-icon{font-size:19px;line-height:1;}
+.nav-label{font-size:9px;color:rgba(221,218,240,.35);letter-spacing:.05em;text-transform:uppercase;}
+.nav-btn.active .nav-label,.nav-btn.active .nav-icon{color:#c9a84c;}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="topbar">
+    <div class="back-btn" onclick="navTo('nodo')">←</div>
+    <div class="top-title">universo</div>
+    <div class="enc-btn" onclick="abrirEncuesta()">// encuesta</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" onclick="swTab('ranking',this)">ranking</button>
+    <button class="tab" onclick="swTab('comunidad',this)">comunidad</button>
+    <button class="tab" onclick="swTab('actividad',this)">actividad</button>
+  </div>
+
+  <div class="content" id="content"></div>
+</div>
+
+<!-- ENCUESTA OVERLAY -->
+<div id="enc-overlay">
+<div class="enc-wrap">
+
+  <div class="enc-header">
+    <div class="enc-close" onclick="cerrarEncuesta()">←</div>
+    <div class="enc-title">// tu opinión importa</div>
+  </div>
+
+  <!-- SELECTOR SEGMENTO -->
+  <div id="seg-selector">
+    <div style="font-size:13px;color:rgba(221,218,240,.5);margin-bottom:20px;line-height:1.6;">
+      eres parte de esta historia — dinos quién eres para hacerte las preguntas correctas
+    </div>
+    <div class="seg-grid">
+      <div class="seg-btn" onclick="selSegmento('jugador',this)">
+        <span class="seg-icon">🎮</span>
+        <div class="seg-info">
+          <div class="seg-name">jugador</div>
+          <div class="seg-desc">joven de 15 a 25 años que probó la demo</div>
+        </div>
+      </div>
+      <div class="seg-btn" onclick="selSegmento('padre',this)">
+        <span class="seg-icon">👨‍👧</span>
+        <div class="seg-info">
+          <div class="seg-name">padre o tutor</div>
+          <div class="seg-desc">acompañas a un joven en su desarrollo</div>
+        </div>
+      </div>
+      <div class="seg-btn" onclick="selSegmento('empresa',this)">
+        <span class="seg-icon">🏢</span>
+        <div class="seg-info">
+          <div class="seg-name">empresa o institución</div>
+          <div class="seg-desc">ves potencial de impacto o alianza</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORMULARIOS POR SEGMENTO -->
+  <div id="enc-jugador" class="enc-form">
+    <div class="enc-q">
+      <div class="enc-q-label">1. ¿qué tan probable es que lo recomiendes a un amigo?</div>
+      <div class="enc-opts">
+        <div class="enc-opt" onclick="selOpt(this,'q1j')">definitivamente sí — ya lo estoy haciendo</div>
+        <div class="enc-opt" onclick="selOpt(this,'q1j')">probablemente sí</div>
+        <div class="enc-opt" onclick="selOpt(this,'q1j')">tal vez</div>
+        <div class="enc-opt" onclick="selOpt(this,'q1j')">no creo</div>
+      </div>
+    </div>
+    <div class="enc-q">
+      <div class="enc-q-label">2. ¿qué parte de la demo te enganchó más?</div>
+      <div class="enc-opts">
+        <div class="enc-opt" onclick="selOpt(this,'q2j')">el primer momento con gi y los ojos</div>
+        <div class="enc-opt" onclick="selOpt(this,'q2j')">elegir mi arcano</div>
+        <div class="enc-opt" onclick="selOpt(this,'q2j')">el skill tree y mis metas</div>
+        <div class="enc-opt" onclick="selOpt(this,'q2j')">los duelos</div>
+        <div class="enc-opt" onclick="selOpt(this,'q2j')">el market y las skins</div>
+      </div>
+    </div>
+    <div class="enc-q">
+      <div class="enc-q-label">3. ¿el skill tree te ayudó a pensar en tus metas reales?</div>
+      <div class="enc-opts">
+        <div class="enc-opt" onclick="selOpt(this,'q3j')">sí — nunca lo había pensado así</div>
+        <div class="enc-opt" onclick="selOpt(this,'q3j')">un poco — me hizo reflexionar</div>
+        <div class="enc-opt" onclick="selOpt(this,'q3j')">ya lo pensaba pero está bueno verlo así</div>
+        <div class="enc-opt" onclick="selOpt(this,'q3j')">no tanto — las misiones no eran las mías</div>
+      </div>
+    </div>
+    <div class="enc-q">
+      <div class="enc-q-label">4. ¿pagarías por acceso completo al juego?</div>
+      <div class="enc-opts">
+        <div class="enc-opt" onclick="selOpt(this,'q4j')">sí — si el precio es justo</div>
+        <div class="enc-opt" onclick="selOpt(this,'q4j')">solo si puedo probar más antes</div>
+        <div class="enc-opt" onclick="selOpt(this,'q4j')">prefiero que sea gratis con opciones de pago</div>
+        <div class="enc-opt" onclick="selOpt(this,'q4j')">no pagaría</div>
+      </div>
+    </div>
+    <div class="enc-q">
+      <div class="enc-q-label">5. ¿algo que cambiarías o agregarías?</div>
+      <div class="enc-q-sub">respuesta libre — sin filtros</div>
+      <textarea class="enc-textarea" id="q5j" placeholder="escribe aquí..."></textarea>
+    </div>
+    <button class="btn-enc-enviar" onclick="enviarEncuesta('jugador')">enviar respuestas</button>
+  </div>
+
+  <div id="enc-padre" class="enc-form">
+    <div class="enc-q">
+      <div class="enc-q-label">1. ¿te genera confianza que un juego trabaje metas y hábitos con tu hijo?</div>
+      <div class="enc-opts">
+        <div class="enc-opt" onclick="selOpt(this,'q1p')">sí — es exactamente lo que falta</div>
+        <div class="enc-opt" onclick="selOpt(this,'q1p')">me interesa pero necesito saber más</div>
+        <div class="enc-opt" onclick="selOpt(this,'q1p')">tengo dudas sobre el tiempo en pantalla</div>
+        <div class="enc-opt" onclick="selOpt(this,'q1p')">no — prefiero otros métodos</div>
+      </div>
+    </div>
+    <div class="enc-q">
+      <div class="enc-q-label">2. ¿qué te tranquilizaría más como adulto de confianza?</div>
+      <div class="enc-opts">
+        <div class="enc-opt" onclick="selOpt(this,'q2p')">ver el progreso de mi hijo en tiempo real</div>
+        <div class="enc-opt" onclick="selOpt(this,'q2p')">que las misiones sean supervisadas</div>
+        <div class="enc-opt" onclick="selOpt(this,'q2p')">que haya límite de tiempo diario</div>
+        <div class="enc-opt" onclick="selOpt(this,'q2p')">que yo también pueda participar</div>
+      </div>
+    </div>
+    <div class="enc-q">
+      <div class="enc-q-label">3. ¿estarías dispuesto a registrarte como adulto de confianza?</div>
+      <div class="enc-opts">
+        <div class="enc-opt" onclick="selOpt(this,'q3p')">sí — para acompañar el proceso</div>
+        <div class="enc-opt" onclick="selOpt(this,'q3p')">sí — pero necesito entender bien el juego</div>
+        <div class="enc-opt" onclick="selOpt(this,'q3p')">solo si mi hijo me lo pide</div>
+        <div class="enc-opt" onclick="selOpt(this,'q3p')">no por ahora</div>
+      </div>
+    </div>
+    <div class="enc-q">
+      <div class="enc-q-label">4. ¿cuánto pagarías mensualmente por una herramienta así?</div>
+      <div class="enc-opts">
+        <div class="enc-opt" onclick="selOpt(this,'q4p')">S/ 10 - 20 al mes</div>
+        <div class="enc-opt" onclick="selOpt(this,'q4p')">S/ 20 - 40 al mes</div>
+        <div class="enc-opt" onclick="selOpt(this,'q4p')">S/ 40 - 60 al mes</div>
+        <div class="enc-opt" onclick="selOpt(this,'q4p')">prefiero que sea gratuito</div>
+      </div>
+    </div>
+    <div class="enc-q">
+      <div class="enc-q-label">5. ¿qué necesitaría tener gamb1t0 para que lo recomiendes a otros padres?</div>
+      <div class="enc-q-sub">respuesta libre</div>
+      <textarea class="enc-textarea" id="q5p" placeholder="escribe aquí..."></textarea>
+    </div>
+    <button class="btn-enc-enviar" onclick="enviarEncuesta('padre')">enviar respuestas</button>
+  </div>
+
+  <div id="enc-empresa" class="enc-form">
+    <div class="enc-q">
+      <div class="enc-q-label">1. ¿qué tipo de alianza ves posible con gamb1t0?</div>
+      <div class="enc-opts">
+        <div class="enc-opt" onclick="selOpt(this,'q1e')">patrocinio o presencia de marca</div>
+        <div class="enc-opt" onclick="selOpt(this,'q1e')">integración de nuestros productos/servicios</div>
+        <div class="enc-opt" onclick="selOpt(this,'q1e')">RSE o impacto social</div>
+        <div class="enc-opt" onclick="selOpt(this,'q1e')">inversión o co-desarrollo</div>
+      </div>
+    </div>
+    <div class="enc-q">
+      <div class="enc-q-label">2. ¿el segmento de 15-25 años es estratégico para tu organización?</div>
+      <div class="enc-opts">
+        <div class="enc-opt" onclick="selOpt(this,'q2e')">sí — es nuestro cliente principal</div>
+        <div class="enc-opt" onclick="selOpt(this,'q2e')">sí — es el cliente del futuro</div>
+        <div class="enc-opt" onclick="selOpt(this,'q2e')">parcialmente</div>
+        <div class="enc-opt" onclick="selOpt(this,'q2e')">no directamente</div>
+      </div>
+    </div>
+    <div class="enc-q">
+      <div class="enc-q-label">3. ¿qué métrica te convencería de una alianza?</div>
+      <div class="enc-opts">
+        <div class="enc-opt" onclick="selOpt(this,'q3e')">número de usuarios activos diarios</div>
+        <div class="enc-opt" onclick="selOpt(this,'q3e')">impacto medible en comportamiento del joven</div>
+        <div class="enc-opt" onclick="selOpt(this,'q3e')">alcance geográfico</div>
+        <div class="enc-opt" onclick="selOpt(this,'q3e')">presencia en medios y redes</div>
+      </div>
+    </div>
+    <div class="enc-q">
+      <div class="enc-q-label">4. ¿en qué etapa estás para explorar una alianza?</div>
+      <div class="enc-opts">
+        <div class="enc-opt" onclick="selOpt(this,'q4e')">listo para conversar — contáctame</div>
+        <div class="enc-opt" onclick="selOpt(this,'q4e')">en 3-6 meses cuando vean más tracción</div>
+        <div class="enc-opt" onclick="selOpt(this,'q4e')">cuando tengan más usuarios</div>
+        <div class="enc-opt" onclick="selOpt(this,'q4e')">solo estoy explorando por ahora</div>
+      </div>
+    </div>
+    <div class="enc-q">
+      <div class="enc-q-label">5. ¿con quién deberíamos hablar en tu organización?</div>
+      <div class="enc-q-sub">nombre, cargo y correo — opcional pero valioso</div>
+      <textarea class="enc-textarea" id="q5e" placeholder="nombre · cargo · correo"></textarea>
+    </div>
+    <button class="btn-enc-enviar" onclick="enviarEncuesta('empresa')">enviar respuestas</button>
+  </div>
+
+  <!-- GRACIAS -->
+  <div id="enc-gracias">
+    <span class="gracias-icon">◈</span>
+    <div class="gracias-titulo">recibido</div>
+    <div class="gracias-msg" id="gracias-msg">
+      tu opinión ya está en el tablero de gamb1t0_<br>
+      esto se construye con las personas que se animan a decir lo que piensan
+    </div>
+    <button class="btn-gracias-wsp" onclick="shareEncWsp()">invitar a otros a responder</button>
+    <button class="btn-gracias-close" onclick="cerrarEncuesta()">volver al universo</button>
+  </div>
+
+</div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-btn" onclick="navTo('nodo')"><span class="nav-icon">◈</span><span class="nav-label">nodo</span></button>
+  <button class="nav-btn" onclick="navTo('misiones')"><span class="nav-icon">⚔</span><span class="nav-label">misiones</span></button>
+  <button class="nav-btn" onclick="navTo('duelo')"><span class="nav-icon">◉</span><span class="nav-label">duelo</span></button>
+  <button class="nav-btn" onclick="navTo('skill')"><span class="nav-icon">◆</span><span class="nav-label">skill tree</span></button>
+</div>
+
+<script>
+const WEBHOOK = 'https://script.google.com/macros/s/AKfycbyOx_wAaW3jlWMJT36Pr52xd86GivGc0lpghmc9tN9FrQSDYFJb1z8q4f9mJJUnnh2x/exec';
+const player = JSON.parse(localStorage.getItem('gbt_player')||'{}');
+
+const RANK_DATA = {
+  general:[
+    {name:'nx_lima01',    xp:4820,dist:'SJL',      lvl:5},
+    {name:'shadow_k',     xp:3610,dist:'Los Olivos',lvl:4},
+    {name:'kira_free',    xp:2990,dist:'Miraflores',lvl:3},
+    {name:'el_mercader99',xp:2440,dist:'Ate',       lvl:3},
+    {name:'zael_norte',   xp:1870,dist:'Comas',     lvl:2},
+    {name:player.avName||'tú', xp:parseInt(localStorage.getItem('gbt_xp')||'100'), dist:'Lima',lvl:1,me:true},
+  ].sort((a,b)=>b.xp-a.xp),
+  distrito:[
+    {name:'San Juan de Lurigancho',pts:22100},{name:'Los Olivos',pts:18500},
+    {name:'Ate',pts:15300},{name:'Comas',pts:12800},{name:'Miraflores',pts:9600},
+  ],
+  clan:[
+    {name:'GI Force Alpha',pts:18400},{name:'Los Despiertos',pts:14200},
+    {name:'Nómadas Lima',pts:9800},{name:'Clan Sabio',pts:7300},
+  ],
+};
+
+const FEED = [
+  {av:'⚡',txt:'<strong>shadow_k</strong> venció a <strong>kira_free</strong> en duelo',badge:'victoria',bclass:'fb-vic',time:'hace 3 min'},
+  {av:'◆',txt:'<strong>nx_lima01</strong> completó el nodo <strong>resistencia élite</strong>',badge:'skill tree',bclass:'fb-skill',time:'hace 12 min'},
+  {av:'⚔',txt:'<strong>zael_norte</strong> completó la misión <strong>entrena 20 minutos</strong>',badge:'misión',bclass:'fb-mis',time:'hace 28 min'},
+  {av:'🌟',txt:'<strong>el_mercader99</strong> subió al nivel <strong>4</strong>',badge:'nivel up',bclass:'fb-vic',time:'hace 41 min'},
+  {av:'◈',txt:'<strong>kira_free</strong> regaló la skin <strong>armadura neón</strong>',badge:'market',bclass:'fb-mis',time:'hace 1h'},
+  {av:'⚡',txt:'<strong>nx_lima01</strong> activó su árbol de <strong>futbolista</strong>',badge:'skill tree',bclass:'fb-skill',time:'hace 2h'},
+];
+
+let currentTab='ranking', rankTab='general';
+let segActual=null, respuestas={};
+
+function swTab(tab,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on'); currentTab=tab; renderContent();
+}
+
+function renderContent(){
+  const c=document.getElementById('content');
+  if(currentTab==='ranking') renderRanking(c);
+  else if(currentTab==='comunidad') renderComunidad(c);
+  else renderActividad(c);
+}
+
+function renderRanking(c){
+  c.innerHTML=`
+    <div class="rank-tabs">
+      <div class="rt ${rankTab==='general'?'on':''}" onclick="swRankTab('general')">general</div>
+      <div class="rt ${rankTab==='distrito'?'on':''}" onclick="swRankTab('distrito')">distrito</div>
+      <div class="rt ${rankTab==='clan'?'on':''}" onclick="swRankTab('clan')">clan</div>
+    </div>
+    <div class="rank-list" id="rank-list"></div>
+  `;
+  renderRankList();
+}
+function swRankTab(t){ rankTab=t; renderContent(); }
+function renderRankList(){
+  const list=document.getElementById('rank-list');
+  if(!list) return;
+  const data=RANK_DATA[rankTab]||[];
+  list.innerHTML=data.map((r,i)=>`
+    <div class="rank-row ${r.me?'me':''}">
+      <div class="rank-pos ${i===0?'g1':i===1?'g2':i===2?'g3':''}">${i+1}</div>
+      <div class="rank-av">${i===0?'◈':i===1?'◆':'◉'}</div>
+      <div class="rank-info">
+        <div class="rank-name">${r.name}${r.me?' (tú)':''}</div>
+        <div class="rank-meta">${r.dist||''} ${r.lvl?'· nv '+r.lvl:''}</div>
+      </div>
+      <div class="rank-pts">${(r.xp||r.pts||0).toLocaleString()} ${r.xp?'XP':'pts'}</div>
+    </div>
+  `).join('');
+}
+
+function renderComunidad(c){
+  c.innerHTML=`
+    <div class="sec-label">// redes de gamb1t0</div>
+    <div class="soc-grid">
+      <div class="soc-card" onclick="openLink('https://discord.gg/5mZtfFpJg')">
+        <span class="soc-icon">💬</span><div class="soc-name">Discord</div><div class="soc-handle">GI Force</div>
+      </div>
+      <div class="soc-card" onclick="openLink('https://www.instagram.com/somosgambito.oficial')">
+        <span class="soc-icon">📷</span><div class="soc-name">Instagram</div><div class="soc-handle">@somosgambito.oficial</div>
+      </div>
+      <div class="soc-card" onclick="openLink('https://www.tiktok.com/@somosgambito')">
+        <span class="soc-icon">▶</span><div class="soc-name">TikTok</div><div class="soc-handle">@somosgambito</div>
+      </div>
+      <div class="soc-card" onclick="shareInvite()">
+        <span class="soc-icon">◈</span><div class="soc-name">invitar amigo</div><div class="soc-handle">WhatsApp</div>
+      </div>
+    </div>
+    <div class="sec-label">// hashtags</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
+      <div style="background:rgba(201,168,76,.08);border:.5px solid rgba(201,168,41,.2);border-radius:20px;padding:6px 14px;font-size:12px;color:#c9a84c;">#somosgambito</div>
+      <div style="background:rgba(201,168,76,.08);border:.5px solid rgba(201,168,41,.2);border-radius:20px;padding:6px 14px;font-size:12px;color:#c9a84c;">#giforce</div>
+      <div style="background:rgba(201,168,76,.08);border:.5px solid rgba(201,168,41,.2);border-radius:20px;padding:6px 14px;font-size:12px;color:#c9a84c;">#lima2031</div>
+    </div>
+  `;
+}
+
+function renderActividad(c){
+  c.innerHTML=`
+    <div class="sec-label">// actividad reciente</div>
+    <div class="feed-list">${FEED.map(f=>`
+      <div class="feed-item">
+        <div class="feed-av">${f.av}</div>
+        <div>
+          <div class="feed-txt">${f.txt}</div>
+          <span class="feed-badge ${f.bclass}">${f.badge}</span>
+          <div class="feed-time">${f.time}</div>
+        </div>
+      </div>
+    `).join('')}</div>
+  `;
+}
+
+// ── ENCUESTA ──
+function abrirEncuesta(){
+  segActual=null; respuestas={};
+  document.getElementById('seg-selector').style.display='block';
+  document.querySelectorAll('.enc-form').forEach(f=>f.classList.remove('show'));
+  document.getElementById('enc-gracias').classList.remove('show');
+  document.querySelectorAll('.seg-btn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('enc-overlay').classList.add('show');
+}
+
+function cerrarEncuesta(){
+  document.getElementById('enc-overlay').classList.remove('show');
+}
+
+function selSegmento(seg, el){
+  document.querySelectorAll('.seg-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  segActual=seg;
+  setTimeout(()=>{
+    document.getElementById('seg-selector').style.display='none';
+    document.getElementById('enc-'+seg).classList.add('show');
+  },300);
+}
+
+function selOpt(el, qid){
+  const parent=el.parentElement;
+  parent.querySelectorAll('.enc-opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  respuestas[qid]=el.textContent.trim();
+}
+
+function enviarEncuesta(seg){
+  const textarea=document.getElementById('q5'+seg[0]);
+  if(textarea) respuestas['q5'+seg[0]]=textarea.value.trim();
+
+  const datos={
+    tipo:'encuesta',
+    segmento:seg,
+    correo:player.correo||'',
+    usuario:player.avName||player.user||'',
+    ...respuestas,
+    fuente:'demo_gambito',
+    timestamp:new Date().toISOString(),
+  };
+
+  fetch(WEBHOOK,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(datos)}).catch(()=>{});
+
+  document.getElementById('enc-'+seg).classList.remove('show');
+  const msg = seg==='jugador'
+    ? 'tu voz ayuda a construir el juego que mereces'
+    : seg==='padre'
+    ? 'gracias por confiar en este proceso — tu perspectiva es clave'
+    : 'gracias — tu visión estratégica es exactamente lo que buscamos';
+  document.getElementById('gracias-msg').textContent = msg;
+  document.getElementById('enc-gracias').classList.add('show');
+  document.getElementById('enc-overlay').scrollTo(0,0);
+}
+
+function shareEncWsp(){
+  const url=encodeURIComponent('https://demo.somosgambito.com');
+  const msg=encodeURIComponent('acabo de probar la demo de gamb1t0_ — un juego que trabaja con tus metas reales\n\npruébalo y cuéntame qué te parece:\n'+decodeURIComponent(url)+'\n\n#somosgambito #giforce');
+  window.open('https://wa.me/?text='+msg,'_blank');
+}
+
+function openLink(url){ window.open(url,'_blank'); }
+
+function shareInvite(){
+  const msg=encodeURIComponent('oye — prueba gamb1t0_, un juego que te ayuda a lograr tus metas reales\ndemo: demo.somosgambito.com\n\n#somosgambito');
+  window.open('https://wa.me/?text='+msg,'_blank');
+}
+
+function navTo(dest){
+  const routes={nodo:'p06_tablero.html',misiones:'p07_misiones.html',duelo:'p08_duelo.html',skill:'p09_skill.html',market:'p10_market.html',universo:'p11_universo.html'};
+  document.body.style.transition='opacity .25s';document.body.style.opacity='0';
+  setTimeout(()=>{ window.location.href=routes[dest]||'p06_tablero.html'; },260);
+}
+
+renderContent();
+</script>
+</body>
+</html>
