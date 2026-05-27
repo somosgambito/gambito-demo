@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>gamb1t0_ · duelo</title>
+<link rel="icon" href="img/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Code','Courier New',monospace;overflow-x:hidden;}
+.page{width:100%;max-width:440px;margin:0 auto;padding-bottom:80px;}
+
+/* TOP */
+.topbar{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:.5px solid rgba(221,218,240,.08);position:sticky;top:0;background:#07070f;z-index:10;}
+.back-btn{font-size:20px;cursor:pointer;color:rgba(221,218,240,.4);padding:4px 8px 4px 0;}
+.back-btn:hover{color:#c9a84c;}
+.top-title{font-size:15px;font-weight:700;color:#dddaf0;}
+.top-tokens{margin-left:auto;font-size:11px;color:rgba(221,218,240,.4);}
+.top-tokens span{color:#00e5ff;font-weight:700;}
+
+/* VS BAR */
+.vs-section{padding:20px 16px 0;}
+.vs-bar{display:flex;align-items:center;justify-content:space-between;background:rgba(255,77,109,.05);border:.5px solid rgba(255,77,109,.15);border-radius:16px;padding:20px 16px;margin-bottom:16px;}
+.duelo-av{text-align:center;flex:1;}
+.duelo-av-frame{width:70px;height:70px;border-radius:50%;margin:0 auto 8px;position:relative;}
+.duelo-av-img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid #c9a84c;}
+.duelo-av-img.rival{border-color:#ff4d6d;}
+.duelo-av-name{font-size:12px;color:rgba(221,218,240,.6);margin-bottom:2px;}
+.duelo-av-pts{font-size:14px;font-weight:700;color:#c9a84c;}
+.duelo-av-pts.rival{color:#ff4d6d;}
+.vs-center{display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 8px;}
+.vs-text{font-size:28px;font-weight:700;color:#ff4d6d;line-height:1;}
+.vs-stake{font-size:10px;color:rgba(221,218,240,.3);text-align:center;}
+
+/* APUESTA */
+.apuesta-section{padding:0 16px;margin-bottom:16px;}
+.sec-label{font-size:10px;color:rgba(221,218,240,.25);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;}
+.apuesta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.apuesta-btn{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:10px;padding:12px;text-align:center;cursor:pointer;transition:all .2s;font-family:'Fira Code',monospace;}
+.apuesta-btn:hover{border-color:rgba(255,77,109,.3);}
+.apuesta-btn.sel{border-color:#ff4d6d;background:rgba(255,77,109,.08);}
+.apuesta-n{font-size:18px;font-weight:700;color:#ff4d6d;}
+.apuesta-l{font-size:10px;color:rgba(221,218,240,.3);}
+
+/* RIVAL SELECTOR */
+.rival-section{padding:0 16px;margin-bottom:16px;}
+.rival-list{display:flex;flex-direction:column;gap:8px;}
+.rival-row{display:flex;align-items:center;gap:12px;padding:11px 12px;background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:10px;cursor:pointer;transition:all .2s;}
+.rival-row:hover{border-color:rgba(255,77,109,.3);}
+.rival-row.sel{border-color:#ff4d6d;background:rgba(255,77,109,.06);}
+.rival-av{width:36px;height:36px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(255,77,109,.3);background:rgba(255,77,109,.1);font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.rival-info{flex:1;}
+.rival-name{font-size:13px;color:#dddaf0;font-weight:700;}
+.rival-pts{font-size:11px;color:rgba(221,218,240,.35);}
+.rival-dist{font-size:10px;color:#ff4d6d;}
+
+/* BTN DUELO */
+.btn-duelo{width:calc(100% - 32px);margin:0 16px 16px;background:#ff4d6d;color:#fff;font-family:'Fira Code',monospace;font-size:16px;font-weight:700;border:none;border-radius:8px;padding:16px;cursor:pointer;transition:opacity .2s,transform .1s;display:block;}
+.btn-duelo:hover{opacity:.9;}
+.btn-duelo:active{transform:scale(.98);}
+.btn-duelo:disabled{opacity:.35;cursor:not-allowed;}
+
+/* RESULTADO */
+#resultado-overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:300;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px;}
+#resultado-overlay.show{display:flex;animation:resIn .5s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes resIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.res-icon{font-size:80px;margin-bottom:16px;animation:resFloat 2s ease-in-out infinite;}
+@keyframes resFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.res-title{font-size:28px;font-weight:700;margin-bottom:8px;letter-spacing:.08em;}
+.res-title.win{color:#c9a84c;}
+.res-title.lose{color:#ff4d6d;}
+.res-sub{font-size:14px;color:rgba(221,218,240,.45);margin-bottom:20px;text-align:center;line-height:1.6;}
+.rey-card{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:14px;display:flex;gap:12px;align-items:center;width:100%;max-width:300px;margin-bottom:24px;}
+.rey-img{width:52px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0;background:rgba(201,168,76,.1);}
+.rey-quote{font-size:12px;color:rgba(221,218,240,.45);font-style:italic;line-height:1.5;}
+.btn-res-back{background:rgba(255,255,255,.08);color:#dddaf0;font-family:'Fira Code',monospace;font-size:14px;border:.5px solid rgba(221,218,240,.15);border-radius:8px;padding:13px 28px;cursor:pointer;transition:all .2s;}
+.btn-res-back:hover{background:rgba(255,255,255,.12);}
+
+/* HISTORIAL */
+.hist-section{padding:0 16px;}
+.hist-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:.5px solid rgba(221,218,240,.06);}
+.hist-result{font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;}
+.hist-result.w{background:rgba(201,168,76,.1);color:#c9a84c;}
+.hist-result.l{background:rgba(255,77,109,.1);color:#ff4d6d;}
+.hist-rival{font-size:12px;color:rgba(221,218,240,.6);flex:1;}
+.hist-pts{font-size:11px;color:rgba(221,218,240,.35);}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;background:rgba(7,7,15,.95);border-top:.5px solid rgba(221,218,240,.08);display:flex;align-items:center;justify-content:space-around;padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:100;backdrop-filter:blur(16px);}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:all .2s;padding:4px 10px;border-radius:8px;background:none;border:none;font-family:'Fira Code',monospace;}
+.nav-btn.active{background:rgba(255,77,109,.08);}
+.nav-icon{font-size:19px;line-height:1;}
+.nav-label{font-size:9px;color:rgba(221,218,240,.35);letter-spacing:.05em;text-transform:uppercase;}
+.nav-btn.active .nav-label{color:#ff4d6d;}
+.nav-btn.active .nav-icon{color:#ff4d6d;}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="topbar">
+    <div class="back-btn" onclick="navTo('misiones')">←</div>
+    <div class="top-title">duelo</div>
+    <div class="top-tokens">tokens: <span id="tok-disp">120</span></div>
+  </div>
+
+  <!-- VS -->
+  <div class="vs-section">
+    <div class="vs-bar">
+      <div class="duelo-av">
+        <div class="duelo-av-frame">
+          <img src="img/avatar_base.jpg" alt="tú" class="duelo-av-img"
+               onerror="this.style.background='rgba(201,168,76,.2)';this.removeAttribute('src')">
+        </div>
+        <div class="duelo-av-name" id="my-name">tú</div>
+        <div class="duelo-av-pts" id="my-xp">100 XP</div>
+      </div>
+      <div class="vs-center">
+        <div class="vs-text">VS</div>
+        <div class="vs-stake" id="vs-stake">elige apuesta</div>
+      </div>
+      <div class="duelo-av">
+        <div class="duelo-av-frame">
+          <div class="duelo-av-img rival" id="rival-av" style="background:rgba(255,77,109,.15);display:flex;align-items:center;justify-content:center;font-size:24px;">◉</div>
+        </div>
+        <div class="duelo-av-name" id="rival-name">— elige rival —</div>
+        <div class="duelo-av-pts rival" id="rival-xp">---</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APUESTA -->
+  <div class="apuesta-section">
+    <div class="sec-label">// apuesta</div>
+    <div class="apuesta-grid">
+      <div class="apuesta-btn" onclick="selApuesta(10,this)">
+        <div class="apuesta-n">10</div><div class="apuesta-l">tokens</div>
+      </div>
+      <div class="apuesta-btn" onclick="selApuesta(25,this)">
+        <div class="apuesta-n">25</div><div class="apuesta-l">tokens</div>
+      </div>
+      <div class="apuesta-btn" onclick="selApuesta(50,this)">
+        <div class="apuesta-n">50</div><div class="apuesta-l">tokens</div>
+      </div>
+      <div class="apuesta-btn" onclick="selApuesta(100,this)">
+        <div class="apuesta-n">100</div><div class="apuesta-l">tokens</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIVALES -->
+  <div class="rival-section">
+    <div class="sec-label">// elige tu rival</div>
+    <div class="rival-list" id="rival-list"></div>
+  </div>
+
+  <button class="btn-duelo" id="btn-duelo" onclick="iniciarDuelo()" disabled>
+    ⚔ iniciar duelo
+  </button>
+
+  <!-- HISTORIAL -->
+  <div class="hist-section">
+    <div class="sec-label">// historial</div>
+    <div id="hist-list"></div>
+  </div>
+
+</div>
+
+<!-- RESULTADO -->
+<div id="resultado-overlay">
+  <div class="res-icon" id="res-icon">⚔</div>
+  <div class="res-title" id="res-title">---</div>
+  <div class="res-sub" id="res-sub">---</div>
+  <div class="rey-card">
+    <img src="img/rey_espadas.jpg" alt="rey" class="rey-img"
+         onerror="this.style.background='rgba(201,168,76,.1)';this.removeAttribute('src')">
+    <div class="rey-quote" id="rey-quote">---</div>
+  </div>
+  <button class="btn-res-back" onclick="closeResultado()">volver</button>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-btn" onclick="navTo('nodo')"><span class="nav-icon">◈</span><span class="nav-label">nodo</span></button>
+  <button class="nav-btn" onclick="navTo('misiones')"><span class="nav-icon">⚔</span><span class="nav-label">misiones</span></button>
+  <button class="nav-btn active" onclick="navTo('duelo')"><span class="nav-icon">◉</span><span class="nav-label">duelo</span></button>
+  <button class="nav-btn" onclick="navTo('skill')"><span class="nav-icon">◆</span><span class="nav-label">skill tree</span></button>
+</div>
+
+<script>
+const player = JSON.parse(localStorage.getItem('gbt_player')||'{}');
+let tokens = parseInt(localStorage.getItem('gbt_tokens')||'120');
+let xp = parseInt(localStorage.getItem('gbt_xp')||'100');
+let apuesta = 0;
+let rivalSel = null;
+
+document.getElementById('my-name').textContent = player.avName||'tú';
+document.getElementById('my-xp').textContent = xp+' XP';
+document.getElementById('tok-disp').textContent = tokens;
+
+const RIVALS = [
+  {name:'nx_lima01',    xp:4820, dist:'San Juan de Lurigancho', img:'img/explorador.png'},
+  {name:'shadow_k',     xp:3610, dist:'Los Olivos',             img:'img/guerrero.png'},
+  {name:'kira_free',    xp:2990, dist:'Miraflores',             img:'img/sabio.png'},
+  {name:'el_mercader99',xp:2440, dist:'Ate',                    img:'img/mercader.png'},
+  {name:'zael_norte',   xp:1870, dist:'Comas',                  img:'img/explorador.png'},
+];
+
+const FRASES_WIN = [
+  'quien actúa primero controla el tablero',
+  'la preparación no se improvisa',
+  'cada victoria abre la siguiente',
+  'el tablero siempre favorece al que piensa',
+];
+const FRASES_LOSE = [
+  'la derrota es data — úsala',
+  'el que pierde y aprende ya ganó algo',
+  'vuelve más fuerte — el tablero espera',
+  'cada caída es una lección que el rival no tuvo',
+];
+
+function renderRivals(){
+  const list = document.getElementById('rival-list');
+  list.innerHTML = '';
+  RIVALS.forEach((r,i)=>{
+    const row = document.createElement('div');
+    row.className = 'rival-row';
+    row.innerHTML = `
+      <div class="rival-av"><img src="${r.img}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentElement.textContent='◉'"></div>
+      <div class="rival-info">
+        <div class="rival-name">${r.name}</div>
+        <div class="rival-pts">${r.xp.toLocaleString()} XP</div>
+      </div>
+      <div class="rival-dist">${r.dist}</div>
+    `;
+    row.onclick = ()=>selRival(r, row);
+    list.appendChild(row);
+  });
+}
+
+function selRival(r, el){
+  document.querySelectorAll('.rival-row').forEach(x=>x.classList.remove('sel'));
+  el.classList.add('sel');
+  rivalSel = r;
+  document.getElementById('rival-name').textContent = r.name;
+  document.getElementById('rival-xp').textContent = r.xp.toLocaleString()+' XP';
+  checkReady();
+}
+
+function selApuesta(n, el){
+  document.querySelectorAll('.apuesta-btn').forEach(x=>x.classList.remove('sel'));
+  el.classList.add('sel');
+  apuesta = n;
+  document.getElementById('vs-stake').textContent = n+' tokens en juego';
+  checkReady();
+}
+
+function checkReady(){
+  const ok = rivalSel && apuesta > 0 && tokens >= apuesta;
+  document.getElementById('btn-duelo').disabled = !ok;
+}
+
+function iniciarDuelo(){
+  if(!rivalSel || apuesta<=0 || tokens<apuesta) return;
+  tokens -= apuesta;
+  localStorage.setItem('gbt_tokens', tokens);
+  document.getElementById('tok-disp').textContent = tokens;
+  document.getElementById('btn-duelo').disabled = true;
+  document.getElementById('btn-duelo').textContent = '// procesando...';
+
+  playDuelStart();
+
+  setTimeout(()=>{
+    const win = Math.random() > 0.45;
+    showResultado(win);
+  }, 1800);
+}
+
+function showResultado(win){
+  const gain = win ? Math.floor(apuesta*1.9) : 0;
+  const xpChange = win ? Math.floor(xp*0.08)+10 : -(Math.floor(xp*0.04)+5);
+
+  if(win){
+    tokens += gain;
+    xp += xpChange;
+  } else {
+    xp = Math.max(0, xp + xpChange);
+  }
+  localStorage.setItem('gbt_tokens', tokens);
+  localStorage.setItem('gbt_xp', xp);
+
+  // guardar en historial
+  const hist = JSON.parse(localStorage.getItem('gbt_duelo_hist')||'[]');
+  hist.unshift({rival:rivalSel.name, win, gain: win?gain:0, xpChange});
+  if(hist.length>10) hist.pop();
+  localStorage.setItem('gbt_duelo_hist', JSON.stringify(hist));
+
+  const overlay = document.getElementById('resultado-overlay');
+  document.getElementById('res-icon').textContent = win ? '⚡' : '💀';
+  document.getElementById('res-title').className = 'res-title '+(win?'win':'lose');
+  document.getElementById('res-title').textContent = win ? 'victoria' : 'derrota';
+  document.getElementById('res-sub').textContent = win
+    ? `+${gain} tokens · +${xpChange} XP · ${rivalSel.name} cayó`
+    : `${Math.abs(xpChange)} XP perdidos · vuelve más fuerte`;
+
+  const frases = win ? FRASES_WIN : FRASES_LOSE;
+  document.getElementById('rey-quote').textContent = frases[Math.floor(Math.random()*frases.length)];
+
+  overlay.classList.add('show');
+  win ? playWin() : playLose();
+}
+
+function closeResultado(){
+  document.getElementById('resultado-overlay').classList.remove('show');
+  document.getElementById('btn-duelo').disabled = false;
+  document.getElementById('btn-duelo').textContent = '⚔ iniciar duelo';
+  document.getElementById('my-xp').textContent = xp+' XP';
+  document.getElementById('tok-disp').textContent = tokens;
+  rivalSel = null; apuesta = 0;
+  document.querySelectorAll('.rival-row,.apuesta-btn').forEach(x=>x.classList.remove('sel'));
+  document.getElementById('rival-name').textContent = '— elige rival —';
+  document.getElementById('rival-xp').textContent = '---';
+  document.getElementById('vs-stake').textContent = 'elige apuesta';
+  renderHist();
+}
+
+function renderHist(){
+  const hist = JSON.parse(localStorage.getItem('gbt_duelo_hist')||'[]');
+  const el = document.getElementById('hist-list');
+  if(hist.length===0){ el.innerHTML='<div style="font-size:12px;color:rgba(221,218,240,.2);padding:12px 0;">// aún no has dueleado</div>'; return; }
+  el.innerHTML = hist.map(h=>`
+    <div class="hist-row">
+      <span class="hist-result ${h.win?'w':'l'}">${h.win?'victoria':'derrota'}</span>
+      <span class="hist-rival">${h.rival}</span>
+      <span class="hist-pts">${h.win?'+'+h.gain+' tok':h.xpChange+' XP'}</span>
+    </div>
+  `).join('');
+}
+
+// ── SOUNDS ──
+function playDuelStart(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const now=ctx.currentTime;
+    [110,138,165,110,165,220].forEach((f,i)=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.type='sawtooth';o.frequency.value=f;
+      g.gain.setValueAtTime(0,now+i*.07);
+      g.gain.linearRampToValueAtTime(.12,now+i*.07+.04);
+      g.gain.exponentialRampToValueAtTime(.001,now+i*.07+.25);
+      o.connect(g);g.connect(ctx.destination);
+      o.start(now+i*.07);o.stop(now+i*.07+.3);
+    });
+  }catch(e){}
+}
+function playWin(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const now=ctx.currentTime;
+    [330,440,554,659,880].forEach((f,i)=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.type='sine';o.frequency.value=f;
+      g.gain.setValueAtTime(0,now+i*.1);
+      g.gain.linearRampToValueAtTime(.15,now+i*.1+.06);
+      g.gain.exponentialRampToValueAtTime(.001,now+i*.1+.5);
+      o.connect(g);g.connect(ctx.destination);
+      o.start(now+i*.1);o.stop(now+i*.1+.5);
+    });
+  }catch(e){}
+}
+function playLose(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const now=ctx.currentTime;
+    [220,196,175,165].forEach((f,i)=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.type='triangle';o.frequency.value=f;
+      g.gain.setValueAtTime(0,now+i*.15);
+      g.gain.linearRampToValueAtTime(.12,now+i*.15+.08);
+      g.gain.exponentialRampToValueAtTime(.001,now+i*.15+.6);
+      o.connect(g);g.connect(ctx.destination);
+      o.start(now+i*.15);o.stop(now+i*.15+.7);
+    });
+  }catch(e){}
+}
+
+// ── NAV ──
+function navTo(dest){
+  const routes={nodo:'p06_tablero.html',misiones:'p07_misiones.html',duelo:'p08_duelo.html',skill:'p09_skill.html',market:'p10_market.html',universo:'p11_universo.html'};
+  document.body.style.transition='opacity .25s';
+  document.body.style.opacity='0';
+  setTimeout(()=>{ window.location.href=routes[dest]||'p06_tablero.html'; },260);
+}
+
+// ── INIT ──
+renderRivals();
+renderHist();
+</script>
+</body>
+</html>
