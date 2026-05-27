@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>gamb1t0_ · sistema</title>
+<link rel="icon" href="img/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{
+  min-height:100%;
+  background:#fff;
+  font-family:'Fira Code','Courier New',monospace;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.terminal{
+  width:100%;
+  max-width:420px;
+  padding:40px 28px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+.t-line{
+  font-size:clamp(16px,4.5vw,22px);
+  color:#07070f;
+  letter-spacing:.04em;
+  line-height:1.5;
+  min-height:1.5em;
+  display:flex;
+  align-items:center;
+}
+.t-line.cmd{
+  font-size:clamp(18px,5vw,26px);
+  font-weight:700;
+  color:#07070f;
+}
+.t-line.dim{
+  color:rgba(7,7,15,.35);
+  font-size:clamp(13px,3.5vw,16px);
+}
+.cursor-blink{
+  display:inline-block;
+  width:10px;
+  height:1.1em;
+  background:#07070f;
+  margin-left:3px;
+  vertical-align:middle;
+  animation:cblink 1.06s step-start infinite;
+}
+@keyframes cblink{0%,100%{opacity:1}50%{opacity:0}}
+</style>
+</head>
+<body>
+
+<div class="terminal" id="terminal">
+  <!-- líneas generadas por JS -->
+</div>
+
+<script>
+const terminal = document.getElementById('terminal');
+
+// Secuencia de pantalla
+// Cada item: { text, class, delay_before, typeSpeed }
+const SEQUENCE = [
+  { text:'> freedom.exe', cls:'cmd',  pre:400,  speed:55,  cursor:false, hold:700 },
+  { text:'inicializando identidad...',  cls:'dim', pre:400,  speed:28, cursor:false, hold:0 },
+  { text:'leyendo huella digital...',   cls:'dim', pre:160,  speed:28, cursor:false, hold:0 },
+  { text:'usuario encontrado',          cls:'t-line', pre:300, speed:42, cursor:false, hold:0 },
+  { text:'bienvenido',                  cls:'cmd',  pre:340,  speed:60,  cursor:true,  hold:999999 },
+];
+
+let lineEls = [];
+let currentLine = 0;
+
+function addLine(cls){
+  const el = document.createElement('div');
+  el.className = 't-line ' + (cls||'');
+  terminal.appendChild(el);
+  return el;
+}
+
+function typeLine(el, text, speed, cursor, cb){
+  let i = 0;
+  const cur = document.createElement('span');
+  cur.className = 'cursor-blink';
+  el.appendChild(cur);
+
+  if(speed === 0){
+    el.insertBefore(document.createTextNode(text), cur);
+    if(!cursor) cur.remove();
+    cb && setTimeout(cb, 0);
+    return;
+  }
+
+  function next(){
+    if(i < text.length){
+      el.insertBefore(document.createTextNode(text[i]), cur);
+      i++;
+      setTimeout(next, speed + (Math.random()*speed*.4 - speed*.2));
+    } else {
+      if(!cursor) cur.remove();
+      cb && cb();
+    }
+  }
+  next();
+}
+
+function runSequence(idx){
+  if(idx >= SEQUENCE.length) return;
+  const s = SEQUENCE[idx];
+
+  setTimeout(()=>{
+    const el = addLine(s.cls);
+    typeLine(el, s.text, s.speed, s.cursor, ()=>{
+      if(s.hold < 999999){
+        setTimeout(()=> runSequence(idx+1), s.hold);
+      } else {
+        // última línea — esperar y luego ir a P3
+        setTimeout(()=>{
+          fadeOut(()=>{ window.location.href='demo.html#arcanos'; });
+        }, 1800);
+      }
+    });
+  }, s.pre);
+}
+
+function fadeOut(cb){
+  document.body.style.transition='opacity .5s ease-out';
+  document.body.style.opacity='0';
+  setTimeout(cb, 520);
+}
+
+// arrancar
+runSequence(0);
+</script>
+</body>
+</html>

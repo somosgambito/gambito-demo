@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>gamb1t0_ · ingresar</title>
+<link rel="icon" href="img/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;background:#000;color:#F0B429;font-family:'Fira Code','Courier New',monospace;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;}
+.wrap{width:100%;max-width:420px;padding:36px 24px 60px;display:flex;flex-direction:column;align-items:center;min-height:100vh;}
+.logo-img{width:88px;height:88px;object-fit:contain;margin-bottom:14px;filter:drop-shadow(0 0 18px rgba(240,180,41,.4));}
+.logo-text{font-size:clamp(36px,9vw,52px);font-weight:700;letter-spacing:.16em;color:#F0B429;margin-bottom:6px;line-height:1;}
+.cursor{animation:blink 1.06s step-start infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.freedom{font-size:13px;color:rgba(240,180,41,.45);letter-spacing:.18em;margin-bottom:32px;}
+.form{width:100%;display:flex;flex-direction:column;}
+.f-group{display:flex;flex-direction:column;gap:7px;margin-bottom:18px;}
+.f-label{font-size:14px;color:rgba(240,180,41,.7);letter-spacing:.06em;}
+.f-label .opt{font-size:12px;color:rgba(240,180,41,.3);margin-left:6px;}
+.f-input{width:100%;background:rgba(255,255,255,.05);border:.5px solid rgba(240,180,41,.2);border-radius:8px;padding:14px 16px;font-family:'Fira Code',monospace;font-size:15px;color:rgba(255,255,255,.9);outline:none;transition:border-color .2s,background .2s;-webkit-appearance:none;appearance:none;}
+.f-input::placeholder{color:rgba(255,255,255,.2);}
+.f-input:focus{border-color:rgba(240,180,41,.6);}
+.f-input.invalid{border-color:#ff4d6d !important;background:rgba(255,77,109,.07);}
+.f-select{width:100%;background:rgba(255,255,255,.05);border:.5px solid rgba(240,180,41,.2);border-radius:8px;padding:14px 16px;font-family:'Fira Code',monospace;font-size:15px;color:rgba(255,255,255,.9);outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none;cursor:pointer;}
+.f-select:focus{border-color:rgba(240,180,41,.6);}
+.f-select option,.f-select optgroup{background:#0a0a0a;color:rgba(255,255,255,.85);}
+.date-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.field-err{font-size:12px;color:#ff4d6d;margin-top:4px;display:none;line-height:1.5;}
+.field-err.show{display:block;}
+.trust-block{background:rgba(0,229,255,.05);border:.5px solid rgba(0,229,255,.2);border-radius:10px;padding:16px;margin-bottom:18px;display:none;}
+.trust-block.show{display:block;}
+.trust-title{font-size:14px;color:#00e5ff;margin-bottom:6px;font-weight:700;}
+.trust-sub{font-size:13px;color:rgba(221,218,240,.55);line-height:1.7;margin-bottom:12px;}
+.trust-skip{font-size:12px;color:rgba(240,180,41,.4);cursor:pointer;text-decoration:underline;text-underline-offset:3px;margin-top:8px;display:inline-block;}
+.promo-block{background:rgba(0,200,150,.05);border:.5px solid rgba(0,200,150,.2);border-radius:10px;padding:14px;margin-bottom:18px;display:none;}
+.promo-block.show{display:block;}
+.promo-title{font-size:14px;color:#00c896;font-weight:700;margin-bottom:6px;}
+.promo-sub{font-size:13px;color:rgba(221,218,240,.5);line-height:1.6;}
+.btn-submit{width:100%;background:#F0B429;color:#000;font-family:'Fira Code',monospace;font-size:17px;font-weight:700;letter-spacing:.1em;border:none;border-radius:8px;padding:17px;cursor:pointer;transition:opacity .2s,transform .1s;margin-top:4px;}
+.btn-submit:hover{opacity:.9;}
+.btn-submit:active{transform:scale(.98);}
+.btn-submit:disabled{opacity:.4;cursor:not-allowed;}
+.gmail-hint{font-size:12px;color:rgba(240,180,41,.4);margin-top:5px;display:none;}
+.gmail-hint.show{display:block;}
+.err-global{font-size:13px;color:#ff4d6d;text-align:center;margin-top:12px;display:none;line-height:1.5;padding:10px;border:.5px solid rgba(255,77,109,.2);border-radius:8px;background:rgba(255,77,109,.06);}
+#eyes-overlay{position:fixed;inset:0;background:#000;z-index:999;display:none;flex-direction:column;align-items:center;justify-content:center;}
+#eyes-overlay.show{display:flex;}
+.eyes-img{width:100%;max-width:640px;height:auto;opacity:0;transition:opacity .5s ease-in;}
+.eyes-img.show{opacity:1;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <img src="img/logo.jpg" alt="gamb1t0" class="logo-img">
+  <div class="logo-text">gamb1t0<span class="cursor">_</span></div>
+  <div class="freedom">freedom.exe</div>
+
+  <form class="form" id="form" novalidate>
+
+    <div class="f-group">
+      <label class="f-label" for="correo">correo electrónico</label>
+      <input class="f-input" type="email" id="correo" placeholder="tu@correo.com" autocomplete="email" oninput="checkGmail(this.value)">
+      <div class="gmail-hint" id="gmail-hint">// recomendamos usar Gmail para mejor experiencia</div>
+      <div class="field-err" id="err-correo"></div>
+    </div>
+
+    <div class="f-group">
+      <label class="f-label">fecha de nacimiento</label>
+      <div class="date-row">
+        <input class="f-input" type="number" id="dia" placeholder="día" min="1" max="31" onblur="validateDia(this)">
+        <input class="f-input" type="number" id="mes" placeholder="mes" min="1" max="12" onblur="validateMes(this)">
+        <input class="f-input" type="number" id="anio" placeholder="año" onblur="validateAnio(this)">
+      </div>
+      <div class="field-err" id="err-fecha"></div>
+    </div>
+
+    <div class="trust-block" id="trust-block">
+      <div class="trust-title">// adulto de confianza <span style="font-size:10px;background:rgba(0,229,255,.15);color:#00e5ff;padding:2px 8px;border-radius:4px;margin-left:6px;">+ skins gratis</span></div>
+      <div class="trust-sub">necesitamos saber que alguien te cuida.<br>registra a tu papá, mamá o adulto de confianza<br>y desbloquea skins exclusivas.</div>
+      <div class="f-group" style="margin-bottom:8px;">
+        <label class="f-label" style="font-size:13px;">correo o número del adulto</label>
+        <input class="f-input" type="text" id="trust-contact" placeholder="correo o número de celular">
+      </div>
+      <span class="trust-skip" onclick="skipTrust()">// lo haré después →</span>
+    </div>
+
+    <div class="promo-block" id="promo-block">
+      <div class="promo-title">// promotor</div>
+      <div class="promo-sub">por cada jugador que invites y se registre<br>recibirás GUS directamente en tu cuenta.</div>
+    </div>
+
+    <div class="f-group">
+      <label class="f-label" for="distrito">distrito <span class="opt">· opcional</span></label>
+      <select class="f-select" id="distrito">
+        <option value="">selecciona...</option>
+        <optgroup label="Lima Norte">
+          <option>Comas</option><option>Los Olivos</option><option>Independencia</option>
+          <option>Carabayllo</option><option>Puente Piedra</option><option>San Martín de Porres</option>
+        </optgroup>
+        <optgroup label="Lima Este">
+          <option>San Juan de Lurigancho</option><option>Ate</option><option>El Agustino</option>
+          <option>Santa Anita</option><option>Lurigancho</option>
+        </optgroup>
+        <optgroup label="Lima Sur">
+          <option>Villa El Salvador</option><option>Villa María del Triunfo</option>
+          <option>San Juan de Miraflores</option><option>Chorrillos</option>
+        </optgroup>
+        <optgroup label="Lima Centro">
+          <option>Cercado de Lima</option><option>La Victoria</option>
+          <option>Lince</option><option>Breña</option><option>Rímac</option>
+        </optgroup>
+        <optgroup label="Lima Moderna">
+          <option>Miraflores</option><option>San Isidro</option><option>Surco</option>
+          <option>Barranco</option><option>San Borja</option><option>La Molina</option>
+        </optgroup>
+        <optgroup label="Provincias Perú">
+          <option>Arequipa</option><option>Trujillo</option><option>Chiclayo</option>
+          <option>Piura</option><option>Cusco</option><option>Iquitos</option>
+          <option>Otra provincia</option>
+        </optgroup>
+        <optgroup label="Exterior"><option>Fuera del Perú</option></optgroup>
+        <option value="otro">Otro</option>
+      </select>
+    </div>
+
+    <div class="f-group">
+      <label class="f-label" for="pais">país <span class="opt">· opcional</span></label>
+      <input class="f-input" type="text" id="pais" placeholder="Perú" value="Perú" autocomplete="country-name">
+    </div>
+
+    <button type="submit" class="btn-submit" id="btn-submit">ingresar</button>
+  </form>
+
+  <div class="err-global" id="err-global"></div>
+</div>
+
+<div id="eyes-overlay">
+  <img src="img/ojos.jpg" alt="" class="eyes-img" id="eyes-img">
+</div>
+
+<script>
+function checkGmail(val){
+  const h=document.getElementById('gmail-hint');
+  h.classList.toggle('show', val.includes('@') && !val.toLowerCase().includes('@gmail.com'));
+}
+
+function validateDia(el){
+  const v=parseInt(el.value);
+  if(el.value===''||isNaN(v)||v<1||v>31){
+    el.classList.add('invalid');
+  } else {
+    el.classList.remove('invalid');
+  }
+}
+
+function validateMes(el){
+  const v=parseInt(el.value);
+  if(el.value===''||isNaN(v)||v<1||v>12){
+    el.classList.add('invalid');
+  } else {
+    el.classList.remove('invalid');
+  }
+}
+
+function validateAnio(el){
+  const val=el.value.trim();
+  const n=parseInt(val);
+  const errFecha=document.getElementById('err-fecha');
+  const tb=document.getElementById('trust-block');
+  const pb=document.getElementById('promo-block');
+
+  if(val===''){ el.classList.remove('invalid'); errFecha.classList.remove('show'); return; }
+
+  if(isNaN(n)||n<1920||n>2015){
+    el.classList.add('invalid');
+    errFecha.textContent='// indica un año válido (1920 – 2015)';
+    errFecha.classList.add('show');
+    tb.classList.remove('show');
+    pb.classList.remove('show');
+    return;
+  }
+
+  el.classList.remove('invalid');
+  errFecha.classList.remove('show');
+
+  const edad=new Date().getFullYear()-n;
+  tb.classList.remove('show');
+  pb.classList.remove('show');
+
+  if(edad<15){
+    errFecha.textContent='// aún no es tu momento · te esperamos en '+(n+15);
+    errFecha.classList.add('show');
+    el.classList.add('invalid');
+  } else if(edad>=15&&edad<=17){
+    tb.classList.add('show');
+  } else if(edad>=18){
+    pb.classList.add('show');
+  }
+}
+
+function skipTrust(){
+  document.getElementById('trust-block').classList.remove('show');
+}
+
+function playLightning(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const buf=ctx.createBuffer(1,ctx.sampleRate*0.4,ctx.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++){
+      const env=i<2200?i/2200:Math.exp(-(i-2200)/9000);
+      d[i]=(Math.random()*2-1)*env*0.9;
+    }
+    const src=ctx.createBufferSource();src.buffer=buf;
+    const g=ctx.createGain();g.gain.value=0.75;
+    src.connect(g);g.connect(ctx.destination);src.start();
+  }catch(e){}
+}
+
+document.getElementById('form').addEventListener('submit',function(e){
+  e.preventDefault();
+  const correo=document.getElementById('correo').value.trim();
+  const dia=parseInt(document.getElementById('dia').value)||0;
+  const mes=parseInt(document.getElementById('mes').value)||0;
+  const anio=parseInt(document.getElementById('anio').value)||0;
+  const errG=document.getElementById('err-global');
+  errG.style.display='none';
+
+  // validar correo
+  if(!correo||!correo.includes('@')){
+    document.getElementById('correo').classList.add('invalid');
+    showErr('// correo inválido'); return;
+  }
+
+  // validar campos fecha
+  if(!dia||dia<1||dia>31){
+    document.getElementById('dia').classList.add('invalid');
+    showErr('// día inválido'); return;
+  }
+  if(!mes||mes<1||mes>12){
+    document.getElementById('mes').classList.add('invalid');
+    showErr('// mes inválido'); return;
+  }
+  if(!anio||anio<1920||anio>2015){
+    document.getElementById('anio').classList.add('invalid');
+    document.getElementById('err-fecha').textContent='// indica un año válido (1920 – 2015)';
+    document.getElementById('err-fecha').classList.add('show');
+    showErr('// indica un año válido (1920 – 2015)'); return;
+  }
+
+  // validar fecha real
+  const testDate=new Date(anio,mes-1,dia);
+  if(testDate.getFullYear()!==anio||testDate.getMonth()!==mes-1||testDate.getDate()!==dia){
+    showErr('// esa fecha no existe · verifica'); return;
+  }
+
+  const edad=new Date().getFullYear()-anio;
+  const btn=document.getElementById('btn-submit');
+  btn.disabled=true; btn.textContent='// verificando...';
+
+  const datos={
+    correo,dia,mes,anio,edad,
+    distrito:document.getElementById('distrito').value,
+    pais:document.getElementById('pais').value.trim()||'Perú',
+    trust:document.getElementById('trust-contact')?document.getElementById('trust-contact').value.trim():'',
+    grupo:edad<15?'menor_15':edad<=17?'15_17':'18_mas'
+  };
+  localStorage.setItem('gbt_player',JSON.stringify(datos));
+  localStorage.setItem('gambito_registrado','1');
+
+  if(edad<15){
+    showEyes(()=>goWaitlist(anio)); return;
+  }
+  showEyes(()=>{ window.location.href='demo.html'; });
+});
+
+function showErr(msg){
+  const e=document.getElementById('err-global');
+  e.textContent=msg; e.style.display='block';
+  document.getElementById('btn-submit').disabled=false;
+  document.getElementById('btn-submit').textContent='ingresar';
+}
+
+function showEyes(cb){
+  const ov=document.getElementById('eyes-overlay');
+  const img=document.getElementById('eyes-img');
+  ov.classList.add('show');
+  playLightning();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>img.classList.add('show')));
+  setTimeout(()=>{
+    img.style.transition='opacity .4s ease-out';
+    img.style.opacity='0';
+    setTimeout(()=>{ov.classList.remove('show');cb();},420);
+  },2400);
+}
+
+function goWaitlist(anio){
+  document.body.innerHTML=`
+    <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;background:#000;">
+      <img src="img/logo.jpg" style="width:72px;margin-bottom:20px;filter:drop-shadow(0 0 14px rgba(240,180,41,.3));">
+      <div style="font-size:30px;font-weight:700;color:#F0B429;letter-spacing:.14em;margin-bottom:20px;">te esperamos pronto</div>
+      <div style="font-size:15px;color:rgba(240,180,41,.5);line-height:2;max-width:280px;">
+        gi ya sabe que llegaste.<br>
+        el tablero te espera en ${anio+15}.<br><br>
+        <span style="font-size:12px;color:rgba(240,180,41,.25);">— gamb1t0_</span>
+      </div>
+    </div>`;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>gamb1t0_ · tablero</title>
+<link rel="icon" href="img/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Code','Courier New',monospace;overflow:hidden;}
+
+/* ══ FONDO NODO INMERSIVO ══ */
+#nodo-bg{
+  position:fixed;inset:0;z-index:0;
+  transition:opacity 1.5s ease;
+}
+#nodo-bg canvas{position:absolute;inset:0;width:100%;height:100%;}
+#nodo-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.2) 0%,rgba(0,0,0,.0) 40%,rgba(7,7,15,.85) 75%,rgba(7,7,15,1) 100%);}
+
+/* ══ AVATAR VIDEOLLAMADA ══ */
+#av-scene{
+  position:fixed;
+  bottom:72px;left:50%;
+  transform:translateX(-50%);
+  width:100%;max-width:440px;
+  height:62vh;
+  z-index:2;
+  display:flex;align-items:flex-end;justify-content:center;
+  pointer-events:none;
+}
+#av-scene img{
+  height:100%;
+  max-width:100%;
+  object-fit:contain;
+  object-position:top center;
+  filter:drop-shadow(0 8px 32px rgba(0,0,0,.6));
+  animation:avBreath 4s ease-in-out infinite;
+}
+@keyframes avBreath{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* NOMBRE SOBRE AVATAR */
+#av-nameplate{
+  position:fixed;
+  bottom:calc(72px + 62vh - 32px);
+  left:50%;transform:translateX(-50%);
+  z-index:3;
+  text-align:center;
+  pointer-events:none;
+  width:100%;
+}
+#av-nameplate .av-nm{font-size:18px;font-weight:700;color:#fff;letter-spacing:.08em;text-shadow:0 2px 12px rgba(0,0,0,.8);}
+#av-nameplate .av-arc{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;}
+
+/* ══ TOP BAR ══ */
+.topbar{
+  position:fixed;top:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:440px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px 10px;
+  z-index:10;
+}
+.top-logo{font-size:18px;font-weight:700;color:#c9a84c;letter-spacing:.14em;text-shadow:0 2px 8px rgba(0,0,0,.6);}
+.cursor{animation:blink 1.06s step-start infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.top-right{display:flex;align-items:center;gap:8px;}
+.top-btn{
+  background:rgba(7,7,15,.7);border:.5px solid rgba(221,218,240,.15);
+  border-radius:8px;padding:7px 11px;font-family:'Fira Code',monospace;
+  font-size:11px;color:rgba(221,218,240,.7);cursor:pointer;transition:all .2s;
+  backdrop-filter:blur(8px);
+}
+.top-btn:hover{border-color:rgba(201,168,76,.4);color:#c9a84c;}
+
+/* ══ STATS FLOTANTES ══ */
+.stats-bar{
+  position:fixed;
+  top:60px;left:50%;transform:translateX(-50%);
+  width:100%;max-width:440px;
+  padding:0 16px;
+  display:flex;gap:8px;
+  z-index:10;
+}
+.stat-pill{
+  background:rgba(7,7,15,.75);border:.5px solid rgba(221,218,240,.1);
+  border-radius:20px;padding:5px 12px;
+  display:flex;align-items:center;gap:5px;
+  backdrop-filter:blur(8px);
+  font-size:12px;font-weight:700;
+}
+.stat-pill.xp{color:#7f6af0;border-color:rgba(127,106,240,.3);}
+.stat-pill.gus{color:#c9a84c;border-color:rgba(201,168,76,.3);}
+.stat-pill.tok{color:#00e5ff;border-color:rgba(0,229,255,.3);}
+.stat-dot{width:6px;height:6px;border-radius:50%;}
+.stat-dot.xp{background:#7f6af0;}
+.stat-dot.gus{background:#c9a84c;}
+.stat-dot.tok{background:#00e5ff;}
+
+/* ══ PANEL INFERIOR ══ */
+.bottom-panel{
+  position:fixed;bottom:66px;left:50%;transform:translateX(-50%);
+  width:100%;max-width:440px;
+  padding:0 16px 8px;
+  z-index:5;
+}
+
+/* GI */
+.gi-contact{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(7,7,15,.8);border:.5px solid rgba(0,229,255,.2);
+  border-radius:12px;padding:10px 14px;margin-bottom:8px;cursor:pointer;
+  backdrop-filter:blur(12px);transition:background .2s;
+}
+.gi-contact:hover{background:rgba(0,229,255,.08);}
+.gi-av{width:34px;height:34px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(0,229,255,.4);background:rgba(0,229,255,.1);flex-shrink:0;}
+.gi-info{flex:1;}
+.gi-name{font-size:12px;color:#00e5ff;font-weight:700;}
+.gi-hint{font-size:10px;color:rgba(221,218,240,.3);}
+.gi-wsp{font-size:10px;color:#25d366;background:rgba(37,211,102,.1);border:.5px solid rgba(37,211,102,.25);border-radius:6px;padding:4px 9px;}
+
+/* NODO AMBIENTAL */
+.nodo-row{
+  display:flex;align-items:center;gap:6px;
+  margin-bottom:6px;
+}
+.nodo-label{font-size:9px;color:rgba(221,218,240,.25);letter-spacing:.1em;text-transform:uppercase;margin-right:2px;}
+.nodo-btn{
+  background:rgba(7,7,15,.7);border:.5px solid rgba(221,218,240,.1);
+  border-radius:6px;padding:5px 9px;font-family:'Fira Code',monospace;
+  font-size:10px;color:rgba(221,218,240,.45);cursor:pointer;transition:all .2s;
+  backdrop-filter:blur(8px);
+}
+.nodo-btn.active{border-color:#c9a84c;color:#c9a84c;background:rgba(201,168,76,.1);}
+.nodo-time{font-size:9px;color:rgba(221,218,240,.2);margin-left:auto;}
+
+/* RENOV */
+.renov-row{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:10px;color:rgba(221,218,240,.25);padding:0 2px;
+}
+.renov-time{color:#00e5ff;font-weight:700;}
+
+/* ══ BOTTOM NAV ══ */
+.bottom-nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:440px;
+  background:rgba(7,7,15,.95);border-top:.5px solid rgba(221,218,240,.08);
+  display:flex;align-items:center;justify-content:space-around;
+  padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+  z-index:100;backdrop-filter:blur(16px);
+}
+.nav-btn{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:pointer;transition:all .2s;padding:4px 10px;border-radius:8px;
+  background:none;border:none;font-family:'Fira Code',monospace;
+}
+.nav-btn:hover,.nav-btn.active{background:rgba(201,168,76,.08);}
+.nav-icon{font-size:19px;line-height:1;}
+.nav-label{font-size:9px;color:rgba(221,218,240,.35);letter-spacing:.05em;text-transform:uppercase;}
+.nav-btn.active .nav-label,.nav-btn.active .nav-icon{color:#c9a84c;}
+
+/* SLEEP */
+#sleep-overlay{position:fixed;inset:0;background:rgba(0,0,5,.96);z-index:500;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px;}
+#sleep-overlay.show{display:flex;}
+.sleep-av{width:90px;height:90px;border-radius:50%;object-fit:cover;filter:brightness(.25) saturate(.2);margin-bottom:14px;}
+.sleep-title{font-size:18px;font-weight:700;color:#7f6af0;margin-bottom:8px;}
+.sleep-msg{font-size:13px;color:rgba(221,218,240,.4);text-align:center;line-height:1.7;margin-bottom:16px;max-width:240px;}
+.sleep-time{font-size:26px;font-weight:700;color:#7f6af0;margin-bottom:16px;}
+.btn-wake{background:#7f6af0;color:#fff;font-family:'Fira Code',monospace;font-size:14px;font-weight:700;border:none;border-radius:8px;padding:13px 28px;cursor:pointer;}
+.wake-cost{font-size:11px;color:rgba(221,218,240,.3);margin-top:8px;}
+</style>
+</head>
+<body>
+
+<!-- FONDO -->
+<div id="nodo-bg">
+  <canvas id="bg-canvas"></canvas>
+  <div id="nodo-overlay"></div>
+</div>
+
+<!-- AVATAR MEDIO CUERPO -->
+<div id="av-scene">
+  <img src="img/gi_body.jpg" alt="avatar" id="av-body"
+       onerror="this.src='img/avatar_base.jpg'">
+</div>
+
+<!-- NOMBRE -->
+<div id="av-nameplate">
+  <div class="av-nm" id="av-nm">---</div>
+  <div class="av-arc" id="av-arc">---</div>
+</div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="top-logo">gamb1t0<span class="cursor">_</span></div>
+  <div class="top-right">
+    <div class="top-btn" onclick="goTo('market')">◆ market</div>
+    <div class="top-btn" onclick="goTo('universo')">◉ universo</div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-pill xp"><div class="stat-dot xp"></div><span id="s-xp">100</span> XP</div>
+  <div class="stat-pill gus"><div class="stat-dot gus"></div><span id="s-gus">50</span> GUS</div>
+  <div class="stat-pill tok"><div class="stat-dot tok"></div><span id="s-tok">120</span> tok</div>
+</div>
+
+<!-- PANEL INFERIOR -->
+<div class="bottom-panel">
+
+  <div class="gi-contact" onclick="openGi()">
+    <img src="img/gi_face.jpg" alt="gi" class="gi-av"
+         onerror="this.style.background='rgba(0,229,255,.15)';this.removeAttribute('src')">
+    <div class="gi-info">
+      <div class="gi-name">gi</div>
+      <div class="gi-hint" id="gi-hint">siempre está mirando</div>
+    </div>
+    <div class="gi-wsp">WhatsApp</div>
+  </div>
+
+  <div class="nodo-row">
+    <div class="nodo-label">// nodo</div>
+    <div class="nodo-btn active" id="nb-auto" onclick="setNodo('auto',this)">◈ auto</div>
+    <div class="nodo-btn" id="nb-day" onclick="setNodo('day',this)">☀</div>
+    <div class="nodo-btn" id="nb-night" onclick="setNodo('night',this)">☾</div>
+    <div class="nodo-btn" id="nb-golden" onclick="setNodo('golden',this)">◆</div>
+    <div class="nodo-time" id="nodo-time"></div>
+  </div>
+
+  <div class="renov-row">
+    <span>renovación de tokens</span>
+    <span class="renov-time" id="renov-time">--:--:--</span>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-btn active" id="nav-nodo" onclick="navTo('nodo',this)">
+    <span class="nav-icon">◈</span><span class="nav-label">nodo</span>
+  </button>
+  <button class="nav-btn" id="nav-misiones" onclick="navTo('misiones',this)">
+    <span class="nav-icon">⚔</span><span class="nav-label">misiones</span>
+  </button>
+  <button class="nav-btn" id="nav-duelo" onclick="navTo('duelo',this)">
+    <span class="nav-icon">◉</span><span class="nav-label">duelo</span>
+  </button>
+  <button class="nav-btn" id="nav-skill" onclick="navTo('skill',this)">
+    <span class="nav-icon">◆</span><span class="nav-label">skill tree</span>
+  </button>
+</div>
+
+<!-- SLEEP -->
+<div id="sleep-overlay">
+  <img src="img/avatar_base.jpg" alt="" class="sleep-av"
+       onerror="this.style.background='rgba(127,106,240,.15)';this.removeAttribute('src')">
+  <div class="sleep-title">avatar durmiendo</div>
+  <div class="sleep-msg">tu avatar descansa desde las 22:00<br>puedes despertarlo con tokens</div>
+  <div class="sleep-time" id="sleep-time">💤</div>
+  <button class="btn-wake" onclick="wakeUp()">despertar · 5 tokens</button>
+  <div class="wake-cost" id="wake-cost">tienes 120 tokens</div>
+</div>
+
+<script>
+const player = JSON.parse(localStorage.getItem('gbt_player')||'{}');
+let tokens=120,xp=100,gus=50;
+
+function updateStats(){
+  document.getElementById('av-nm').textContent   = player.avName    ||'---';
+  document.getElementById('av-arc').textContent  = player.arcanoName||'---';
+  document.getElementById('s-xp').textContent    = xp;
+  document.getElementById('s-gus').textContent   = gus;
+  document.getElementById('s-tok').textContent   = tokens;
+  document.getElementById('wake-cost').textContent='tienes '+tokens+' tokens';
+}
+updateStats();
+
+// ── CANVAS BACKGROUND ──
+const canvas = document.getElementById('bg-canvas');
+const ctx2d  = canvas.getContext('2d');
+let bgMode   = 'auto';
+let particles= [];
+
+function resizeCanvas(){
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+// paletas por modo
+const PALETTES = {
+  day:    { sky:['#1a3a5c','#0d2a40','#07192b'], particles:'#4a9aba', count:0  },
+  night:  { sky:['#000008','#04040f','#07070f'], particles:'#ffffff', count:60 },
+  golden: { sky:['#1a0f05','#120a03','#07070f'], particles:'#c9a84c', count:20 },
+  auto:   null,
+};
+
+function getAutoMode(){
+  const h=new Date().getHours();
+  if(h>=6&&h<18)  return 'day';
+  if(h>=18&&h<20) return 'golden';
+  return 'night';
+}
+
+function initParticles(mode){
+  const pal=PALETTES[mode];
+  particles=[];
+  for(let i=0;i<pal.count;i++){
+    particles.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height*.6,
+      r:Math.random()*1.5+.5,
+      o:Math.random()*.8+.2,
+      speed:Math.random()*.3+.1,
+      color:pal.particles
+    });
+  }
+}
+
+function drawBg(mode){
+  const pal=PALETTES[mode];
+  const grad=ctx2d.createLinearGradient(0,0,0,canvas.height);
+  pal.sky.forEach((c,i)=>grad.addColorStop(i/(pal.sky.length-1),c));
+  ctx2d.fillStyle=grad;
+  ctx2d.fillRect(0,0,canvas.width,canvas.height);
+
+  // luna/sol
+  if(mode==='night'){
+    ctx2d.beginPath();
+    ctx2d.arc(canvas.width*.75, canvas.height*.15, 18, 0, Math.PI*2);
+    ctx2d.fillStyle='rgba(255,255,220,.9)';
+    ctx2d.fill();
+    ctx2d.beginPath();
+    ctx2d.arc(canvas.width*.75+8, canvas.height*.15-6, 14, 0, Math.PI*2);
+    ctx2d.fillStyle=PALETTES.night.sky[0];
+    ctx2d.fill();
+  } else if(mode==='day'){
+    const sunGrad=ctx2d.createRadialGradient(canvas.width*.7,canvas.height*.12,0,canvas.width*.7,canvas.height*.12,50);
+    sunGrad.addColorStop(0,'rgba(255,240,180,.6)');
+    sunGrad.addColorStop(1,'rgba(255,240,180,0)');
+    ctx2d.fillStyle=sunGrad;
+    ctx2d.fillRect(0,0,canvas.width,canvas.height);
+  } else if(mode==='golden'){
+    const sunGrad=ctx2d.createRadialGradient(canvas.width*.6,canvas.height*.2,0,canvas.width*.6,canvas.height*.2,80);
+    sunGrad.addColorStop(0,'rgba(255,150,50,.4)');
+    sunGrad.addColorStop(1,'rgba(255,100,20,0)');
+    ctx2d.fillStyle=sunGrad;
+    ctx2d.fillRect(0,0,canvas.width,canvas.height);
+  }
+
+  // partículas (estrellas/polvo)
+  particles.forEach(p=>{
+    ctx2d.beginPath();
+    ctx2d.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx2d.fillStyle=p.color+(Math.floor(p.o*255).toString(16).padStart(2,'0'));
+    ctx2d.fill();
+    p.o+=Math.sin(Date.now()*p.speed*.001)*.02;
+    p.o=Math.max(.1,Math.min(1,p.o));
+  });
+}
+
+let animFrame;
+function startAnim(mode){
+  cancelAnimationFrame(animFrame);
+  initParticles(mode);
+  function loop(){
+    drawBg(mode);
+    animFrame=requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+function setNodo(mode,el){
+  document.querySelectorAll('.nodo-btn').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  bgMode=mode;
+  const resolved = mode==='auto' ? getAutoMode() : mode;
+  startAnim(resolved);
+  updateNodoTime();
+  localStorage.setItem('gbt_nodo',mode);
+}
+
+function updateNodoTime(){
+  const h=new Date().getHours();
+  const label=h>=6&&h<12?'mañana':h>=12&&h<18?'tarde':h>=18&&h<20?'atardecer':'noche';
+  document.getElementById('nodo-time').textContent=
+    new Date().toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'})+' · '+label;
+}
+setInterval(updateNodoTime,60000);
+
+// ── RENOVACIÓN ──
+function updateRenov(){
+  const now=new Date();
+  const next=new Date();
+  next.setHours(17,53,0,0);
+  if(next<=now) next.setDate(next.getDate()+1);
+  const diff=next-now;
+  const h=Math.floor(diff/3600000);
+  const m=Math.floor((diff%3600000)/60000);
+  const s=Math.floor((diff%60000)/1000);
+  document.getElementById('renov-time').textContent=
+    String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+updateRenov();
+setInterval(updateRenov,1000);
+
+// ── SLEEP ──
+function checkSleep(){
+  const h=new Date().getHours();
+  if(h>=22||h<6){
+    document.getElementById('sleep-time').textContent='💤 '+new Date().toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('sleep-overlay').classList.add('show');
+  }
+}
+function wakeUp(){
+  if(tokens<5) return;
+  tokens-=5; updateStats();
+  document.getElementById('sleep-overlay').classList.remove('show');
+}
+
+// ── GI ──
+function openGi(){
+  const msg=encodeURIComponent('hola gi, soy '+(player.user||'un jugador')+' de gamb1t0_');
+  window.open('https://wa.me/51948132793?text='+msg,'_blank');
+}
+
+// ── NAV ──
+function navTo(dest,el){
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  if(dest!=='nodo') goTo(dest);
+}
+function goTo(dest){
+  cancelAnimationFrame(animFrame);
+  document.body.style.transition='opacity .3s';
+  document.body.style.opacity='0';
+  const routes={market:'demo.html#market',universo:'demo.html#universo',misiones:'demo.html#misiones',duelo:'demo.html#duelo',skill:'demo.html#skill'};
+  setTimeout(()=>{ window.location.href=routes[dest]||'demo.html'; },320);
+}
+
+// ── INIT ──
+window.addEventListener('load',()=>{
+  const saved=localStorage.getItem('gbt_nodo')||'auto';
+  const el=document.getElementById('nb-'+saved);
+  setNodo(saved,el);
+  checkSleep();
+  // halo color ojos en avatar
+  const eyeColor=player.eyeColor||'#c9a84c';
+  document.getElementById('av-body').style.filter=
+    `drop-shadow(0 0 24px ${eyeColor}55) drop-shadow(0 8px 32px rgba(0,0,0,.7))`;
+});
+</script>
+</body>
+</html>

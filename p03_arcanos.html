@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>gamb1t0_ · arcanos</title>
+<link rel="icon" href="img/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Code','Courier New',monospace;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;}
+
+/* ── WRAP ── */
+.wrap{width:100%;max-width:440px;padding:28px 20px 60px;display:flex;flex-direction:column;min-height:100vh;}
+
+/* ── GI BUBBLE ── */
+.gi-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:24px;}
+.gi-av{width:44px;height:44px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(0,229,255,.4);flex-shrink:0;background:rgba(0,229,255,.1);}
+.gi-bubble{background:rgba(0,229,255,.07);border:.5px solid rgba(0,229,255,.18);border-radius:0 12px 12px 12px;padding:13px 16px;font-size:15px;color:#dddaf0;line-height:1.65;flex:1;}
+
+/* ── TIMER ── */
+.timer-wrap{margin-bottom:20px;}
+.timer-bar-bg{width:100%;height:5px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;margin-bottom:10px;}
+.timer-bar{height:100%;background:#00e5ff;border-radius:4px;transition:width 1s linear,background .5s;}
+.timer-num{font-size:clamp(52px,14vw,80px);font-weight:700;color:#00e5ff;text-align:center;line-height:1;letter-spacing:.04em;transition:color .3s;}
+.timer-num.urgent{color:#ff4d6d;animation:tpulse .5s step-start infinite;}
+@keyframes tpulse{0%,100%{opacity:1}50%{opacity:.3}}
+.timer-label{font-size:11px;color:rgba(221,218,240,.25);text-align:center;letter-spacing:.1em;text-transform:uppercase;margin-top:6px;}
+
+/* ── ARCANOS GRID ── */
+.arc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.arc-card{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:14px;padding:18px 14px;cursor:pointer;transition:all .25s;text-align:center;position:relative;overflow:hidden;}
+.arc-card:hover{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.05);}
+.arc-card.selected{border-color:#c9a84c;background:rgba(201,168,76,.1);transform:scale(1.03);}
+.arc-card.selected .arc-check{opacity:1;}
+.arc-img{width:72px;height:72px;object-fit:contain;margin:0 auto 10px;display:block;border-radius:8px;}
+.arc-name{font-size:14px;font-weight:700;color:#dddaf0;margin-bottom:4px;}
+.arc-bonus{font-size:11px;color:rgba(221,218,240,.4);}
+.arc-check{position:absolute;top:10px;right:10px;width:20px;height:20px;background:#c9a84c;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#07070f;opacity:0;transition:opacity .2s;}
+
+/* ── NOMBRE AVATAR ── */
+#nombre-section{display:none;flex-direction:column;gap:0;}
+#nombre-section.show{display:flex;}
+
+.selected-arcano-hero{
+  border:.5px solid #c9a84c;
+  background:rgba(201,168,76,.08);
+  border-radius:16px;
+  padding:24px;
+  text-align:center;
+  margin-bottom:20px;
+  animation:heroIn .5s cubic-bezier(.175,.885,.32,1.275);
+}
+@keyframes heroIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.hero-img{width:110px;height:110px;object-fit:contain;margin:0 auto 12px;display:block;border-radius:12px;filter:drop-shadow(0 0 16px rgba(201,168,76,.4));}
+.hero-name{font-size:20px;font-weight:700;color:#c9a84c;margin-bottom:4px;}
+.hero-bonus{font-size:12px;color:rgba(221,218,240,.4);}
+
+.gi-row-sm{display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;}
+.f-label{font-size:14px;color:rgba(221,218,240,.6);margin-bottom:8px;}
+.f-input{width:100%;background:rgba(255,255,255,.05);border:.5px solid rgba(201,168,76,.25);border-radius:8px;padding:14px 16px;font-family:'Fira Code',monospace;font-size:16px;color:#dddaf0;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.f-input:focus{border-color:rgba(201,168,76,.7);}
+.f-input::placeholder{color:rgba(221,218,240,.2);}
+
+/* PREVIEW AVATAR */
+#av-preview{display:none;flex-direction:column;align-items:center;margin:16px 0;animation:fadeUp .4s ease;}
+#av-preview.show{display:flex;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.av-preview-img{width:90px;height:90px;object-fit:contain;border-radius:50%;border:2px solid #c9a84c;margin-bottom:8px;filter:drop-shadow(0 0 12px rgba(201,168,76,.3));}
+.av-preview-name{font-size:18px;font-weight:700;color:#c9a84c;letter-spacing:.06em;}
+.gi-reaction{font-size:13px;color:rgba(221,218,240,.5);margin-top:4px;font-style:italic;}
+
+.btn-confirm{width:100%;background:#c9a84c;color:#07070f;font-family:'Fira Code',monospace;font-size:16px;font-weight:700;border:none;border-radius:8px;padding:16px;cursor:pointer;transition:opacity .2s,transform .1s;margin-top:8px;}
+.btn-confirm:hover{opacity:.9;}
+.btn-confirm:active{transform:scale(.98);}
+.btn-confirm:disabled{opacity:.35;cursor:not-allowed;}
+.cursor{animation:blink 1.06s step-start infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+
+  <!-- GI INTRO -->
+  <div class="gi-row" id="gi-intro">
+    <img src="img/gi_face.jpg" alt="gi" class="gi-av"
+         onerror="this.style.background='rgba(0,229,255,.2)';this.removeAttribute('src')">
+    <div class="gi-bubble">
+      te esperábamos...<br>
+      elige el arcano de tu avatar
+    </div>
+  </div>
+
+  <!-- TIMER -->
+  <div class="timer-wrap" id="timer-wrap">
+    <div class="timer-bar-bg"><div class="timer-bar" id="timer-bar"></div></div>
+    <div class="timer-num" id="timer-num">30</div>
+    <div class="timer-label">segundos para elegir</div>
+  </div>
+
+  <!-- ARCANOS -->
+  <div class="arc-grid" id="arc-grid">
+    <div class="arc-card" id="arc-guerrero" onclick="selectArcano('guerrero',this)">
+      <div class="arc-check">✓</div>
+      <img src="img/guerrero.png" alt="guerrero" class="arc-img">
+      <div class="arc-name">el guerrero</div>
+      <div class="arc-bonus">duelos +15%</div>
+    </div>
+    <div class="arc-card" id="arc-mercader" onclick="selectArcano('mercader',this)">
+      <div class="arc-check">✓</div>
+      <img src="img/mercader.png" alt="mercader" class="arc-img">
+      <div class="arc-name">el mercader</div>
+      <div class="arc-bonus">GUS ×1.15</div>
+    </div>
+    <div class="arc-card" id="arc-sabio" onclick="selectArcano('sabio',this)">
+      <div class="arc-check">✓</div>
+      <img src="img/sabio.png" alt="sabio" class="arc-img">
+      <div class="arc-name">el sabio</div>
+      <div class="arc-bonus">XP ×1.2</div>
+    </div>
+    <div class="arc-card" id="arc-explorador" onclick="selectArcano('explorador',this)">
+      <div class="arc-check">✓</div>
+      <img src="img/explorador.png" alt="explorador" class="arc-img">
+      <div class="arc-name">el explorador</div>
+      <div class="arc-bonus">misiones +20%</div>
+    </div>
+  </div>
+
+  <!-- NOMBRE SECTION -->
+  <div id="nombre-section">
+
+    <div class="selected-arcano-hero" id="arcano-hero">
+      <img src="" alt="" class="hero-img" id="hero-img">
+      <div class="hero-name" id="hero-name"></div>
+      <div class="hero-bonus" id="hero-bonus"></div>
+    </div>
+
+    <div class="gi-row-sm">
+      <img src="img/gi_face.jpg" alt="gi" class="gi-av"
+           onerror="this.style.background='rgba(0,229,255,.2)';this.removeAttribute('src')">
+      <div class="gi-bubble" style="font-size:14px;">
+        interesante, ahora un nombre...
+      </div>
+    </div>
+
+    <div class="f-label">nombre del avatar</div>
+    <input class="f-input" id="av-name" placeholder="el que sea tuyo"
+           maxlength="20" autocomplete="off"
+           oninput="onNameInput(this.value)">
+
+    <div id="av-preview">
+      <img src="img/avatar_base.jpg" alt="avatar" class="av-preview-img"
+           onerror="this.style.background='rgba(201,168,76,.15)';this.removeAttribute('src')">
+      <div class="av-preview-name" id="av-preview-name"></div>
+      <div class="gi-reaction" id="gi-reaction"></div>
+    </div>
+
+    <button class="btn-confirm" id="btn-confirm" onclick="confirmName()" disabled>
+      ese es su nombre
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+// ── ESTADO ──
+let selectedArcano = null;
+let timerVal = 30;
+let timerInterval = null;
+let nameConfirmed = false;
+
+const ARCANOS = {
+  guerrero:  { name:'el guerrero',  bonus:'duelos +15%',   img:'img/guerrero.png'  },
+  mercader:  { name:'el mercader',  bonus:'GUS ×1.15',     img:'img/mercader.png'  },
+  sabio:     { name:'el sabio',     bonus:'XP ×1.2',       img:'img/sabio.png'     },
+  explorador:{ name:'el explorador',bonus:'misiones +20%', img:'img/explorador.png'},
+};
+
+// Frases gi al confirmar nombre (varían)
+const GI_REACTIONS = [
+  'ese nombre ya existía en algún lado',
+  'lo voy a recordar',
+  'nadie más lo tendrá igual',
+  'a partir de ahora ese eres tú',
+];
+
+// ── TIMER ──
+function startTimer(){
+  const bar = document.getElementById('timer-bar');
+  const num = document.getElementById('timer-num');
+  bar.style.width = '100%';
+
+  timerInterval = setInterval(()=>{
+    timerVal--;
+    const pct = (timerVal/30)*100;
+    bar.style.width = pct + '%';
+    num.textContent = timerVal < 10 ? '0'+timerVal : timerVal;
+
+    // color urgente
+    if(timerVal <= 10){
+      bar.style.background = '#ff4d6d';
+      num.classList.add('urgent');
+    } else if(timerVal <= 20){
+      bar.style.background = '#c9a84c';
+    }
+
+    playTick(timerVal);
+
+    if(timerVal <= 0){
+      clearInterval(timerInterval);
+      num.textContent = '00';
+      num.classList.remove('urgent');
+      num.style.color = 'rgba(221,218,240,.3)';
+      // NO avanza — espera al jugador
+    }
+  }, 1000);
+}
+
+// ── TICK SOUND ──
+function playTick(remaining){
+  try{
+    const ctx = new(window.AudioContext||window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'square';
+    osc.frequency.value = remaining <= 10 ? 880 : 440;
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.08);
+  }catch(e){}
+}
+
+// ── MÚSICA ÉPICA ──
+function playEpic(){
+  try{
+    const ctx = new(window.AudioContext||window.webkitAudioContext)();
+    const now = ctx.currentTime;
+
+    // capas de pad mistico — sine + triangle, lento, profundo
+    const layers = [
+      {freq:55,  type:'sine',     vol:0.18, attack:0.4, decay:2.2},
+      {freq:110, type:'sine',     vol:0.10, attack:0.6, decay:2.8},
+      {freq:165, type:'triangle', vol:0.07, attack:0.8, decay:3.2},
+      {freq:220, type:'sine',     vol:0.05, attack:1.0, decay:3.6},
+      {freq:330, type:'triangle', vol:0.04, attack:1.2, decay:4.0},
+    ];
+
+    layers.forEach(l=>{
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      // leve vibrato
+      const lfo = ctx.createOscillator();
+      const lfoGain = ctx.createGain();
+      lfo.frequency.value = 0.4;
+      lfoGain.gain.value = 1.2;
+      lfo.connect(lfoGain);
+      lfoGain.connect(osc.frequency);
+
+      osc.type = l.type;
+      osc.frequency.value = l.freq;
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(l.vol, now + l.attack);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + l.decay);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      lfo.start(now); osc.start(now);
+      lfo.stop(now + l.decay); osc.stop(now + l.decay);
+    });
+
+    // sweep de ruido suave al inicio
+    const buf = ctx.createBuffer(1, ctx.sampleRate*1.5, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.exp(-i/(ctx.sampleRate*0.3))*0.06;
+    const noise = ctx.createBufferSource();
+    noise.buffer = buf;
+    const nGain = ctx.createGain();
+    nGain.gain.value = 0.5;
+    noise.connect(nGain); nGain.connect(ctx.destination);
+    noise.start(now);
+
+  }catch(e){}
+}
+
+// ── SELECCIÓN ARCANO ──
+function selectArcano(id, el){
+  document.querySelectorAll('.arc-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedArcano = id;
+  clearInterval(timerInterval);
+
+  playEpic();
+
+  // pequeña pausa dramática luego mostrar nombre
+  setTimeout(()=>{
+    showNombreSection(id);
+  }, 600);
+}
+
+function showNombreSection(id){
+  const a = ARCANOS[id];
+  document.getElementById('timer-wrap').style.display = 'none';
+  document.getElementById('arc-grid').style.display = 'none';
+  document.getElementById('gi-intro').style.display = 'none';
+
+  document.getElementById('hero-img').src = a.img;
+  document.getElementById('hero-name').textContent = a.name;
+  document.getElementById('hero-bonus').textContent = a.bonus;
+
+  const ns = document.getElementById('nombre-section');
+  ns.classList.add('show');
+  ns.scrollIntoView({behavior:'smooth'});
+}
+
+// ── NOMBRE INPUT ──
+let nameTimer = null;
+function onNameInput(val){
+  const btn = document.getElementById('btn-confirm');
+  const preview = document.getElementById('av-preview');
+  const pname = document.getElementById('av-preview-name');
+  const reaction = document.getElementById('gi-reaction');
+
+  btn.disabled = val.trim().length < 2;
+
+  clearTimeout(nameTimer);
+  if(val.trim().length >= 2){
+    nameTimer = setTimeout(()=>{
+      pname.textContent = val.trim();
+      reaction.textContent = GI_REACTIONS[Math.floor(Math.random()*GI_REACTIONS.length)];
+      preview.classList.add('show');
+    }, 500);
+  } else {
+    preview.classList.remove('show');
+  }
+}
+
+// ── CONFIRMAR NOMBRE ──
+function playConfirm(){
+  try{
+    const ctx = new(window.AudioContext||window.webkitAudioContext)();
+    const now = ctx.currentTime;
+    // acorde épico ascendente — sine profundo + armónicos intensos
+    const hits = [
+      {freq:55,  vol:0.22, t:0,    dur:2.5},
+      {freq:110, vol:0.18, t:0.05, dur:2.5},
+      {freq:165, vol:0.14, t:0.1,  dur:2.2},
+      {freq:220, vol:0.12, t:0.15, dur:2.0},
+      {freq:330, vol:0.09, t:0.2,  dur:1.8},
+      {freq:440, vol:0.07, t:0.25, dur:1.6},
+      {freq:660, vol:0.05, t:0.3,  dur:1.4},
+    ];
+    hits.forEach(h=>{
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = h.freq;
+      gain.gain.setValueAtTime(0, now+h.t);
+      gain.gain.linearRampToValueAtTime(h.vol, now+h.t+0.12);
+      gain.gain.exponentialRampToValueAtTime(0.001, now+h.t+h.dur);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(now+h.t); osc.stop(now+h.t+h.dur);
+    });
+    // golpe de impacto inicial
+    const buf = ctx.createBuffer(1, ctx.sampleRate*0.3, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.exp(-i/(ctx.sampleRate*0.04))*0.35;
+    const noise = ctx.createBufferSource();
+    noise.buffer = buf;
+    const ng = ctx.createGain(); ng.gain.value=1;
+    noise.connect(ng); ng.connect(ctx.destination);
+    noise.start(now);
+  }catch(e){}
+}
+
+function confirmName(){
+  const name = document.getElementById('av-name').value.trim();
+  if(!name || !selectedArcano) return;
+
+  playConfirm();
+
+  const player = JSON.parse(localStorage.getItem('gbt_player')||'{}');
+  player.avName = name;
+  player.arcano = selectedArcano;
+  player.arcanoName = ARCANOS[selectedArcano].name;
+  player.arcanoBonus = ARCANOS[selectedArcano].bonus;
+  localStorage.setItem('gbt_player', JSON.stringify(player));
+
+  document.body.style.transition = 'opacity .6s';
+  setTimeout(()=>{ document.body.style.opacity = '0'; }, 400);
+  setTimeout(()=>{ window.location.href = 'p04_personaliza.html'; }, 1000);
+}
+
+// ── INIT ──
+window.addEventListener('load', ()=>{
+  startTimer();
+});
+</script>
+</body>
+</html>

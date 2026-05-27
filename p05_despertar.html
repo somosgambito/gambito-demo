@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>gamb1t0_ · despertar</title>
+<link rel="icon" href="img/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{
+  height:100%;background:#000;color:#dddaf0;
+  font-family:'Fira Code','Courier New',monospace;
+  display:flex;flex-direction:column;align-items:center;
+  overflow:hidden;
+}
+
+.scene{
+  width:100%;max-width:440px;
+  height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:0 24px;
+  position:relative;
+}
+
+/* ── AVATAR FRAME ── */
+.av-wrap{
+  position:relative;
+  width:220px;height:220px;
+  margin-bottom:28px;
+}
+
+.av-img{
+  width:100%;height:100%;
+  object-fit:cover;
+  border-radius:50%;
+  display:block;
+  filter:brightness(0.15) saturate(0);
+  transition:filter 1.2s ease;
+}
+.av-img.awake{
+  filter:brightness(1) saturate(1);
+}
+
+/* PÁRPADOS */
+.lid{
+  position:absolute;
+  left:0;right:0;
+  height:50%;
+  background:#000;
+  transition:height 1.4s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;
+  border-radius:50%;
+}
+.lid-top{top:0;}
+.lid-bot{bottom:0;}
+.lid-top.open{height:0%;}
+.lid-bot.open{height:0%;}
+
+/* HALO COLOR OJOS */
+.eye-halo{
+  position:absolute;inset:0;
+  border-radius:50%;
+  opacity:0;
+  transition:opacity 1s ease;
+  pointer-events:none;
+}
+.eye-halo.show{opacity:1;}
+
+/* SONRISA OVERLAY */
+.smile-overlay{
+  position:absolute;
+  bottom:18%;left:50%;
+  transform:translateX(-50%) scaleX(0);
+  width:60px;height:22px;
+  border-bottom:3px solid rgba(255,255,255,.55);
+  border-radius:0 0 40px 40px;
+  transition:transform .5s cubic-bezier(.175,.885,.32,1.275);
+  pointer-events:none;
+}
+.smile-overlay.show{transform:translateX(-50%) scaleX(1);}
+
+/* RING PULSANTE */
+.ring{
+  position:absolute;inset:-6px;
+  border-radius:50%;
+  border:2px solid rgba(201,168,76,0);
+  transition:border-color .8s;
+}
+.ring.glow{
+  border-color:rgba(201,168,76,.6);
+  animation:ringPulse 2s ease-in-out infinite;
+}
+@keyframes ringPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0)}
+  50%{box-shadow:0 0 0 12px rgba(201,168,76,.15)}
+}
+
+/* NOMBRE */
+.av-name{
+  font-size:clamp(24px,7vw,36px);
+  font-weight:700;
+  color:#c9a84c;
+  letter-spacing:.1em;
+  opacity:0;
+  transform:translateY(10px);
+  transition:opacity .6s ease,transform .6s ease;
+  margin-bottom:6px;
+  text-align:center;
+}
+.av-name.show{opacity:1;transform:translateY(0);}
+
+.av-sub{
+  font-size:13px;color:rgba(221,218,240,.35);
+  opacity:0;transition:opacity .6s ease .3s;
+  margin-bottom:28px;text-align:center;
+}
+.av-sub.show{opacity:1;}
+
+/* STATS */
+.stats{
+  display:flex;gap:20px;
+  opacity:0;transform:translateY(8px);
+  transition:opacity .5s ease,transform .5s ease;
+  margin-bottom:32px;
+}
+.stats.show{opacity:1;transform:translateY(0);}
+.stat{text-align:center;}
+.stat-n{font-size:22px;font-weight:700;color:#c9a84c;}
+.stat-l{font-size:9px;color:rgba(221,218,240,.3);text-transform:uppercase;letter-spacing:.1em;margin-top:2px;}
+
+/* GI MSG */
+.gi-row{
+  display:flex;gap:12px;align-items:flex-start;
+  width:100%;
+  opacity:0;transition:opacity .6s ease;
+  margin-bottom:24px;
+}
+.gi-row.show{opacity:1;}
+.gi-av{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(0,229,255,.4);flex-shrink:0;background:rgba(0,229,255,.1);}
+.gi-bubble{background:rgba(0,229,255,.07);border:.5px solid rgba(0,229,255,.18);border-radius:0 12px 12px 12px;padding:11px 14px;font-size:14px;color:#dddaf0;line-height:1.6;flex:1;}
+
+/* BOTÓN */
+.btn-go{
+  width:100%;
+  background:#c9a84c;color:#07070f;
+  font-family:'Fira Code',monospace;font-size:16px;font-weight:700;
+  border:none;border-radius:8px;padding:16px;cursor:pointer;
+  opacity:0;transition:opacity .5s ease,transform .1s;
+  pointer-events:none;
+}
+.btn-go.show{opacity:1;pointer-events:auto;}
+.btn-go:active{transform:scale(.98);}
+
+/* PARTÍCULAS */
+.particle{
+  position:fixed;
+  width:4px;height:4px;
+  border-radius:50%;
+  pointer-events:none;
+  animation:particleFly 1.2s ease-out forwards;
+}
+@keyframes particleFly{
+  0%{opacity:1;transform:translate(0,0) scale(1);}
+  100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(0);}
+}
+</style>
+</head>
+<body>
+<div class="scene">
+
+  <div class="av-wrap" id="av-wrap">
+    <div class="ring" id="ring"></div>
+    <img src="img/avatar_base.jpg" alt="avatar" class="av-img" id="av-img"
+         onerror="this.style.background='rgba(127,106,240,.2)';this.removeAttribute('src')">
+    <div class="lid lid-top" id="lid-top"></div>
+    <div class="lid lid-bot" id="lid-bot"></div>
+    <div class="eye-halo" id="eye-halo"></div>
+    <div class="smile-overlay" id="smile"></div>
+  </div>
+
+  <div class="av-name" id="av-name"></div>
+  <div class="av-sub" id="av-sub"></div>
+
+  <div class="stats" id="stats">
+    <div class="stat"><div class="stat-n">100</div><div class="stat-l">XP</div></div>
+    <div class="stat"><div class="stat-n">50</div><div class="stat-l">GUS</div></div>
+    <div class="stat"><div class="stat-n">120</div><div class="stat-l">tokens</div></div>
+  </div>
+
+  <div class="gi-row" id="gi-row">
+    <img src="img/gi_face.jpg" alt="gi" class="gi-av"
+         onerror="this.style.background='rgba(0,229,255,.2)';this.removeAttribute('src')">
+    <div class="gi-bubble" id="gi-msg"></div>
+  </div>
+
+  <button class="btn-go" id="btn-go" onclick="goTablero()">
+    vamos al tablero
+  </button>
+
+</div>
+
+<script>
+const player = JSON.parse(localStorage.getItem('gbt_player')||'{}');
+const eyeColor = player.eyeColor || '#c9a84c';
+const avName   = player.avName   || 'avatar';
+const arcano   = player.arcanoName || '';
+
+document.getElementById('av-name').textContent = avName;
+document.getElementById('av-sub').textContent  = arcano;
+
+// ── MÚSICA DESPERTAR ──
+function playAwaken(){
+  try{
+    const ctx = new(window.AudioContext||window.webkitAudioContext)();
+    const now = ctx.currentTime;
+
+    // silencio → rumble profundo
+    const sub = ctx.createOscillator();
+    const subG = ctx.createGain();
+    sub.type='sine'; sub.frequency.value=28;
+    subG.gain.setValueAtTime(0,now);
+    subG.gain.linearRampToValueAtTime(0.3,now+1.5);
+    subG.gain.exponentialRampToValueAtTime(0.001,now+5);
+    sub.connect(subG); subG.connect(ctx.destination);
+    sub.start(now); sub.stop(now+5);
+
+    // apertura de acorde — como un portal
+    const chord = [55,82,110,138,165,220,275,330];
+    chord.forEach((f,i)=>{
+      const o=ctx.createOscillator();
+      const g=ctx.createGain();
+      const lfo=ctx.createOscillator();
+      const lg=ctx.createGain();
+      lfo.frequency.value=0.2+i*0.05;
+      lg.gain.value=0.5;
+      lfo.connect(lg); lg.connect(o.frequency);
+      o.type = i%2===0?'sine':'triangle';
+      o.frequency.value=f;
+      const t=now+0.8+i*0.18;
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(0.12-i*0.01,t+0.4);
+      g.gain.exponentialRampToValueAtTime(0.001,t+4.5);
+      o.connect(g); g.connect(ctx.destination);
+      lfo.start(t); o.start(t);
+      lfo.stop(t+4.5); o.stop(t+4.5);
+    });
+
+    // sweep de apertura
+    const buf=ctx.createBuffer(1,ctx.sampleRate*1.8,ctx.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++){
+      const env=Math.min(i/(ctx.sampleRate*0.6),1)*Math.exp(-i/(ctx.sampleRate*1.2));
+      d[i]=(Math.random()*2-1)*env*0.12;
+    }
+    const ns=ctx.createBufferSource();
+    ns.buffer=buf;
+    const ng=ctx.createGain(); ng.gain.value=0.8;
+    ns.connect(ng); ng.connect(ctx.destination);
+    ns.start(now+0.5);
+
+    // pulso rítmico épico
+    [1.8,2.1,2.4,2.7].forEach(t=>{
+      const o=ctx.createOscillator();
+      const g=ctx.createGain();
+      o.type='sine'; o.frequency.value=41;
+      g.gain.setValueAtTime(0,now+t);
+      g.gain.linearRampToValueAtTime(0.25,now+t+0.05);
+      g.gain.exponentialRampToValueAtTime(0.001,now+t+0.35);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(now+t); o.stop(now+t+0.4);
+    });
+
+  }catch(e){}
+}
+
+// ── PARTÍCULAS ──
+function burst(color){
+  for(let i=0;i<18;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.background=color;
+    p.style.left='50%'; p.style.top='30%';
+    const angle=Math.random()*Math.PI*2;
+    const dist=60+Math.random()*80;
+    p.style.setProperty('--dx',Math.cos(angle)*dist+'px');
+    p.style.setProperty('--dy',Math.sin(angle)*dist+'px');
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),1300);
+  }
+}
+
+// ── SECUENCIA DESPERTAR ──
+function runAwaken(){
+  playAwaken();
+
+  const img     = document.getElementById('av-img');
+  const lidTop  = document.getElementById('lid-top');
+  const lidBot  = document.getElementById('lid-bot');
+  const halo    = document.getElementById('eye-halo');
+  const smile   = document.getElementById('smile');
+  const ring    = document.getElementById('ring');
+  const nameEl  = document.getElementById('av-name');
+  const subEl   = document.getElementById('av-sub');
+  const statsEl = document.getElementById('stats');
+  const giRow   = document.getElementById('gi-row');
+  const giMsg   = document.getElementById('gi-msg');
+  const btnGo   = document.getElementById('btn-go');
+
+  // configurar halo con color de ojos
+  halo.style.background=`radial-gradient(ellipse at 50% 38%, ${eyeColor}55 0%, transparent 65%)`;
+
+  // t=0 — imagen oscura, párpados cerrados (ya están)
+
+  // t=1.2s — imagen se ilumina
+  setTimeout(()=>{ img.classList.add('awake'); },1200);
+
+  // t=2.2s — párpados se abren
+  setTimeout(()=>{
+    lidTop.classList.add('open');
+    lidBot.classList.add('open');
+  },2200);
+
+  // t=3.2s — halo de color ojos + ring
+  setTimeout(()=>{
+    halo.classList.add('show');
+    ring.classList.add('glow');
+    ring.style.borderColor=eyeColor+'99';
+    burst(eyeColor);
+  },3200);
+
+  // t=4.0s — sonrisa
+  setTimeout(()=>{ smile.classList.add('show'); },4000);
+
+  // t=4.6s — nombre y arcano
+  setTimeout(()=>{
+    nameEl.classList.add('show');
+    subEl.classList.add('show');
+  },4600);
+
+  // t=5.2s — stats
+  setTimeout(()=>{ statsEl.classList.add('show'); },5200);
+
+  // t=5.8s — gi habla
+  setTimeout(()=>{
+    const msgs = [
+      `${avName} ya tiene ojos — puede ver el mundo`,
+      `lo que elija desde ahora lo define`,
+      `el tablero lo está esperando`,
+    ];
+    giMsg.textContent = msgs[Math.floor(Math.random()*msgs.length)];
+    giRow.classList.add('show');
+  },5800);
+
+  // t=6.6s — botón
+  setTimeout(()=>{ btnGo.classList.add('show'); },6600);
+}
+
+function goTablero(){
+  document.body.style.transition='opacity .5s';
+  document.body.style.opacity='0';
+  setTimeout(()=>{ window.location.href='demo.html'; },520);
+}
+
+window.addEventListener('load', runAwaken);
+</script>
+</body>
+</html>

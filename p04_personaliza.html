@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>gamb1t0_ · identidad</title>
+<link rel="icon" href="img/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Code','Courier New',monospace;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;}
+.wrap{width:100%;max-width:440px;padding:32px 20px 60px;display:flex;flex-direction:column;min-height:100vh;}
+
+/* GI BUBBLE */
+.gi-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:28px;}
+.gi-av{width:44px;height:44px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(0,229,255,.4);flex-shrink:0;background:rgba(0,229,255,.1);}
+.gi-bubble{background:rgba(0,229,255,.07);border:.5px solid rgba(0,229,255,.18);border-radius:0 12px 12px 12px;padding:13px 16px;font-size:15px;color:#dddaf0;line-height:1.65;flex:1;}
+
+/* SECTION TITLE */
+.sec-label{font-size:12px;color:rgba(221,218,240,.3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;}
+
+/* GÉNERO */
+.gender-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:32px;}
+.gender-btn{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:12px;padding:18px 8px;cursor:pointer;text-align:center;font-family:'Fira Code',monospace;font-size:13px;color:rgba(221,218,240,.5);transition:all .2s;}
+.gender-btn:hover{border-color:rgba(201,168,76,.3);color:#dddaf0;}
+.gender-btn.sel{border-color:#c9a84c;background:rgba(201,168,76,.08);color:#c9a84c;}
+.gender-icon{font-size:26px;display:block;margin-bottom:8px;}
+
+/* OJOS */
+.eye-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:32px;}
+.eye-btn{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:12px;padding:16px 12px;cursor:pointer;text-align:center;font-family:'Fira Code',monospace;font-size:13px;color:rgba(221,218,240,.5);transition:all .2s;}
+.eye-btn:hover{border-color:rgba(221,218,240,.25);color:#dddaf0;}
+.eye-btn.sel{color:#dddaf0;}
+.eye-dot{width:24px;height:24px;border-radius:50%;margin:0 auto 8px;border:2px solid rgba(255,255,255,.1);transition:box-shadow .3s;}
+.eye-btn.sel .eye-dot{box-shadow:0 0 12px 3px var(--ec);}
+.eye-personality{font-size:11px;color:rgba(221,218,240,.3);margin-top:4px;}
+
+/* AVATAR PREVIEW */
+.av-preview-wrap{
+  display:flex;flex-direction:column;align-items:center;
+  margin-bottom:28px;opacity:0;transition:opacity .5s;
+}
+.av-preview-wrap.show{opacity:1;}
+.av-frame{
+  width:110px;height:110px;border-radius:50%;
+  border:2px solid rgba(201,168,76,.3);
+  overflow:hidden;display:flex;align-items:center;justify-content:center;
+  margin-bottom:10px;position:relative;
+  transition:border-color .4s,box-shadow .4s;
+}
+.av-frame.lit{border-color:#c9a84c;box-shadow:0 0 20px 4px rgba(201,168,76,.25);}
+.av-frame img{width:100%;height:100%;object-fit:cover;}
+.av-eye-overlay{
+  position:absolute;inset:0;border-radius:50%;
+  opacity:0;transition:opacity .4s;
+  pointer-events:none;
+}
+.av-name-disp{font-size:17px;font-weight:700;color:#c9a84c;letter-spacing:.06em;}
+.av-arcano-disp{font-size:11px;color:rgba(221,218,240,.3);margin-top:3px;}
+
+/* BOTÓN */
+.btn-confirm{
+  width:100%;background:#c9a84c;color:#07070f;
+  font-family:'Fira Code',monospace;font-size:16px;font-weight:700;
+  border:none;border-radius:8px;padding:16px;cursor:pointer;
+  transition:opacity .2s,transform .1s;
+}
+.btn-confirm:hover{opacity:.9;}
+.btn-confirm:active{transform:scale(.98);}
+.btn-confirm:disabled{opacity:.3;cursor:not-allowed;}
+
+/* CURSOR */
+.cursor{animation:blink 1.06s step-start infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- GI -->
+  <div class="gi-row">
+    <img src="img/gi_face.jpg" alt="gi" class="gi-av"
+         onerror="this.style.background='rgba(0,229,255,.2)';this.removeAttribute('src')">
+    <div class="gi-bubble" id="gi-msg">
+      falta una cosa...<br>
+      dime cómo es
+    </div>
+  </div>
+
+  <!-- GÉNERO -->
+  <div class="sec-label">// género</div>
+  <div class="gender-row">
+    <div class="gender-btn" onclick="selGender('masculino',this)">
+      <span class="gender-icon">♂</span>masculino
+    </div>
+    <div class="gender-btn" onclick="selGender('femenino',this)">
+      <span class="gender-icon">♀</span>femenino
+    </div>
+    <div class="gender-btn" onclick="selGender('libre',this)">
+      <span class="gender-icon">◈</span>libre
+    </div>
+  </div>
+
+  <!-- OJOS -->
+  <div class="sec-label">// personalidad · color de ojos</div>
+  <div class="eye-grid">
+    <div class="eye-btn" onclick="selEye('curioso','#00e5ff',this)">
+      <div class="eye-dot" style="background:#00e5ff;--ec:#00e5ff;"></div>
+      curioso
+      <div class="eye-personality">observa todo</div>
+    </div>
+    <div class="eye-btn" onclick="selEye('valiente','#c9a84c',this)">
+      <div class="eye-dot" style="background:#c9a84c;--ec:#c9a84c;"></div>
+      valiente
+      <div class="eye-personality">actúa primero</div>
+    </div>
+    <div class="eye-btn" onclick="selEye('tranquilo','#00c896',this)">
+      <div class="eye-dot" style="background:#00c896;--ec:#00c896;"></div>
+      tranquilo
+      <div class="eye-personality">espera el momento</div>
+    </div>
+    <div class="eye-btn" onclick="selEye('intenso','#ff4d6d',this)">
+      <div class="eye-dot" style="background:#ff4d6d;--ec:#ff4d6d;"></div>
+      intenso
+      <div class="eye-personality">nunca retrocede</div>
+    </div>
+  </div>
+
+  <!-- AVATAR PREVIEW -->
+  <div class="av-preview-wrap" id="av-preview">
+    <div class="av-frame" id="av-frame">
+      <img src="img/avatar_base.jpg" alt="avatar" id="av-img"
+           onerror="this.style.background='rgba(201,168,76,.15)';this.removeAttribute('src')">
+      <div class="av-eye-overlay" id="av-overlay"></div>
+    </div>
+    <div class="av-name-disp" id="av-name-disp"></div>
+    <div class="av-arcano-disp" id="av-arcano-disp"></div>
+  </div>
+
+  <button class="btn-confirm" id="btn-confirm" onclick="confirmIdentity()" disabled>
+    así es
+  </button>
+
+</div>
+
+<script>
+const player = JSON.parse(localStorage.getItem('gbt_player')||'{}');
+let selGenderVal = null;
+let selEyeColor = null;
+let selEyePersonality = null;
+
+// Mostrar nombre y arcano en preview
+document.getElementById('av-name-disp').textContent = player.avName || '---';
+document.getElementById('av-arcano-disp').textContent = player.arcanoName || '';
+
+// ── MÚSICA ÉPICA IDENTIDAD ──
+function playIdentityMusic(){
+  try{
+    const ctx = new(window.AudioContext||window.webkitAudioContext)();
+    const now = ctx.currentTime;
+
+    // bajo profundo pulsante
+    const bass = ctx.createOscillator();
+    const bassG = ctx.createGain();
+    bass.type = 'sine';
+    bass.frequency.value = 41;
+    bassG.gain.setValueAtTime(0,now);
+    bassG.gain.linearRampToValueAtTime(0.25,now+0.3);
+    bassG.gain.exponentialRampToValueAtTime(0.001,now+4);
+    bass.connect(bassG); bassG.connect(ctx.destination);
+    bass.start(now); bass.stop(now+4);
+
+    // capas armónicas ascendentes
+    const layers = [
+      {freq:82,  vol:0.15, t:0.1,  dur:3.5, type:'triangle'},
+      {freq:123, vol:0.11, t:0.25, dur:3.2, type:'sine'},
+      {freq:164, vol:0.09, t:0.4,  dur:3.0, type:'sine'},
+      {freq:246, vol:0.07, t:0.55, dur:2.8, type:'triangle'},
+      {freq:329, vol:0.05, t:0.7,  dur:2.5, type:'sine'},
+      {freq:493, vol:0.04, t:0.85, dur:2.2, type:'sine'},
+    ];
+    layers.forEach(l=>{
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      const lfo = ctx.createOscillator();
+      const lfoG = ctx.createGain();
+      lfo.frequency.value = 0.3;
+      lfoG.gain.value = 0.8;
+      lfo.connect(lfoG); lfoG.connect(osc.frequency);
+      osc.type = l.type;
+      osc.frequency.value = l.freq;
+      g.gain.setValueAtTime(0, now+l.t);
+      g.gain.linearRampToValueAtTime(l.vol, now+l.t+0.2);
+      g.gain.exponentialRampToValueAtTime(0.001, now+l.t+l.dur);
+      osc.connect(g); g.connect(ctx.destination);
+      lfo.start(now+l.t); osc.start(now+l.t);
+      lfo.stop(now+l.t+l.dur); osc.stop(now+l.t+l.dur);
+    });
+
+    // golpe percusivo
+    const buf = ctx.createBuffer(1, ctx.sampleRate*0.4, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.exp(-i/(ctx.sampleRate*0.05))*0.4;
+    const noise = ctx.createBufferSource();
+    noise.buffer = buf;
+    const ng = ctx.createGain(); ng.gain.value=0.7;
+    noise.connect(ng); ng.connect(ctx.destination);
+    noise.start(now);
+  }catch(e){}
+}
+
+// ── GÉNERO ──
+function selGender(g, el){
+  document.querySelectorAll('.gender-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  selGenderVal = g;
+  checkReady();
+}
+
+// ── OJOS ──
+function selEye(personality, color, el){
+  document.querySelectorAll('.eye-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  selEyeColor = color;
+  selEyePersonality = personality;
+
+  // actualizar overlay de color en avatar
+  const overlay = document.getElementById('av-overlay');
+  overlay.style.background = `radial-gradient(ellipse at 50% 35%, ${color}22 0%, transparent 65%)`;
+  overlay.style.opacity = '1';
+
+  const frame = document.getElementById('av-frame');
+  frame.classList.add('lit');
+  frame.style.borderColor = color;
+  frame.style.boxShadow = `0 0 20px 4px ${color}44`;
+
+  // mostrar preview
+  document.getElementById('av-preview').classList.add('show');
+  checkReady();
+}
+
+function checkReady(){
+  const ready = selGenderVal && selEyeColor;
+  document.getElementById('btn-confirm').disabled = !ready;
+
+  if(ready){
+    const msg = document.getElementById('gi-msg');
+    const reactions = {
+      curioso:   'los ojos que preguntan — interesante',
+      valiente:  'esos ojos ya ganaron antes de empezar',
+      tranquilo: 'la calma también es una forma de poder',
+      intenso:   'nada lo detiene — lo sé',
+    };
+    msg.innerHTML = reactions[selEyePersonality] || 'ya casi está';
+  }
+}
+
+// ── CONFIRMAR ──
+function confirmIdentity(){
+  if(!selGenderVal || !selEyeColor) return;
+
+  player.gender = selGenderVal;
+  player.eyeColor = selEyeColor;
+  player.eyePersonality = selEyePersonality;
+  localStorage.setItem('gbt_player', JSON.stringify(player));
+
+  playIdentityMusic();
+
+  document.body.style.transition = 'opacity .6s';
+  setTimeout(()=>{ document.body.style.opacity='0'; }, 500);
+  setTimeout(()=>{ window.location.href='p05_despertar.html'; }, 1100);
+}
+</script>
+</body>
+</html>
