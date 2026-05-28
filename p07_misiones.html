@@ -265,6 +265,21 @@ function renderList(){
   list.innerHTML = '';
   let misiones = currentTab==='dia' ? MISIONES_DIA : currentTab==='skill' ? MISIONES_SKILL : MISIONES_DIA.filter(m=>completadas.includes(m.id));
 
+  // trabajos activo banner
+  const taActivo = GBT.getTrabajoActivo();
+  if(taActivo && currentTab==='dia'){
+    const tw = GBT.TRABAJOS.find(x=>x.id===taActivo.id);
+    const pct = Math.min(Math.round((Date.now()-taActivo.inicio_ts)/(taActivo.fin_ts-taActivo.inicio_ts)*100),100);
+    const div = document.createElement('div');
+    div.style.cssText='background:rgba(0,200,150,.06);border:.5px solid rgba(0,200,150,.3);border-radius:10px;padding:12px 14px;margin-bottom:10px;cursor:pointer;';
+    div.innerHTML=`<div style="font-size:9px;color:rgba(0,200,150,.5);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;">// trabajando ahora</div>
+      <div style="font-size:13px;font-weight:700;color:#00c896;">${tw?tw.icon+' '+tw.name:'trabajo activo'}</div>
+      <div style="height:4px;background:rgba(255,255,255,.06);border-radius:2px;margin-top:8px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:#00c896;border-radius:2px;"></div></div>
+      <div style="font-size:10px;color:rgba(221,218,240,.3);margin-top:4px;">${pct}% completado · protegido de ataques</div>`;
+    div.onclick=()=>navTo('trabajos');
+    list.appendChild(div);
+  }
+
   if(currentTab==='completadas' && misiones.length===0){
     list.innerHTML='<div style="text-align:center;padding:40px 0;font-size:13px;color:rgba(221,218,240,.25);">// aún no completaste misiones hoy</div>';
     return;
@@ -533,7 +548,7 @@ function playDuelAlert(){
 
 // ── NAV ──
 function navTo(dest){
-  const routes={nodo:'p06_tablero.html',misiones:'p07_misiones.html',duelo:'p08_duelo.html',skill:'p09_skill.html',market:'p10_market.html',universo:'p11_universo.html'};
+  const routes={nodo:'p06_tablero.html',misiones:'p07_misiones.html',duelo:'p08_duelo.html',skill:'p09_skill.html',market:'p10_market.html',universo:'p11_universo.html',trabajos:'p12_trabajos.html'};
   document.body.style.transition='opacity .25s';
   document.body.style.opacity='0';
   setTimeout(()=>{ window.location.href=routes[dest]||'p06_tablero.html'; },260);
