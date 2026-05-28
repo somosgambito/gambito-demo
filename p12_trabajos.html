@@ -82,19 +82,17 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 
 /* imagen entrevistador centrada grande */
 .vl-av-wrap{
-  position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-58%);
-  width:200px;height:200px;
+  position:absolute;inset:0;
+  width:100%;height:100%;
 }
 .vl-av{
-  width:100%;height:100%;border-radius:50%;object-fit:cover;
-  border:3px solid rgba(255,255,255,.2);
-  box-shadow:0 0 40px rgba(0,0,0,.8);
+  width:100%;height:100%;border-radius:0;object-fit:cover;
+  border:none;
+  box-shadow:none;
   display:block;
 }
 .vl-av.speaking{
-  border-color:rgba(201,168,76,.8);
-  box-shadow:0 0 0 4px rgba(201,168,76,.25),0 0 40px rgba(0,0,0,.8);
+  filter:brightness(1.05);
 }
 
 /* info entrevistador abajo */
@@ -297,7 +295,7 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
     <div class="vl-estado"><div class="vl-dot"></div><span id="vl-estado-txt">en línea</span></div>
   </div>
   <div class="vl-controls">
-    <button class="vl-btn vl-btn-end" onclick="colgarLlamada()" title="colgar">📵</button>
+    <button class="vl-btn vl-btn-end" onclick="colgarLlamada()" title="colgar" style="font-size:14px;font-family:'Fira Code',monospace;font-weight:700;color:#fff;">✕</button>
   </div>
   <div class="vl-preguntas" id="vl-preguntas"></div>
 
@@ -802,10 +800,20 @@ function mostrarReto(){
   const tel=document.getElementById('prueba-timer');
   tel.textContent=seg; tel.className='prueba-timer';
   clearInterval(pruebaTimer);
+  // unlock AudioContext on first interaction
+  let _audioUnlocked=false;
+  function unlockAudio(){
+    if(_audioUnlocked) return;
+    try{ const _c=new(window.AudioContext||window.webkitAudioContext)();_c.resume();_audioUnlocked=true; }catch(e){}
+  }
+  document.addEventListener('touchstart',unlockAudio,{once:true});
+  document.addEventListener('click',unlockAudio,{once:true});
+  unlockAudio();
+
   pruebaTimer=setInterval(()=>{
     seg--; tel.textContent=seg<10?'0'+seg:seg;
     if(seg<=10) tel.className='prueba-timer urgente';
-    playTick();
+    playTick(); // suena en cada segundo siempre
     if(seg<=0){ clearInterval(pruebaTimer); failPrueba(); }
   },1000);
   document.getElementById('prueba-overlay').classList.add('show');
