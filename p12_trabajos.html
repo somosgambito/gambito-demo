@@ -10,10 +10,12 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Code','Courier New',monospace;overflow-x:hidden;}
+
 .energia-bar-wrap{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;z-index:20;padding:0 16px;pointer-events:none;}
 .energia-bar-inner{height:3px;width:100%;background:rgba(255,255,255,.06);}
 .energia-bar-fill{height:100%;transition:width .8s,background .5s;}
 .energia-label{position:fixed;top:4px;right:20px;font-size:9px;letter-spacing:.06em;z-index:21;font-family:'Fira Code',monospace;}
+
 .page{width:100%;max-width:440px;margin:0 auto;padding-bottom:80px;}
 .topbar{display:flex;align-items:center;gap:12px;padding:14px 16px 10px;border-bottom:.5px solid rgba(221,218,240,.08);position:sticky;top:0;background:#07070f;z-index:10;}
 .back-btn{font-size:20px;cursor:pointer;color:rgba(221,218,240,.4);padding:4px 8px 4px 0;}
@@ -26,12 +28,10 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 .sec-label{font-size:10px;color:rgba(221,218,240,.25);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;}
 
 /* TRABAJO ACTIVO */
-.trabajo-activo-card{background:rgba(0,200,150,.06);border:.5px solid rgba(0,200,150,.3);border-radius:12px;padding:16px;margin-bottom:16px;}
-.ta-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.ta-badge{font-size:9px;color:#07070f;background:#00c896;border-radius:10px;padding:2px 8px;margin-left:4px;}
-.ta-prog-bar{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;}
+.ta-card{background:rgba(0,200,150,.06);border:.5px solid rgba(0,200,150,.3);border-radius:12px;padding:16px;margin-bottom:16px;}
+.ta-prog-bar{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;margin:8px 0 4px;}
 .ta-prog-fill{height:100%;background:#00c896;border-radius:3px;}
-.ta-meta{font-size:11px;color:rgba(221,218,240,.35);margin-top:4px;}
+.ta-meta{font-size:11px;color:rgba(221,218,240,.35);}
 .ta-btns{display:flex;gap:8px;margin-top:12px;}
 .btn-ta{flex:1;font-family:'Fira Code',monospace;font-size:11px;padding:8px;border-radius:6px;cursor:pointer;}
 .btn-avisar{background:rgba(201,168,76,.1);color:#c9a84c;border:.5px solid rgba(201,168,76,.25);}
@@ -39,14 +39,14 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 .btn-tareas{background:rgba(0,200,150,.1);color:#00c896;border:.5px solid rgba(0,200,150,.25);}
 
 /* TRABAJO CARD */
-.trabajo-card{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:16px;margin-bottom:10px;position:relative;transition:all .2s;}
+.trabajo-card{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:16px;margin-bottom:10px;transition:all .2s;}
 .trabajo-card.disponible{cursor:pointer;}
 .trabajo-card.disponible:hover{border-color:rgba(201,168,76,.3);transform:translateY(-1px);}
 .trabajo-card.bloqueado{opacity:.5;}
 .tc-top{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;}
-.tc-entrevistador{width:44px;height:44px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(221,218,240,.15);flex-shrink:0;}
+.tc-av{width:44px;height:44px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(221,218,240,.15);flex-shrink:0;}
 .tc-name{font-size:14px;font-weight:700;color:#dddaf0;margin-bottom:2px;}
-.tc-entrev-nombre{font-size:10px;color:rgba(221,218,240,.35);margin-bottom:4px;}
+.tc-sub{font-size:10px;color:rgba(221,218,240,.35);margin-bottom:4px;}
 .tc-desc{font-size:11px;color:rgba(221,218,240,.4);line-height:1.5;}
 .tc-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
 .tc-badge{font-size:10px;padding:3px 8px;border-radius:4px;}
@@ -54,120 +54,186 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 .b-gus{background:rgba(201,168,76,.1);color:#c9a84c;border:.5px solid rgba(201,168,76,.2);}
 .b-xp{background:rgba(127,106,240,.1);color:#7f6af0;border:.5px solid rgba(127,106,240,.2);}
 .b-nivel{background:rgba(255,255,255,.04);color:rgba(221,218,240,.45);border:.5px solid rgba(221,218,240,.1);}
-.b-tokens{background:rgba(0,229,255,.06);color:#00e5ff;border:.5px solid rgba(0,229,255,.15);}
+.b-tok{background:rgba(0,229,255,.06);color:#00e5ff;border:.5px solid rgba(0,229,255,.15);}
 .tc-cupos{font-size:10px;color:rgba(221,218,240,.3);margin-bottom:6px;}
 .cupos-bar{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;margin-top:3px;}
 .cupos-fill{height:100%;background:#ff4d6d;border-radius:2px;}
-.tc-protegido{font-size:10px;color:#00c896;}
-.tc-bloqueo-msg{font-size:11px;color:#ff4d6d;margin-top:6px;font-weight:700;}
+.tc-prot{font-size:10px;color:#00c896;}
+.tc-bloqueo{font-size:11px;color:#ff4d6d;margin-top:6px;font-weight:700;}
 
-/* ENTREVISTA OVERLAY */
-#entrevista-overlay{position:fixed;inset:0;background:#07070f;z-index:300;display:none;flex-direction:column;overflow-y:auto;}
-#entrevista-overlay.show{display:flex;}
-.ent-wrap{width:100%;max-width:440px;margin:0 auto;padding:20px 20px 80px;}
-.ent-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
-.ent-back{font-size:20px;cursor:pointer;color:rgba(221,218,240,.4);}
-.ent-title{font-size:15px;font-weight:700;}
-.ent-perfil{display:flex;gap:14px;align-items:center;background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:14px;margin-bottom:20px;}
-.ent-av{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);flex-shrink:0;}
-.ent-nombre{font-size:14px;font-weight:700;color:#dddaf0;margin-bottom:2px;}
-.ent-cargo{font-size:11px;color:#c9a84c;margin-bottom:2px;}
-.ent-empresa{font-size:10px;color:rgba(221,218,240,.35);}
-.ent-personalidad{font-size:10px;color:rgba(221,218,240,.25);font-style:italic;margin-top:4px;}
-.gi-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:20px;}
-.gi-av{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(0,229,255,.3);flex-shrink:0;background:rgba(0,229,255,.1);}
-.gi-bubble{background:rgba(0,229,255,.06);border:.5px solid rgba(0,229,255,.15);border-radius:0 10px 10px 10px;padding:11px 14px;font-size:13px;color:#dddaf0;line-height:1.6;flex:1;}
+/* ══ VIDEOLLAMADA OVERLAY ══ */
+#videollamada{
+  position:fixed;inset:0;z-index:400;display:none;
+  flex-direction:column;background:#000;
+}
+#videollamada.show{display:flex;}
 
-/* PREGUNTAS */
-.preg-progreso{display:flex;gap:4px;margin-bottom:14px;}
-.preg-dot{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.08);transition:background .3s;}
+/* fondo del entrevistador — ocupa toda la pantalla */
+.vl-bg{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,#0a0a1a 0%,#070710 100%);
+  overflow:hidden;
+}
+.vl-bg-img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;opacity:.35;filter:blur(8px) saturate(.5);
+}
+.vl-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);}
+
+/* imagen entrevistador centrada grande */
+.vl-av-wrap{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-58%);
+  width:200px;height:200px;
+}
+.vl-av{
+  width:100%;height:100%;border-radius:50%;object-fit:cover;
+  border:3px solid rgba(255,255,255,.2);
+  box-shadow:0 0 40px rgba(0,0,0,.8);
+  display:block;
+}
+.vl-av.speaking{
+  border-color:rgba(201,168,76,.8);
+  box-shadow:0 0 0 4px rgba(201,168,76,.25),0 0 40px rgba(0,0,0,.8);
+}
+
+/* info entrevistador abajo */
+.vl-info{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:20px 20px 32px;
+  background:linear-gradient(0deg,rgba(0,0,0,.9) 0%,transparent 100%);
+}
+.vl-nombre{font-size:18px;font-weight:700;color:#fff;margin-bottom:2px;}
+.vl-cargo{font-size:12px;color:rgba(255,255,255,.5);}
+.vl-estado{font-size:11px;color:#00e5ff;margin-top:4px;display:flex;align-items:center;gap:6px;}
+.vl-dot{width:7px;height:7px;border-radius:50%;background:#00e5ff;animation:dotPulse 1.2s ease-in-out infinite;}
+@keyframes dotPulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+
+/* GI burbuja en videollamada */
+.vl-gi{
+  position:absolute;top:16px;left:16px;right:16px;
+  display:flex;gap:10px;align-items:flex-start;
+  z-index:5;
+}
+.vl-gi-av{width:36px;height:36px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(0,229,255,.5);flex-shrink:0;}
+.vl-gi-bubble{background:rgba(7,7,15,.85);border:.5px solid rgba(0,229,255,.25);border-radius:0 10px 10px 10px;padding:10px 13px;font-size:13px;color:#dddaf0;line-height:1.5;backdrop-filter:blur(8px);}
+
+/* controles videollamada */
+.vl-controls{
+  position:absolute;bottom:80px;left:50%;transform:translateX(-50%);
+  display:flex;gap:16px;z-index:5;
+}
+.vl-btn{width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;transition:all .2s;}
+.vl-btn-end{background:#ff4d6d;}
+.vl-btn-end:hover{background:#e03558;}
+
+/* PREGUNTAS dentro de videollamada */
+.vl-preguntas{
+  position:absolute;bottom:0;left:0;right:0;
+  background:rgba(7,7,15,.95);
+  border-top:.5px solid rgba(221,218,240,.1);
+  padding:16px;
+  max-height:65vh;
+  overflow-y:auto;
+  backdrop-filter:blur(12px);
+}
+.preg-progreso{display:flex;gap:4px;margin-bottom:12px;}
+.preg-dot{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.1);transition:background .3s;}
 .preg-dot.done{background:#c9a84c;}
 .preg-dot.active{background:rgba(201,168,76,.5);}
-.preg-num{font-size:9px;color:rgba(221,218,240,.25);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
-.preg-txt{font-size:14px;color:#dddaf0;line-height:1.55;margin-bottom:14px;font-weight:700;}
-.preg-opts{display:flex;flex-direction:column;gap:8px;}
-.preg-opt{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:8px;padding:13px 14px;cursor:pointer;font-size:13px;color:rgba(221,218,240,.6);transition:all .2s;line-height:1.4;}
-.preg-opt:hover{border-color:rgba(201,168,76,.3);color:#dddaf0;}
+.preg-num{font-size:9px;color:rgba(221,218,240,.3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.preg-txt{font-size:13px;color:#dddaf0;line-height:1.5;margin-bottom:12px;font-weight:700;}
+.preg-opts{display:flex;flex-direction:column;gap:7px;}
+.preg-opt{background:rgba(255,255,255,.06);border:.5px solid rgba(221,218,240,.1);border-radius:8px;padding:11px 13px;cursor:pointer;font-size:12px;color:rgba(221,218,240,.6);transition:all .2s;}
+.preg-opt:hover{border-color:rgba(201,168,41,.3);color:#dddaf0;}
 .preg-opt.sel{border-color:#c9a84c;background:rgba(201,168,76,.08);color:#dddaf0;}
-.btn-siguiente{width:100%;background:#c9a84c;color:#07070f;font-family:'Fira Code',monospace;font-size:15px;font-weight:700;border:none;border-radius:8px;padding:14px;cursor:pointer;margin-top:12px;}
-.btn-siguiente:disabled{opacity:.3;cursor:not-allowed;}
+.btn-sig{width:100%;background:#c9a84c;color:#07070f;font-family:'Fira Code',monospace;font-size:14px;font-weight:700;border:none;border-radius:8px;padding:13px;cursor:pointer;margin-top:10px;}
+.btn-sig:disabled{opacity:.3;cursor:not-allowed;}
 
-/* SUSPENSE — entrevistador escribiendo */
-#suspense-overlay{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:400;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px;}
-#suspense-overlay.show{display:flex;}
-.susp-av{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.4);margin-bottom:16px;}
-.susp-nombre{font-size:13px;color:#c9a84c;margin-bottom:16px;}
-.susp-carta{background:rgba(255,255,255,.05);border:.5px solid rgba(221,218,240,.15);border-radius:12px;padding:20px;width:100%;max-width:320px;margin-bottom:20px;min-height:120px;}
-.susp-texto{font-size:13px;color:rgba(221,218,240,.8);line-height:1.8;font-style:italic;}
-.susp-cursor{display:inline-block;width:2px;height:14px;background:#c9a84c;margin-left:2px;vertical-align:middle;animation:cursorBlink .7s step-start infinite;}
-@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
-.susp-dots{display:flex;gap:6px;justify-content:center;margin-top:8px;}
-.susp-dot{width:8px;height:8px;border-radius:50%;background:rgba(201,168,76,.3);animation:dotPulse 1.2s ease-in-out infinite;}
-.susp-dot:nth-child(2){animation-delay:.2s;}
-.susp-dot:nth-child(3){animation-delay:.4s;}
-@keyframes dotPulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+/* ══ PROCESANDO ══ */
+.vl-procesando{
+  position:absolute;inset:0;background:rgba(0,0,0,.85);z-index:10;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  backdrop-filter:blur(4px);
+}
+.vl-procesando.show{display:flex;}
+.proc-txt{font-size:16px;color:#c9a84c;letter-spacing:.12em;margin-bottom:16px;}
+.proc-bar{width:200px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;}
+.proc-fill{height:100%;background:#c9a84c;width:0;animation:procAnim 2.5s ease-in-out forwards;}
+@keyframes procAnim{0%{width:0}70%{width:85%}100%{width:100%}}
 
-/* RESULTADO */
-#ent-resultado{display:none;text-align:center;padding:20px 0;}
-#ent-resultado.show{display:block;}
-.ent-reaccion{display:flex;gap:14px;align-items:flex-start;background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:14px;margin-bottom:16px;text-align:left;}
-.ent-reac-av{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.25);flex-shrink:0;}
-.ent-reac-nombre{font-size:11px;color:#c9a84c;margin-bottom:6px;}
-.ent-reac-txt{font-size:13px;color:rgba(221,218,240,.7);line-height:1.6;font-style:italic;}
+/* ══ CARTA ══ */
+.vl-carta{
+  position:absolute;inset:0;background:rgba(0,0,0,.92);z-index:11;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  padding:32px 24px;backdrop-filter:blur(4px);
+}
+.vl-carta.show{display:flex;}
+.carta-av{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.4);margin-bottom:12px;}
+.carta-nombre{font-size:12px;color:#c9a84c;margin-bottom:16px;}
+.carta-papel{background:rgba(255,255,255,.06);border:.5px solid rgba(221,218,240,.15);border-radius:12px;padding:20px;width:100%;max-width:320px;min-height:150px;margin-bottom:20px;}
+.carta-txt{font-size:13px;color:rgba(221,218,240,.85);line-height:1.9;font-style:italic;}
+.cursor-carta{display:inline-block;width:2px;height:14px;background:#c9a84c;margin-left:2px;vertical-align:middle;animation:cblink .7s step-start infinite;}
+@keyframes cblink{0%,100%{opacity:1}50%{opacity:0}}
+.btn-carta-ok{background:#c9a84c;color:#07070f;font-family:'Fira Code',monospace;font-size:14px;font-weight:700;border:none;border-radius:8px;padding:13px 32px;cursor:pointer;margin-bottom:10px;width:100%;max-width:280px;}
+.btn-carta-volver{background:rgba(255,255,255,.06);color:rgba(221,218,240,.5);font-family:'Fira Code',monospace;font-size:12px;border:.5px solid rgba(221,218,240,.12);border-radius:8px;padding:11px 28px;cursor:pointer;width:100%;max-width:280px;}
 
-/* REY TRÉBOLES — grande */
-.rey-trebol-wrap{text-align:center;margin-bottom:20px;animation:cardIn .5s cubic-bezier(.175,.885,.32,1.275);}
-@keyframes cardIn{from{transform:scale(.4) rotate(-8deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
-.rey-trebol-img{width:100%;max-width:260px;height:auto;border-radius:16px;box-shadow:0 0 40px rgba(0,200,150,.3),0 20px 60px rgba(0,0,0,.8);margin:0 auto 12px;display:block;}
-.rey-trebol-txt{font-size:13px;color:rgba(221,218,240,.55);font-style:italic;line-height:1.6;padding:0 8px;}
+/* ══ LOGRO ══ */
+#logro-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:600;
+  display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px;
+}
+#logro-overlay.show{display:flex;animation:logroIn .5s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes logroIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+.logro-emoji{font-size:80px;margin-bottom:16px;animation:floatEmoji 2s ease-in-out infinite;}
+@keyframes floatEmoji{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.logro-titulo-lbl{font-size:10px;color:rgba(221,218,240,.3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;}
+.logro-nombre-big{font-size:24px;font-weight:700;color:#00c896;margin-bottom:6px;text-align:center;}
+.logro-sub-txt{font-size:13px;color:rgba(221,218,240,.4);margin-bottom:20px;text-align:center;line-height:1.6;}
+.logro-rewards{display:flex;gap:10px;margin-bottom:24px;}
+.lr-xp{padding:8px 18px;background:rgba(127,106,240,.12);color:#7f6af0;border:.5px solid rgba(127,106,240,.25);border-radius:8px;font-size:13px;font-weight:700;}
+.lr-gus{padding:8px 18px;background:rgba(201,168,76,.1);color:#c9a84c;border:.5px solid rgba(201,168,76,.2);border-radius:8px;font-size:13px;font-weight:700;}
+.btn-logro-sig{background:#c9a84c;color:#07070f;font-family:'Fira Code',monospace;font-size:14px;font-weight:700;border:none;border-radius:8px;padding:14px 32px;cursor:pointer;}
 
-/* LOGRO CARD */
-.logro-card{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:16px;margin-bottom:16px;}
-.logro-icon{font-size:48px;display:block;margin-bottom:10px;animation:logroFloat 2s ease-in-out infinite;}
-@keyframes logroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.logro-titulo{font-size:10px;color:rgba(221,218,240,.3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
-.logro-nombre{font-size:20px;font-weight:700;margin-bottom:4px;}
-.logro-nombre.contratado{color:#00c896;}
-.logro-nombre.rechazado{color:#ff4d6d;}
-.logro-nombre.sobre{color:#c9a84c;}
-.logro-sub{font-size:13px;color:rgba(221,218,240,.4);line-height:1.6;margin-bottom:12px;}
-.logro-rewards{display:flex;gap:8px;justify-content:center;margin-bottom:0;}
-.logro-reward{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;}
-.logro-xp{background:rgba(127,106,240,.12);color:#7f6af0;border:.5px solid rgba(127,106,240,.25);}
-.logro-gus{background:rgba(201,168,76,.1);color:#c9a84c;border:.5px solid rgba(201,168,76,.2);}
+/* ══ REY TRÉBOLES ══ */
+#rey-trebol-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:700;
+  display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px;
+}
+#rey-trebol-overlay.show{display:flex;}
+.rt-img{width:100%;max-width:280px;height:auto;border-radius:16px;box-shadow:0 0 40px rgba(0,200,150,.3),0 20px 60px rgba(0,0,0,.9);margin-bottom:20px;animation:rtIn .6s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes rtIn{from{transform:scale(.4) rotate(-8deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.rt-quote{font-size:14px;color:rgba(221,218,240,.6);font-style:italic;line-height:1.7;text-align:center;max-width:280px;margin-bottom:24px;}
+.btn-rt{background:rgba(255,255,255,.08);color:#dddaf0;font-family:'Fira Code',monospace;font-size:13px;border:.5px solid rgba(221,218,240,.15);border-radius:8px;padding:12px 28px;cursor:pointer;}
 
-.btn-aceptar-trabajo{width:100%;background:#00c896;color:#07070f;font-family:'Fira Code',monospace;font-size:15px;font-weight:700;border:none;border-radius:8px;padding:14px;cursor:pointer;margin-bottom:10px;}
-.btn-cerrar-ent{width:100%;background:rgba(255,255,255,.06);color:rgba(221,218,240,.5);font-family:'Fira Code',monospace;font-size:13px;border:.5px solid rgba(221,218,240,.12);border-radius:8px;padding:12px;cursor:pointer;}
-
-/* PRUEBA ANTI-IA */
-#prueba-overlay{position:fixed;inset:0;background:#07070f;z-index:500;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+/* ══ PRUEBA ANTI-IA ══ */
+#prueba-overlay{
+  position:fixed;inset:0;background:#07070f;z-index:500;
+  display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;
+}
 #prueba-overlay.show{display:flex;}
 .prueba-wrap{width:100%;max-width:400px;}
-.prueba-header{text-align:center;margin-bottom:20px;}
-.prueba-trabajo{font-size:11px;color:rgba(221,218,240,.35);letter-spacing:.08em;margin-bottom:6px;}
-.prueba-titulo{font-size:16px;font-weight:700;color:#c9a84c;margin-bottom:4px;}
-.prueba-instruccion{font-size:13px;color:rgba(221,218,240,.5);line-height:1.5;}
-.prueba-timer{font-size:52px;font-weight:700;color:#c9a84c;text-align:center;margin:16px 0;line-height:1;}
-.prueba-timer.urgente{color:#ff4d6d;animation:timerPulse .5s step-start infinite;}
-@keyframes timerPulse{0%,100%{opacity:1}50%{opacity:.3}}
-.prueba-reto{background:rgba(255,255,255,.05);border:.5px solid rgba(221,218,240,.12);border-radius:12px;padding:16px;margin-bottom:16px;}
-.prueba-reto-txt{font-size:14px;color:#dddaf0;line-height:1.6;margin-bottom:12px;font-weight:700;}
+.prueba-label{font-size:10px;color:rgba(221,218,240,.3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;text-align:center;}
+.prueba-titulo{font-size:15px;font-weight:700;color:#c9a84c;margin-bottom:16px;text-align:center;line-height:1.5;}
+.prueba-timer{font-size:56px;font-weight:700;color:#c9a84c;text-align:center;margin-bottom:16px;line-height:1;}
+.prueba-timer.urgente{color:#ff4d6d;animation:tpulse .5s step-start infinite;}
+@keyframes tpulse{0%,100%{opacity:1}50%{opacity:.3}}
+.prueba-reto{background:rgba(255,255,255,.05);border:.5px solid rgba(221,218,240,.12);border-radius:12px;padding:16px;margin-bottom:14px;}
+.prueba-reto-txt{font-size:14px;font-weight:700;color:#dddaf0;margin-bottom:14px;line-height:1.5;}
 .prueba-opts{display:flex;flex-direction:column;gap:8px;}
 .prueba-opt{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:8px;padding:12px 14px;cursor:pointer;font-size:13px;color:rgba(221,218,240,.6);transition:all .2s;}
 .prueba-opt:hover{border-color:rgba(201,168,76,.3);color:#dddaf0;}
 .prueba-opt.sel{border-color:#c9a84c;background:rgba(201,168,76,.08);color:#dddaf0;}
-.btn-confirmar-prueba{width:100%;background:#c9a84c;color:#07070f;font-family:'Fira Code',monospace;font-size:15px;font-weight:700;border:none;border-radius:8px;padding:14px;cursor:pointer;margin-top:8px;}
-.btn-confirmar-prueba:disabled{opacity:.3;cursor:not-allowed;}
+.btn-confirmar{width:100%;background:#c9a84c;color:#07070f;font-family:'Fira Code',monospace;font-size:15px;font-weight:700;border:none;border-radius:8px;padding:14px;cursor:pointer;margin-top:8px;}
+.btn-confirmar:disabled{opacity:.3;cursor:not-allowed;}
 .prueba-intentos{font-size:11px;color:rgba(221,218,240,.3);text-align:center;margin-top:8px;}
 
-/* PERIODO PRUEBA FALLIDO */
-#prueba-fallida{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:600;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;}
-#prueba-fallida.show{display:flex;}
-.pf-av{width:100px;height:100px;border-radius:50%;object-fit:cover;margin:0 auto 16px;display:block;border:2px solid rgba(255,77,109,.3);}
-.pf-nombre{font-size:12px;color:#ff4d6d;margin-bottom:12px;}
-.pf-carta{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:20px;max-width:320px;margin-bottom:20px;}
-.pf-txt{font-size:13px;color:rgba(221,218,240,.7);line-height:1.8;font-style:italic;}
-.btn-pf-cerrar{background:rgba(255,255,255,.06);color:rgba(221,218,240,.5);font-family:'Fira Code',monospace;font-size:13px;border:.5px solid rgba(221,218,240,.12);border-radius:8px;padding:12px 28px;cursor:pointer;}
+/* ══ DESPIDO VIDEO ══ */
+#despido-overlay{
+  position:fixed;inset:0;z-index:800;display:none;
+  flex-direction:column;background:#000;
+}
+#despido-overlay.show{display:flex;}
 
 /* TAREAS */
 #tareas-overlay{position:fixed;inset:0;background:#07070f;z-index:300;display:none;flex-direction:column;overflow-y:auto;}
@@ -175,23 +241,16 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 .tar-wrap{width:100%;max-width:440px;margin:0 auto;padding:20px 20px 80px;}
 .tar-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
 .tar-back{font-size:20px;cursor:pointer;color:rgba(221,218,240,.4);}
-.tar-title{font-size:15px;font-weight:700;}
-.progreso-trabajo{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:10px;padding:14px;margin-bottom:14px;}
-.pt-label{font-size:10px;color:rgba(221,218,240,.3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;}
-.pt-bar{height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;margin-bottom:6px;}
+.pt-bar{height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;margin:6px 0;}
 .pt-fill{height:100%;background:#c9a84c;border-radius:3px;}
-.pt-meta{font-size:11px;color:rgba(221,218,240,.35);}
-.pt-gus-acum{font-size:13px;color:#c9a84c;font-weight:700;margin-top:4px;}
 .tarea-card{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:10px;padding:14px;margin-bottom:10px;}
-.tarea-num{font-size:9px;color:rgba(221,218,240,.25);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
-.tarea-txt{font-size:14px;font-weight:700;color:#dddaf0;margin-bottom:12px;line-height:1.5;}
 .tarea-opts{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
 .tarea-opt{background:rgba(255,255,255,.03);border:.5px solid rgba(221,218,240,.08);border-radius:6px;padding:10px 12px;cursor:pointer;font-size:12px;color:rgba(221,218,240,.55);transition:all .2s;}
-.tarea-opt:hover{border-color:rgba(201,168,76,.3);color:#dddaf0;}
+.tarea-opt:hover{border-color:rgba(201,168,76,.3);}
 .tarea-opt.sel{border-color:#c9a84c;background:rgba(201,168,76,.06);color:#dddaf0;}
-.tarea-opt.completada{border-color:rgba(0,200,150,.3);color:#00c896;background:rgba(0,200,150,.05);pointer-events:none;}
-.btn-completar-tarea{background:#c9a84c;color:#07070f;font-family:'Fira Code',monospace;font-size:13px;font-weight:700;border:none;border-radius:6px;padding:10px 20px;cursor:pointer;}
-.btn-completar-tarea:disabled{opacity:.3;cursor:not-allowed;}
+.tarea-opt.done{border-color:rgba(0,200,150,.3);color:#00c896;background:rgba(0,200,150,.05);pointer-events:none;}
+.btn-comp-tarea{background:#c9a84c;color:#07070f;font-family:'Fira Code',monospace;font-size:12px;font-weight:700;border:none;border-radius:6px;padding:9px 18px;cursor:pointer;}
+.btn-comp-tarea:disabled{opacity:.3;cursor:not-allowed;}
 
 /* BOTTOM NAV */
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;background:rgba(7,7,15,.95);border-top:.5px solid rgba(221,218,240,.08);display:flex;align-items:center;justify-content:space-around;padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:100;backdrop-filter:blur(16px);}
@@ -219,89 +278,114 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
   <div class="content" id="content"></div>
 </div>
 
-<!-- SUSPENSE -->
-<div id="suspense-overlay">
-  <img src="" alt="" class="susp-av" id="susp-av">
-  <div class="susp-nombre" id="susp-nombre"></div>
-  <div class="susp-carta">
-    <div class="susp-texto" id="susp-texto"></div>
+<!-- ══ VIDEOLLAMADA ══ -->
+<div id="videollamada">
+  <div class="vl-bg">
+    <img src="" alt="" class="vl-bg-img" id="vl-bg-img">
+    <div class="vl-overlay"></div>
   </div>
-  <div class="susp-dots"><div class="susp-dot"></div><div class="susp-dot"></div><div class="susp-dot"></div></div>
+  <div class="vl-av-wrap">
+    <img src="" alt="" class="vl-av" id="vl-av">
+  </div>
+  <div class="vl-gi">
+    <img src="img/gi_face.jpg" alt="gi" class="vl-gi-av" onerror="this.style.background='rgba(0,229,255,.15)';this.removeAttribute('src')">
+    <div class="gi-bubble vl-gi-bubble" id="vl-gi-msg">suerte!</div>
+  </div>
+  <div class="vl-info">
+    <div class="vl-nombre" id="vl-nombre">---</div>
+    <div class="vl-cargo" id="vl-cargo">---</div>
+    <div class="vl-estado"><div class="vl-dot"></div><span id="vl-estado-txt">en línea</span></div>
+  </div>
+  <div class="vl-controls">
+    <button class="vl-btn vl-btn-end" onclick="colgarLlamada()" title="colgar">📵</button>
+  </div>
+  <div class="vl-preguntas" id="vl-preguntas"></div>
+
+  <!-- PROCESANDO -->
+  <div class="vl-procesando" id="vl-procesando">
+    <div class="proc-txt">// procesando</div>
+    <div class="proc-bar"><div class="proc-fill"></div></div>
+  </div>
+
+  <!-- CARTA -->
+  <div class="vl-carta" id="vl-carta">
+    <img src="" alt="" class="carta-av" id="carta-av">
+    <div class="carta-nombre" id="carta-nombre"></div>
+    <div class="carta-papel">
+      <div class="carta-txt" id="carta-txt"></div>
+    </div>
+    <button class="btn-carta-ok" id="btn-carta-ok" onclick="aceptarTrabajo()" style="display:none">aceptar trabajo</button>
+    <button class="btn-carta-volver" id="btn-carta-volver" onclick="cerrarVideollamada()">volver a trabajos</button>
+  </div>
 </div>
 
-<!-- ENTREVISTA -->
-<div id="entrevista-overlay">
-<div class="ent-wrap">
-  <div class="ent-header">
-    <div class="ent-back" onclick="cerrarEntrevista()">←</div>
-    <div class="ent-title" id="ent-title">entrevista</div>
-  </div>
-  <div class="ent-perfil" id="ent-perfil"></div>
-  <div class="gi-row">
-    <img src="img/gi_face.jpg" alt="gi" class="gi-av" onerror="this.style.background='rgba(0,229,255,.15)';this.removeAttribute('src')">
-    <div class="gi-bubble" id="gi-intro-txt">prepárate</div>
-  </div>
-  <div id="ent-preguntas"></div>
-  <div id="ent-resultado">
-    <div class="ent-reaccion" id="ent-reaccion"></div>
-    <div class="rey-trebol-wrap">
-      <img src="img/rey_treboles.jpg" alt="rey de tréboles" class="rey-trebol-img" onerror="this.style.background='rgba(0,200,150,.1)';this.removeAttribute('src')">
-      <div class="rey-trebol-txt" id="rey-trebol-txt"></div>
-    </div>
-    <div class="logro-card" id="logro-card">
-      <span class="logro-icon" id="logro-icon">◈</span>
-      <div class="logro-titulo">// resultado</div>
-      <div class="logro-nombre" id="logro-nombre"></div>
-      <div class="logro-sub" id="logro-sub"></div>
-      <div class="logro-rewards" id="logro-rewards"></div>
-    </div>
-    <button class="btn-aceptar-trabajo" id="btn-aceptar-trabajo" onclick="iniciarPruebaAntiIA()" style="display:none">aceptar trabajo → prueba de inicio</button>
-    <button class="btn-cerrar-ent" onclick="cerrarEntrevista()">volver a trabajos</button>
-  </div>
-</div>
+<!-- ══ LOGRO ══ -->
+<div id="logro-overlay">
+  <div class="logro-emoji" id="logro-emoji">🎉</div>
+  <div class="logro-titulo-lbl">// logro desbloqueado</div>
+  <div class="logro-nombre-big" id="logro-nombre-big">contratado</div>
+  <div class="logro-sub-txt" id="logro-sub-txt">---</div>
+  <div class="logro-rewards" id="logro-rewards"></div>
+  <button class="btn-logro-sig" onclick="mostrarReyTrebol()">continuar</button>
 </div>
 
-<!-- PRUEBA ANTI-IA -->
+<!-- ══ REY TRÉBOLES ══ -->
+<div id="rey-trebol-overlay">
+  <img src="img/rey_treboles.jpg" alt="rey de tréboles" class="rt-img" onerror="this.style.background='rgba(0,200,150,.1)';this.removeAttribute('src')">
+  <div class="rt-quote" id="rt-quote">---</div>
+  <button class="btn-rt" id="btn-rt" onclick="cerrarReyTrebol()">continuar</button>
+</div>
+
+<!-- ══ PRUEBA ANTI-IA ══ -->
 <div id="prueba-overlay">
 <div class="prueba-wrap">
-  <div class="prueba-header">
-    <div class="prueba-trabajo" id="prueba-trabajo-label"></div>
-    <div class="prueba-titulo">tu primera tarea</div>
-    <div class="prueba-instruccion" id="prueba-instruccion"></div>
-  </div>
+  <div class="prueba-label" id="prueba-label"></div>
+  <div class="prueba-titulo" id="prueba-titulo"></div>
   <div class="prueba-timer" id="prueba-timer">30</div>
   <div class="prueba-reto">
     <div class="prueba-reto-txt" id="prueba-reto-txt"></div>
     <div class="prueba-opts" id="prueba-opts"></div>
   </div>
-  <button class="btn-confirmar-prueba" id="btn-confirmar-prueba" onclick="confirmarPrueba()" disabled>confirmar respuesta</button>
+  <button class="btn-confirmar" id="btn-confirmar" onclick="confirmarPrueba()" disabled>confirmar</button>
   <div class="prueba-intentos" id="prueba-intentos">intento 1 de 3</div>
 </div>
 </div>
 
-<!-- PERIODO PRUEBA FALLIDO -->
-<div id="prueba-fallida">
-  <img src="" alt="" class="pf-av" id="pf-av">
-  <div class="pf-nombre" id="pf-nombre"></div>
-  <div class="pf-carta">
-    <div class="pf-txt" id="pf-txt"></div>
+<!-- ══ DESPIDO VIDEOLLAMADA ══ -->
+<div id="despido-overlay">
+  <div class="vl-bg">
+    <img src="" alt="" class="vl-bg-img" id="desp-bg-img">
+    <div class="vl-overlay"></div>
   </div>
-  <button class="btn-pf-cerrar" onclick="cerrarPruebaFallida()">entendido</button>
+  <div class="vl-av-wrap">
+    <img src="" alt="" class="vl-av" id="desp-av">
+  </div>
+  <div class="vl-info">
+    <div class="vl-nombre" id="desp-nombre"></div>
+    <div class="vl-cargo" id="desp-cargo"></div>
+  </div>
+  <div class="vl-carta show" id="desp-carta" style="background:rgba(0,0,0,.88);">
+    <img src="" alt="" class="carta-av" id="desp-carta-av">
+    <div class="carta-nombre" id="desp-carta-nombre"></div>
+    <div class="carta-papel">
+      <div class="carta-txt" id="desp-carta-txt"></div>
+    </div>
+    <button class="btn-carta-volver" onclick="cerrarDespido()">entendido</button>
+  </div>
 </div>
 
-<!-- TAREAS -->
+<!-- ══ TAREAS ══ -->
 <div id="tareas-overlay">
 <div class="tar-wrap">
   <div class="tar-header">
     <div class="tar-back" onclick="cerrarTareas()">←</div>
-    <div class="tar-title" id="tar-title">tareas del trabajo</div>
+    <div style="font-size:15px;font-weight:700" id="tar-title">tareas</div>
   </div>
-  <div class="progreso-trabajo" id="progreso-trabajo"></div>
+  <div id="progreso-trabajo"></div>
   <div id="tareas-lista"></div>
 </div>
 </div>
 
-<!-- BOTTOM NAV -->
 <div class="bottom-nav">
   <button class="nav-btn" onclick="navTo('nodo')"><span class="nav-icon">◈</span><span class="nav-label">nodo</span></button>
   <button class="nav-btn active"><span class="nav-icon">💼</span><span class="nav-label">trabajos</span></button>
@@ -311,215 +395,181 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 
 <script>
 // ══ BANCO DE PREGUNTAS ══
-const BANCO = {
+const BANCO={
   analista:[
-    {txt:'tienes 200 registros de jugadores. el primer paso es:',opts:['ordenarlos por nombre','identificar columnas con datos incompletos','graficarlos todos','imprimirlos para revisarlos'],resp:1},
-    {txt:'¿qué diferencia hay entre una media y una mediana?',opts:['son lo mismo','la media suma y divide; la mediana encuentra el valor central','la mediana es más difícil de calcular','solo la mediana sirve para datos reales'],resp:1},
-    {txt:'encuentras un dato que parece incorrecto. ¿qué haces?',opts:['lo corrijo sin avisar','lo borro','documento y reporto antes de tocarlo','lo dejo igual por si acaso'],resp:2},
-    {txt:'¿para qué sirve una tabla dinámica?',opts:['para hacer el diseño más bonito','para resumir y cruzar grandes cantidades de datos rápido','para agregar más filas','para cambiar los colores de la hoja'],resp:1},
-    {txt:'te piden el "dato más valioso" sobre actividad de usuarios. ¿cuál eliges?',opts:['el nombre del usuario','la fecha del último acceso','el color favorito','el distrito'],resp:1},
-    {txt:'¿qué es un valor atípico (outlier)?',opts:['un dato que se repite mucho','un dato muy diferente al resto del conjunto','un error de escritura siempre','el promedio del conjunto'],resp:1},
-    {txt:'tienes datos de lunes a viernes. el martes falta. ¿qué haces?',opts:['eliminas toda la semana','inventas un número parecido','marcas el valor como nulo y lo documentas','promedias lunes y miércoles sin documentar'],resp:2},
-    {txt:'¿cuál es la mejor forma de presentar una tendencia a lo largo del tiempo?',opts:['gráfico de torta','gráfico de barras separadas','gráfico de líneas','tabla de texto'],resp:2},
-    {txt:'alguien te pide "los 10 jugadores más activos". ¿cómo lo resuelves?',opts:['los busco manualmente uno por uno','ordeno por frecuencia de acceso de mayor a menor y tomo los primeros 10','pregunto cuáles son los 10','cuento los nombres más largos'],resp:1},
-    {txt:'¿qué significa que dos variables están correlacionadas?',opts:['que una causa a la otra siempre','que cuando una cambia, la otra tiende a cambiar también','que son iguales','que no tienen relación'],resp:1},
+    {txt:'tienes 200 registros de jugadores. el primer paso es:',opts:['ordenarlos por nombre','identificar columnas con datos incompletos','graficarlos todos','imprimirlos'],resp:1},
+    {txt:'¿qué diferencia hay entre media y mediana?',opts:['son lo mismo','la media suma y divide; la mediana encuentra el valor central','la mediana es más difícil','solo la mediana sirve'],resp:1},
+    {txt:'encuentras un dato incorrecto. ¿qué haces?',opts:['lo corrijo sin avisar','lo borro','documento y reporto antes de tocarlo','lo dejo igual'],resp:2},
+    {txt:'¿para qué sirve una tabla dinámica?',opts:['diseño más bonito','resumir y cruzar grandes cantidades de datos rápido','agregar más filas','cambiar colores'],resp:1},
+    {txt:'te piden el dato más valioso sobre actividad de usuarios. ¿cuál?',opts:['nombre del usuario','fecha del último acceso','color favorito','el distrito'],resp:1},
+    {txt:'¿qué es un outlier?',opts:['dato que se repite mucho','dato muy diferente al resto','error de escritura siempre','el promedio'],resp:1},
+    {txt:'datos de lunes a viernes, el martes falta. ¿qué haces?',opts:['eliminas la semana','inventas un número parecido','marcas como nulo y documentas','promedias sin documentar'],resp:2},
+    {txt:'¿cuál es la mejor forma de presentar una tendencia en el tiempo?',opts:['gráfico de torta','barras separadas','gráfico de líneas','tabla de texto'],resp:2},
+    {txt:'te piden los 10 jugadores más activos. ¿cómo?',opts:['busco manualmente','ordeno por frecuencia y tomo los primeros 10','pregunto cuáles son','cuento nombres más largos'],resp:1},
+    {txt:'¿qué significa que dos variables están correlacionadas?',opts:['una causa a la otra siempre','cuando una cambia, la otra tiende a cambiar','son iguales','no tienen relación'],resp:1},
   ],
   community:[
-    {txt:'el clan lleva 3 días sin actividad. ¿qué haces primero?',opts:['esperas a que alguien más publique','propones un reto con recompensa y límite de tiempo','mandas un buen día genérico','culpas a los inactivos públicamente'],resp:1},
-    {txt:'dos jugadores se insultan en el chat. primer movimiento:',opts:['baneas a los dos','contactas al que inició en privado','ignoras — son cosas del juego','haces un post público'],resp:1},
-    {txt:'¿cuál es la métrica más importante para saber si el clan está vivo?',opts:['cuántos miembros tiene','jugadores activos esta semana vs la anterior','cuántos mensajes mandaste tú','cuántos me siguen a ti'],resp:1},
-    {txt:'un jugador nuevo pregunta lo mismo por tercera vez. ¿qué haces?',opts:['le dices que lea el manual','creas un mensaje fijo de bienvenida con los 3 puntos clave','lo ignoras','lo mandas a buscar en Google'],resp:1},
-    {txt:'recibes críticas por una decisión que tomaste. ¿cómo respondes?',opts:['defiendes sin escuchar','escuchas, reconoces lo válido y explicas tu razonamiento','cambias todo para evitar conflicto','eliminas los comentarios'],resp:1},
-    {txt:'¿qué tipo de contenido genera más participación orgánica?',opts:['anuncios del sistema','retos con recompensa y tiempo límite','fotos del logo','felicitaciones de cumpleaños'],resp:1},
-    {txt:'un jugador amenaza con irse del clan. ¿qué haces?',opts:['le dices adiós','le preguntas en privado qué pasó y qué necesitaría para quedarse','lo ignoras','haces una votación pública'],resp:1},
-    {txt:'¿cuál es la diferencia entre moderación y animación de comunidad?',opts:['son lo mismo','moderación controla el comportamiento; animación genera vida y participación','animación es más fácil','moderación solo sirve para resolver peleas'],resp:1},
-    {txt:'el clan tiene 50 miembros pero solo 5 participan. ¿qué indica eso?',opts:['que el clan está bien','que hay un problema de engagement que necesita acción','que necesitas más miembros','que los 5 activos son suficientes'],resp:1},
-    {txt:'¿cómo mides el éxito de una campaña dentro del clan?',opts:['por cuántos posts hiciste','por el incremento de participación activa antes vs después','por cuántos likes recibiste tú','por el número de nuevos miembros'],resp:1},
+    {txt:'el clan lleva 3 días sin actividad. ¿qué haces primero?',opts:['esperas','propones reto con recompensa y tiempo límite','mandas buenos días','culpas a los inactivos'],resp:1},
+    {txt:'dos jugadores se insultan. primer movimiento:',opts:['baneas a los dos','contactas al que inició en privado','ignoras','post público'],resp:1},
+    {txt:'¿cuál métrica muestra si el clan está vivo?',opts:['cuántos miembros tiene','activos esta semana vs anterior','mensajes que mandaste tú','seguidores propios'],resp:1},
+    {txt:'jugador nuevo pregunta lo mismo 3 veces. ¿qué haces?',opts:['dices que lea el manual','creas mensaje fijo de bienvenida','lo ignoras','lo mandas a Google'],resp:1},
+    {txt:'recibes críticas por tu decisión. ¿cómo respondes?',opts:['defiendes sin escuchar','escuchas y explicas tu razonamiento','cambias todo para evitar conflicto','eliminas comentarios'],resp:1},
+    {txt:'¿qué contenido genera más participación orgánica?',opts:['anuncios del sistema','retos con recompensa y tiempo límite','fotos del logo','felicitaciones'],resp:1},
+    {txt:'jugador amenaza irse del clan. ¿qué haces?',opts:['dices adiós','preguntas en privado qué pasó','lo ignoras','votación pública'],resp:1},
+    {txt:'clan tiene 50 miembros pero solo 5 participan. ¿qué indica?',opts:['que está bien','problema de engagement que necesita acción','necesitas más miembros','los 5 activos son suficientes'],resp:1},
+    {txt:'¿cómo mides el éxito de una campaña en el clan?',opts:['posts que hiciste','incremento de participación antes vs después','likes que recibiste','nuevos miembros'],resp:1},
+    {txt:'diferencia entre moderación y animación de comunidad:',opts:['son lo mismo','moderación controla; animación genera vida y participación','animación es más fácil','moderación solo resuelve peleas'],resp:1},
   ],
   disenador:[
-    {txt:'te piden una skin para un guerrero nivel 5. ¿por dónde empiezas?',opts:['buscas imágenes en internet','defines qué emoción debe provocar al verla','haces algo rápido para entregar','preguntas qué colores le gustan'],resp:1},
-    {txt:'tu diseño es rechazado. ¿cuál es tu reacción?',opts:['te enojas','preguntas exactamente qué no funcionó y propones nueva dirección','aceptas sin entender','abandonas'],resp:1},
-    {txt:'¿cómo sabes si una skin tiene valor real?',opts:['si a ti te gusta','si genera reacción en los primeros 10 segundos','si tardaste mucho en hacerla','si tiene muchos colores'],resp:1},
-    {txt:'un jugador nivel 1 quiere tu skin nivel 5. ¿qué le dices?',opts:['no puede — punto','le explico qué logros necesita y lo motivo','le vendo igual','lo ignoro'],resp:1},
-    {txt:'¿qué hace que un diseño sea memorable?',opts:['que sea colorido','que tenga una idea clara que no necesita explicación','que sea complejo','que use muchos elementos'],resp:1},
-    {txt:'te piden diseñar en 2 horas. ¿qué priorizas?',opts:['el detalle fino','la idea central que comunica el concepto','el color exacto','la tipografía perfecta'],resp:1},
-    {txt:'¿cuál es la diferencia entre estilo y tendencia?',opts:['son lo mismo','el estilo es consistente y propio; la tendencia es temporal y externa','la tendencia dura más','el estilo cambia cada año'],resp:1},
-    {txt:'¿para qué sirve pedir feedback antes de terminar un diseño?',opts:['para mostrar que trabajas','para identificar problemas antes de invertir más tiempo','para que otros hagan tu trabajo','para tener más reuniones'],resp:1},
-    {txt:'te dan libertad total para diseñar. ¿por dónde empiezas?',opts:['con el color','con la emoción que quieres que sienta el usuario al ver el diseño','con el tamaño','con la tipografía'],resp:1},
-    {txt:'¿qué es el "espacio negativo" en diseño?',opts:['los errores del diseño','el espacio vacío que también forma parte del diseño','el color negro','el fondo siempre blanco'],resp:1},
+    {txt:'skin para guerrero nivel 5. ¿por dónde empiezas?',opts:['buscas en internet','defines qué emoción debe provocar','haces algo rápido','preguntas colores'],resp:1},
+    {txt:'tu diseño es rechazado. ¿reacción?',opts:['te enojas','preguntas qué no funcionó y propones nueva dirección','aceptas sin entender','abandonas'],resp:1},
+    {txt:'¿cómo sabes si una skin tiene valor real?',opts:['si te gusta a ti','si genera reacción en los primeros 10 segundos','si tardaste mucho','si tiene muchos colores'],resp:1},
+    {txt:'jugador nivel 1 quiere skin nivel 5. ¿qué le dices?',opts:['no puede','le explico qué logros necesita y motivo','le vendo igual','lo ignoro'],resp:1},
+    {txt:'¿qué hace memorable un diseño?',opts:['que sea colorido','idea clara que no necesita explicación','que sea complejo','muchos elementos'],resp:1},
+    {txt:'2 horas para diseñar. ¿qué priorizas?',opts:['el detalle fino','la idea central que comunica el concepto','el color exacto','la tipografía perfecta'],resp:1},
+    {txt:'diferencia entre estilo y tendencia:',opts:['son lo mismo','estilo es consistente y propio; tendencia es temporal','la tendencia dura más','el estilo cambia cada año'],resp:1},
+    {txt:'feedback antes de terminar. ¿para qué?',opts:['mostrar que trabajas','identificar problemas antes de invertir más tiempo','que otros hagan tu trabajo','tener más reuniones'],resp:1},
+    {txt:'libertad total para diseñar. ¿por dónde empiezas?',opts:['el color','emoción que quieres que sienta el usuario','el tamaño','la tipografía'],resp:1},
+    {txt:'¿qué es el espacio negativo en diseño?',opts:['errores del diseño','espacio vacío que también forma parte del diseño','el color negro','fondo siempre blanco'],resp:1},
   ],
   emprender:[
-    {txt:'¿cuál es el primer paso para validar una idea?',opts:['diseñar el logo','hablar con personas que tengan el problema','calcular ganancias','buscar inversores'],resp:1},
-    {txt:'tu prototipo es feo y básico. ¿lo muestras?',opts:['no — espero a que esté perfecto','sí — el feedback temprano vale más que la perfección','solo a amigos cercanos','lo describo sin mostrarlo'],resp:1},
-    {txt:'alguien dice "no pagaría por eso". ¿cómo lo usas?',opts:['lo ignoras','preguntas por qué y qué sí pagaría','buscas otro mercado','abandonas la idea'],resp:1},
-    {txt:'¿qué hace que un pitch de 60 segundos funcione?',opts:['muchas diapositivas','el problema es claro antes de hablar de la solución','términos técnicos avanzados','que dure exactamente 60 segundos'],resp:1},
-    {txt:'¿dónde buscas tu primer cliente?',opts:['redes con publicidad pagada','personas que ya tienen el problema que resuelves','ferias de emprendimiento','esperando que lleguen solos'],resp:1},
-    {txt:'la diferencia entre una startup y un negocio tradicional es:',opts:['el tamaño','la startup busca crecer rápido con un modelo escalable','que la startup no gana dinero','el local físico'],resp:1},
-    {txt:'¿qué es el "product-market fit"?',opts:['cuando el producto se ve bien','cuando el mercado realmente quiere y usa lo que ofreces','cuando tienes muchos usuarios en redes','cuando el precio es bajo'],resp:1},
-    {txt:'tienes 3 ideas de negocio. ¿cómo eliges cuál desarrollar primero?',opts:['la que más te gusta a ti','la que tiene un problema real, mercado existente y puedes empezar esta semana','la más original','la que más dinero promete'],resp:1},
-    {txt:'¿qué es el método lean startup?',opts:['un método para hacer empresas pequeñas','construir, medir y aprender rápido con el mínimo recurso posible','un software de gestión','solo para empresas de tecnología'],resp:1},
-    {txt:'un competidor lanza algo similar a tu idea. ¿qué haces?',opts:['abandonas','analizas sus fortalezas y debilidades y buscas tu diferenciador','los copias','los demandas'],resp:1},
+    {txt:'primer paso para validar una idea:',opts:['diseñar el logo','hablar con personas que tengan el problema','calcular ganancias','buscar inversores'],resp:1},
+    {txt:'prototipo feo y básico. ¿lo muestras?',opts:['no — espero perfección','sí — feedback temprano vale más','solo a amigos','lo describo sin mostrar'],resp:1},
+    {txt:'"no pagaría por eso". ¿cómo lo usas?',opts:['lo ignoras','preguntas por qué y qué sí pagaría','buscas otro mercado','abandonas'],resp:1},
+    {txt:'pitch de 60 segundos efectivo. ¿clave?',opts:['muchas diapositivas','problema claro antes de la solución','términos técnicos','exactamente 60 segundos'],resp:1},
+    {txt:'¿dónde buscas tu primer cliente?',opts:['redes con publicidad pagada','personas que ya tienen el problema','ferias','esperando que lleguen'],resp:1},
+    {txt:'diferencia startup vs negocio tradicional:',opts:['el tamaño','startup busca crecer rápido con modelo escalable','startup no gana dinero','el local físico'],resp:1},
+    {txt:'¿qué es el product-market fit?',opts:['cuando el producto se ve bien','cuando el mercado realmente quiere lo que ofreces','cuando tienes muchos usuarios','cuando el precio es bajo'],resp:1},
+    {txt:'3 ideas de negocio. ¿cómo eliges?',opts:['la que más te gusta','problema real + mercado existente + puedes empezar esta semana','la más original','la que más dinero promete'],resp:1},
+    {txt:'método lean startup:',opts:['empresas pequeñas','construir, medir y aprender rápido con mínimo recurso','software de gestión','solo para tech'],resp:1},
+    {txt:'competidor lanza algo similar. ¿qué haces?',opts:['abandonas','analizas y buscas tu diferenciador','los copias','los demandas'],resp:1},
   ],
 };
 
-// RETOS ANTI-IA por trabajo
-const RETOS = {
+const RETOS={
   analista:[
-    {txt:'¿cuál número NO pertenece a esta serie? 2, 5, 10, 17, 26, 37, 50',opts:['17','26','37','50'],resp:2,
-     exp:'la serie suma +3,+5,+7,+9,+11,+13 — 26+11=37 ✓ pero 37+13=50 ✓ — el que no pertenece es 37 porque debería ser +11=37... espera: 2+3=5, 5+5=10, 10+7=17, 17+9=26, 26+11=37, 37+13=50 — todos correctos — reformulado: ¿cuál sería el siguiente? 50+15=65'},
-    {txt:'en una tabla de ventas: lunes 45, martes 52, miércoles ?, jueves 68, viernes 75. ¿qué valor completaría el patrón?',opts:['55','59','61','63'],resp:1,
-     exp:'el patrón sube +7,+7,+7 — 52+7=59'},
-    {txt:'tienes 5 vendedores con estas ventas: 12, 18, 15, 22, 8. ¿cuál es el promedio?',opts:['14','15','16','17'],resp:2,
-     exp:'12+18+15+22+8=75 / 5 = 15'},
-    {txt:'¿cuál de estos datos es un OUTLIER (valor atípico)? ventas diarias: 120, 115, 118, 122, 9, 119',opts:['120','122','9','118'],resp:2,
-     exp:'9 es muy diferente al resto que está entre 115-122'},
+    {txt:'¿cuál número NO pertenece? 2 · 6 · 12 · 20 · 30 · 42 · 56',opts:['20','30','42','56'],resp:2,exp:'2+4=6, 6+6=12, 12+8=20, 20+10=30, 30+12=42, 42+14=56 — todos correctos salvo 42 (debería ser 44)... la serie suma +4,+6,+8,+10,+12,+14'},
+    {txt:'ventas: lunes 40, martes 48, miércoles ?, jueves 64, viernes 72. ¿qué falta?',opts:['52','54','56','58'],resp:2,exp:'patrón +8 cada día: 40,48,56,64,72'},
+    {txt:'5 jugadores: 14, 20, 16, 24, 6. ¿cuál es el promedio?',opts:['14','16','18','20'],resp:1,exp:'14+20+16+24+6=80 / 5 = 16'},
+    {txt:'¿cuál es el outlier? 95, 98, 102, 97, 8, 101',opts:['95','102','8','97'],resp:2,exp:'8 es muy diferente al grupo 95-102'},
   ],
   community:[
-    {txt:'publicaste 3 contenidos esta semana. los resultados: post A=45 comentarios, post B=8 comentarios, post C=31 comentarios. ¿cuál replicarías?',opts:['post B','post C','post A','ninguno'],resp:2,
-     exp:'post A generó más interacción — 45 comentarios indica mayor engagement'},
-    {txt:'el clan tenía 80 activos hace 2 semanas, 65 hace 1 semana, y hoy tiene 50. ¿qué tendencia describes?',opts:['crecimiento lento','estabilidad','caída constante de ~15 por semana','datos insuficientes'],resp:2,
-     exp:'80→65→50 baja exactamente 15 por semana — tendencia de caída constante'},
-    {txt:'si el 20% de tus 100 miembros genera el 80% de la actividad, ¿cuántos son los más activos?',opts:['80 miembros','20 miembros','50 miembros','10 miembros'],resp:1,
-     exp:'20% de 100 = 20 miembros — es la regla de Pareto 80/20'},
+    {txt:'post A=45 comentarios, post B=8, post C=31. ¿cuál replicarías?',opts:['post B','post C','post A','ninguno'],resp:2,exp:'post A generó más interacción'},
+    {txt:'80 activos → 65 → 50. ¿qué tendencia describes?',opts:['crecimiento lento','estabilidad','caída constante de ~15 por semana','datos insuficientes'],resp:2,exp:'80→65→50 baja exactamente 15 por semana'},
+    {txt:'20% de 100 miembros genera 80% de actividad. ¿cuántos son los más activos?',opts:['80 miembros','20 miembros','50','10'],resp:1,exp:'20% de 100 = 20 — regla de Pareto'},
+    {txt:'3 campañas en 3 semanas: +20, -5, +35 activos. resultado neto:',opts:'+45',opts:['45','50','+45 activos','40'],resp:2,exp:'20-5+35=50 activos ganados neto'},
   ],
   disenador:[
-    {txt:'tienes 4 colores: rojo, azul, verde, amarillo. para una skin de guerrero nocturno, ¿cuál palette tiene más coherencia?',opts:['rojo brillante y amarillo','azul oscuro y negro','verde lima y naranja','rosa y celeste'],resp:1,
-     exp:'azul oscuro y negro evocan noche, misterio y poder — coherente con el concepto'},
-    {txt:'¿qué regla de composición divide la imagen en 9 partes iguales para ubicar los elementos principales?',opts:['regla de los tercios','simetría perfecta','regla de oro','contraste máximo'],resp:0,
-     exp:'la regla de los tercios coloca los puntos de interés en las intersecciones de 9 partes'},
-    {txt:'tu skin usa 8 colores diferentes. el feedback es "se ve recargado". ¿qué harías?',opts:['agregar más colores para equilibrar','reducir a 2-3 colores principales y usar los demás como acentos mínimos','cambiar todos los colores','usar solo blanco y negro'],resp:1,
-     exp:'menos colores principales con acentos controlados dan coherencia visual'},
+    {txt:'guerrero nocturno. ¿cuál palette es más coherente?',opts:['rojo brillante y amarillo','azul oscuro y negro','verde lima y naranja','rosa y celeste'],resp:1,exp:'azul oscuro y negro evocan noche y poder'},
+    {txt:'¿qué regla divide la imagen en 9 partes para ubicar elementos?',opts:['regla de los tercios','simetría perfecta','regla de oro','contraste máximo'],resp:0,exp:'regla de los tercios'},
+    {txt:'feedback: "se ve recargado" con 8 colores. ¿qué haces?',opts:['agrego más colores','reduzco a 2-3 principales con acentos mínimos','cambio todos','solo blanco y negro'],resp:1,exp:'menos colores principales dan coherencia'},
+    {txt:'¿cuántos colores máximo para una identidad visual sólida?',opts:['1','2-3 principales + acentos','todos los que quieras','depende del tamaño'],resp:1,exp:'2-3 colores principales es estándar profesional'},
   ],
   emprender:[
-    {txt:'tienes S/500 para validar tu idea. ¿cómo los usas mejor?',opts:['en publicidad en redes','en entrevistas con 20 usuarios potenciales + prototipo básico','en diseño del logo profesional','en registro de la empresa'],resp:1,
-     exp:'conocer al usuario y tener algo tangible que mostrar es la mejor inversión temprana'},
-    {txt:'tu idea resuelve un problema que afecta a 1,000 personas en Lima que pagarían S/30/mes. ¿cuál es el mercado potencial mensual?',opts:['S/3,000','S/30,000','S/300,000','S/3,000,000'],resp:1,
-     exp:'1,000 × S/30 = S/30,000 mensuales de mercado potencial'},
-    {txt:'lanzaste hace 1 mes: 100 usuarios registrados, 15 activos diarios. ¿qué métrica te preocupa más?',opts:['los 100 registrados son pocos','solo el 15% está activo — problema de retención','el precio es muy alto','necesitas más publicidad'],resp:1,
-     exp:'15% de retención diaria es bajo — el producto no está enganchando suficiente'},
+    {txt:'S/500 para validar tu idea. ¿cómo los usas mejor?',opts:['publicidad en redes','entrevistas con 20 usuarios + prototipo básico','diseño del logo','registro de la empresa'],resp:1,exp:'conocer al usuario y tener algo tangible es la mejor inversión temprana'},
+    {txt:'1,000 personas pagarían S/30/mes. ¿mercado potencial mensual?',opts:['S/3,000','S/30,000','S/300,000','S/3,000,000'],resp:1,exp:'1,000 × S/30 = S/30,000'},
+    {txt:'1 mes: 100 registrados, 15 activos diarios. ¿qué te preocupa más?',opts:['100 registrados son pocos','solo 15% activo — problema de retención','precio muy alto','necesitas más publicidad'],resp:1,exp:'15% retención diaria es bajo'},
+    {txt:'MVP lanzado. ¿cuándo sabes que encontraste product-market fit?',opts:['cuando tienes 1,000 usuarios','cuando los usuarios vuelven solos sin que los empujes','cuando saliste en las noticias','cuando la app no tiene bugs'],resp:1,exp:'retención orgánica es la señal real de PMF'},
   ],
 };
 
-// ══ TRABAJOS DATA ══
-const TRABAJOS = [
+const TRABAJOS=[
   {id:'analista',name:'analista de datos junior',icon:'📊',
    desc:'organiza y analiza datos del universo gamb1t0 — rankings, actividad, tendencias',
-   nivel_min:1,nivel_max:3,duracion_dias:1,gus_base:18,xp_bonus:25,
-   cupos_total:10,cupos_ocupados:7,costo_tokens:4,umbral:3,
-   entrevistador:{nombre:'Ana Quispe',cargo:'Analista de Datos Sr.',empresa:'DataLima Startup',
-     img:'img/entrevistador_ana.jpg',personalidad:'directa, observadora, no sonríe fácil',
-     carta_ok:'Estimado/a {nombre},\n\nLuego de evaluar su perfil, nos complace comunicarle que ha sido seleccionado/a para el puesto de Analista de Datos Junior.\n\nEsperamos su incorporación inmediata.\n\nAna Quispe\nDataLima Startup',
-     carta_no:'Estimado/a {nombre},\n\nAgradecemos su interés en nuestra organización. En esta oportunidad, hemos decidido continuar con otro perfil.\n\nLe animamos a seguir preparándose.\n\nAna Quispe\nDataLima Startup',
-     carta_sobre:'Estimado/a {nombre},\n\nSu perfil supera ampliamente los requisitos de esta posición. Le recomendamos explorar roles de mayor responsabilidad.\n\nCon respeto,\nAna Quispe'},
-   reaccion_ok:['buena presencia — el trabajo habla por sí solo... veremos','tus respuestas dicen bastante — bienvenida la actitud'],
-   reaccion_no:['el rol necesita otro enfoque — no es lo que buscamos ahora','hay potencial pero no para esta posición todavía'],
-   reaccion_sobre:['con tu nivel esto te quedaría chico — hay posiciones mejores para ti'],
+   nivel_min:1,nivel_max:3,dias:1,gus:18,xp:25,cupos:10,ocupados:7,tok:4,umbral:3,
+   ent:{nombre:'Ana Quispe',cargo:'Analista de Datos Sr.',empresa:'DataLima Startup',
+     img:'img/entrevistador_ana.jpg',
+     carta_ok:'Estimado/a {n},\n\nLuego de evaluar su perfil con detenimiento, nos complace comunicarle que ha sido seleccionado/a para el puesto de Analista de Datos Junior.\n\nEsperamos su incorporación de inmediato.\n\nAna Quispe\nDataLima Startup',
+     carta_no:'Estimado/a {n},\n\nAgradecemos genuinamente su interés y el tiempo dedicado a este proceso.\n\nEn esta oportunidad, hemos optado por continuar con otro perfil. Le animamos a seguir preparándose — la puerta no se cierra definitivamente.\n\nAna Quispe\nDataLima Startup',
+     carta_sobre:'Estimado/a {n},\n\nSu perfil supera ampliamente los requisitos de esta posición. Sería un desperdicio de su potencial.\n\nLe invitamos a explorar roles de mayor responsabilidad dentro de la plataforma.\n\nCon mucho respeto,\nAna Quispe',
+     desp:'Estimado/a {n},\n\nEs con pesar que debo comunicarle que no ha superado el período de prueba inicial.\n\nValoramos profundamente su esfuerzo y disposición. Le invitamos a prepararse y volver en una próxima oportunidad — confiamos en que lo logrará.\n\nCon respeto,\nAna Quispe',
+   },
    rey_ok:'los números no mienten — y tú tampoco — eso vale',
-   rey_no:'no te salió esta vez — los datos también fallan — lo importante es saber por qué',
+   rey_no:'no te salió esta vez — los datos también fallan a veces — lo importante es aprender por qué',
   },
   {id:'community',name:'community manager',icon:'📣',
    desc:'activa y modera el clan — conectas jugadores, resuelves conflictos, generas movimiento',
-   nivel_min:2,nivel_max:5,duracion_dias:2,gus_base:40,xp_bonus:55,
-   cupos_total:6,cupos_ocupados:4,costo_tokens:8,umbral:3,
-   entrevistador:{nombre:'Diego Mamani',cargo:'Head of Community',empresa:'GI Force Digital',
-     img:'img/entrevistador_diego.jpg',personalidad:'relajado, observador, lee entre líneas',
-     carta_ok:'Hola {nombre},\n\nTe escribo para confirmarte que tienes el puesto. El clan te está esperando.\n\nBienvenido/a al equipo.\n\nDiego',
-     carta_no:'Hola {nombre},\n\nValoro tu tiempo. Por ahora vamos con otro perfil, pero el camino que estás tomando es el correcto.\n\nDiego',
-     carta_sobre:'{nombre}, con lo que tienes deberías estar liderando esto, no aplicando. Busca algo más grande.\n\nDiego'},
-   reaccion_ok:['tiene lo que el clan necesita — energía real','me convence — no es fácil de hacer pero lo entiendes'],
-   reaccion_no:['el clan es complicado — necesitamos más experiencia','buena actitud pero el rol pide otro perfil'],
-   reaccion_sobre:['oye — tú deberías estar liderando esto, no aplicando — algo más grande te espera'],
+   nivel_min:2,nivel_max:5,dias:2,gus:40,xp:55,cupos:6,ocupados:4,tok:8,umbral:3,
+   ent:{nombre:'Diego Mamani',cargo:'Head of Community',empresa:'GI Force Digital',
+     img:'img/entrevistador_diego.jpg',
+     carta_ok:'Hola {n},\n\nTe escribo para confirmarte que tienes el puesto.\n\nEl clan te está esperando. Bienvenido/a al equipo.\n\nDiego',
+     carta_no:'Hola {n},\n\nValoro mucho tu tiempo. Por ahora vamos con otro perfil.\n\nEl camino que estás tomando es el correcto — sigue.\n\nDiego',
+     carta_sobre:'{n}, con lo que tienes deberías estar liderando esto, no aplicando.\n\nBusca algo más grande. En serio.\n\nDiego',
+     desp:'{n},\n\nNo fue posible en este período de prueba. Pero hay algo en tu actitud que vale — y eso no desaparece.\n\nVuelve cuando estés listo.\n\nDiego',
+   },
    rey_ok:'la comunidad se construye con personas así — constantes sin hacer ruido',
-   rey_no:'el clan necesita alguien que lo entienda — sigue observando, el momento llega',
+   rey_no:'el clan necesita alguien que lo entienda de verdad — sigue observando, el momento llega',
   },
   {id:'disenador',name:'diseñador de skins',icon:'🎨',
    desc:'crea skins para el market — concepto, descripción y valor — los jugadores votan',
-   nivel_min:3,nivel_max:99,duracion_dias:3,gus_base:70,xp_bonus:90,
-   cupos_total:4,cupos_ocupados:2,costo_tokens:12,umbral:4,
-   entrevistador:{nombre:'Valeria Torres',cargo:'Directora Creativa',empresa:'GI Studios',
-     img:'img/entrevistador_valeria.jpg',personalidad:'pocas palabras, alto criterio',
-     carta_ok:'Hola {nombre}.\n\nEl criterio está. El trabajo también.\n\nBienvenido/a.\n\nValeria Torres\nGI Studios',
-     carta_no:'{nombre},\n\nEl ojo creativo se entrena. Este no era el momento, pero puede llegar.\n\nValeria',
-     carta_sobre:'Con ese nivel deberías estar rediseñando el juego completo. Esto es demasiado básico para ti.\n\nValeria'},
-   reaccion_ok:['interesante — el criterio está ahí... veamos el trabajo','no muchos entienden qué hace una skin memorable — tú sí'],
-   reaccion_no:['el diseño no es decorar — todavía no llegamos ahí'],
-   reaccion_sobre:['con ese nivel tú deberías estar diseñando la siguiente versión del juego'],
+   nivel_min:3,nivel_max:99,dias:3,gus:70,xp:90,cupos:4,ocupados:2,tok:12,umbral:4,
+   ent:{nombre:'Valeria Torres',cargo:'Directora Creativa',empresa:'GI Studios',
+     img:'img/entrevistador_valeria.jpg',
+     carta_ok:'Hola {n}.\n\nEl criterio está. El trabajo también.\n\nBienvenido/a.\n\nValeria Torres\nGI Studios',
+     carta_no:'{n},\n\nEl ojo creativo se entrena. Este no era el momento correcto, pero puede llegar.\n\nValeria',
+     carta_sobre:'Con ese nivel deberías estar rediseñando el juego completo. Esto es demasiado básico para ti.\n\nValeria',
+     desp:'Hola {n},\n\nEl período de prueba no resultó como esperábamos.\n\nEl talento creativo no siempre se expresa en el primer intento — vuelve cuando hayas desarrollado más el ojo.\n\nValeria Torres',
+   },
    rey_ok:'la mejor skin es la que no necesita explicación — eso es lo que buscamos',
    rey_no:'el ojo creativo se afina — no te rindas, vuelve cuando hayas visto más',
   },
   {id:'emprender',name:'¡a emprender!',icon:'🚀',
-   desc:'lanza tu primer proyecto — define el problema, valida la idea, prepara el pitch y preséntalo',
-   nivel_min:4,nivel_max:99,duracion_dias:5,gus_base:120,xp_bonus:160,
-   cupos_total:3,cupos_ocupados:1,costo_tokens:18,umbral:4,
-   entrevistador:{nombre:'Ana, Diego y Valeria',cargo:'panel de evaluación',empresa:'GI Force',
-     img:'img/avatar_base.jpg',personalidad:'tres perspectivas — datos, comunidad y creatividad',
-     carta_ok:'Estimado/a {nombre},\n\nEl panel ha deliberado. Hay algo real en lo que presentas. Bienvenido/a.\n\nAna, Diego y Valeria\nGI Force',
-     carta_no:'Estimado/a {nombre},\n\nAgradecemos tu energía y valentía. El proyecto necesita más claridad. No es un no definitivo.\n\nEl panel',
-     carta_sobre:'Con tu experiencia, deberías estar mentoreando a otros emprendedores. Este programa es para quienes están empezando.\n\nEl panel'},
-   reaccion_ok:['los tres coincidimos — tiene visión','esto es diferente — hay algo real aquí'],
-   reaccion_no:['el panel vio potencial pero falta estructura'],
-   reaccion_sobre:['con ese nivel ya deberías estar mentoreando a otros — ¿seguro que quieres este trabajo?'],
+   desc:'lanza tu primer proyecto — define el problema, valida, prepara el pitch y preséntalo',
+   nivel_min:4,nivel_max:99,dias:5,gus:120,xp:160,cupos:3,ocupados:1,tok:18,umbral:4,
+   ent:{nombre:'Ana, Diego y Valeria',cargo:'panel de evaluación',empresa:'GI Force',
+     img:'img/avatar_base.jpg',
+     carta_ok:'Estimado/a {n},\n\nEl panel ha deliberado.\n\nHay algo real en lo que presentas — visión, criterio y disposición al error. Bienvenido/a.\n\nAna, Diego y Valeria\nGI Force',
+     carta_no:'Estimado/a {n},\n\nAgradecemos tu valentía al presentarte.\n\nEl proyecto necesita más claridad y estructura. No es un no definitivo — es un "todavía no".\n\nEl panel',
+     carta_sobre:'Con tu experiencia, deberías estar mentoreando a otros emprendedores — no siendo mentorado.\n\nEste programa es para quienes están empezando. Busca algo más a tu altura.\n\nEl panel',
+     desp:'Estimado/a {n},\n\nEl período de prueba no alcanzó el nivel requerido.\n\nLo que demostraste tiene valor — el emprendimiento es un camino, no un destino. Vuelve cuando estés listo.\n\nEl panel',
+   },
    rey_ok:'emprender es caer bien parado — y tú ya sabes cómo pararte',
    rey_no:'cada intento fallido es un capítulo del libro que vas a escribir — sigue',
   },
 ];
 
 // ══ ESTADO ══
-let trabajoEntrevistando = null;
-let preguntasSeleccionadas = [];
-let respuestasEnt = {};
-let pregActual = 0;
-let pruebaIntentos = 0;
-let pruebaReto = null;
-let pruebaTimer = null;
-let pruebaOptSel = null;
-let trabajoConfirmado = null;
+let tEntrev=null, pregsSel=[], respsEnt={}, pregAct=0;
+let pruebaIntentos=0, pruebaReto=null, pruebaTimer=null, pruebaOptSel=null;
+let trabajoConf=null, esContratado=false;
 
-function calcNivel(x){return x<200?1:x<500?2:x<1000?3:x<2000?4:x<4000?5:Math.floor(x/1000)+1;}
-
-function shuffle(arr){ return [...arr].sort(()=>Math.random()-.5); }
+function calcN(x){return x<200?1:x<500?2:x<1000?3:x<2000?4:x<4000?5:Math.floor(x/1000)+1;}
+function shuffle(a){return[...a].sort(()=>Math.random()-.5);}
 
 function updateUI(){
-  const st=GBT.getStats();
-  const nivel=calcNivel(st.xp);
+  const st=GBT.getStats(); const nv=calcN(st.xp);
   document.getElementById('gus-disp').textContent=st.gus;
-  document.getElementById('lvl-disp').textContent=nivel;
-  const max=GBT.energiaMax(nivel);
-  const pct=Math.round(st.energia/max*100);
-  const estado=GBT.estadoEnergia(st.energia,max);
+  document.getElementById('lvl-disp').textContent=nv;
+  const max=GBT.energiaMax(nv); const pct=Math.round(st.energia/max*100);
+  const est=GBT.estadoEnergia(st.energia,max);
   const bar=document.getElementById('e-bar'),lbl=document.getElementById('e-label');
-  if(bar){bar.style.width=pct+'%';bar.style.background=estado.color;}
-  if(lbl){lbl.textContent=pct+'% · '+estado.label;lbl.style.color=estado.color+'aa';}
+  if(bar){bar.style.width=pct+'%';bar.style.background=est.color;}
+  if(lbl){lbl.textContent=pct+'% · '+est.label;lbl.style.color=est.color+'aa';}
 }
 
 function renderContent(){
   const c=document.getElementById('content');
-  const st=GBT.getStats();
-  const nivel=calcNivel(st.xp);
-  const energia=st.energia;
-  const max=GBT.energiaMax(nivel);
-  const estado=GBT.estadoEnergia(energia,max);
-  const trabajoActivo=GBT.getTrabajoActivo();
+  const st=GBT.getStats(); const nv=calcN(st.xp);
+  const max=GBT.energiaMax(nv); const est=GBT.estadoEnergia(st.energia,max);
+  const ta=GBT.getTrabajoActivo();
   let html='';
-
-  if(trabajoActivo){
-    const t=TRABAJOS.find(x=>x.id===trabajoActivo.id);
-    const ahora=Date.now();
-    const total=trabajoActivo.fin_ts-trabajoActivo.inicio_ts;
-    const trans=Math.min(ahora-trabajoActivo.inicio_ts,total);
-    const pct=Math.round(trans/total*100);
-    const horasR=Math.max(0,Math.round((trabajoActivo.fin_ts-ahora)/3600000));
-    const gusAcum=Math.round(t.gus_base*trans/total*0.9);
+  if(ta){
+    const t=TRABAJOS.find(x=>x.id===ta.id);
+    const now=Date.now(); const tot=ta.fin_ts-ta.inicio_ts;
+    const trans=Math.min(now-ta.inicio_ts,tot);
+    const pct=Math.round(trans/tot*100);
+    const hr=Math.max(0,Math.round((ta.fin_ts-now)/3600000));
+    const ga=Math.round(t.gus*trans/tot*.9);
     html+=`<div class="sec-label">// en progreso</div>
-    <div class="trabajo-activo-card">
-      <div class="ta-header">
+    <div class="ta-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
         <span style="font-size:22px">${t.icon}</span>
         <div style="flex:1"><div style="font-size:13px;font-weight:700;color:#00c896">${t.name}</div>
         <div style="font-size:10px;color:rgba(221,218,240,.35)">protegido de ataques</div></div>
-        <span class="ta-badge">activo</span>
+        <span style="font-size:9px;color:#07070f;background:#00c896;border-radius:10px;padding:2px 8px">activo</span>
       </div>
       <div class="ta-prog-bar"><div class="ta-prog-fill" style="width:${pct}%"></div></div>
-      <div class="ta-meta">${pct}% · ${horasR}h restantes · acumulado: ${gusAcum} GUS</div>
+      <div class="ta-meta">${pct}% · ${hr}h restantes · acumulado: ${ga} GUS</div>
       <div class="ta-btns">
         <button class="btn-ta btn-tareas" onclick="abrirTareas()">tareas</button>
         <button class="btn-ta btn-avisar" onclick="abandonarConAviso()">avisar y salir</button>
@@ -527,356 +577,335 @@ function renderContent(){
       </div>
     </div>`;
   }
-
   html+=`<div class="sec-label">// trabajos disponibles</div>`;
   TRABAJOS.forEach(t=>{
-    const cuposPct=Math.round(t.cupos_ocupados/t.cupos_total*100);
-    const lleno=t.cupos_ocupados>=t.cupos_total;
-    const bloqNivel=nivel<t.nivel_min;
-    const sobre=nivel>t.nivel_max&&t.nivel_max<99;
-    const trabajando=trabajoActivo!==null;
-    const sinEnergia=estado.label==='agotado';
-    const sinTokens=st.tokens<t.costo_tokens;
-    const disponible=!lleno&&!bloqNivel&&!trabajando&&!sinEnergia&&!sinTokens;
+    const cpct=Math.round(t.ocupados/t.cupos*100);
+    const lleno=t.ocupados>=t.cupos;
+    const bloq=nv<t.nivel_min; const sobre=nv>t.nivel_max&&t.nivel_max<99;
+    const trab=ta!==null; const ago=est.label==='agotado';
+    const stok=st.tokens<t.tok;
+    const disp=!lleno&&!bloq&&!trab&&!ago&&!stok;
     let msg='';
-    if(bloqNivel) msg=`// requiere nivel ${t.nivel_min} — estás en nivel ${nivel}`;
+    if(bloq) msg=`// requiere nivel ${t.nivel_min} — estás en nivel ${nv}`;
     else if(sobre) msg=`// tu nivel supera este trabajo — busca uno más exigente`;
     else if(lleno) msg=`// sin cupos disponibles`;
-    else if(trabajando) msg=`// ya estás trabajando — termínalo primero`;
-    else if(sinEnergia) msg=`// avatar agotado — descansa primero`;
-    else if(sinTokens) msg=`// necesitas ${t.costo_tokens} tokens para aplicar`;
-    html+=`<div class="trabajo-card ${disponible?'disponible':'bloqueado'}" onclick="${disponible?`abrirEntrevista('${t.id}')`:''}"">
+    else if(trab) msg=`// ya estás trabajando — termínalo primero`;
+    else if(ago) msg=`// avatar agotado — descansa primero`;
+    else if(stok) msg=`// necesitas ${t.tok} tokens para aplicar`;
+    html+=`<div class="trabajo-card ${disp?'disponible':'bloqueado'}" onclick="${disp?`abrirEntrevista('${t.id}')`:''}"">
       <div class="tc-top">
-        <img src="${t.entrevistador.img}" class="tc-entrevistador" onerror="this.style.background='rgba(201,168,76,.15)';this.removeAttribute('src')">
+        <img src="${t.ent.img}" class="tc-av" onerror="this.style.background='rgba(201,168,76,.15)';this.removeAttribute('src')">
         <div><div class="tc-name">${t.icon} ${t.name}</div>
-        <div class="tc-entrev-nombre">entrevista con ${t.entrevistador.nombre}</div>
+        <div class="tc-sub">entrevista con ${t.ent.nombre}</div>
         <div class="tc-desc">${t.desc}</div></div>
       </div>
       <div class="tc-badges">
-        <span class="tc-badge b-dias">${t.duracion_dias}${t.duracion_dias===1?' día':' días'}</span>
-        <span class="tc-badge b-gus">+${t.gus_base} GUS</span>
-        <span class="tc-badge b-xp">+${t.xp_bonus} XP</span>
+        <span class="tc-badge b-dias">${t.dias}${t.dias===1?' día':' días'}</span>
+        <span class="tc-badge b-gus">+${t.gus} GUS</span>
+        <span class="tc-badge b-xp">+${t.xp} XP</span>
         <span class="tc-badge b-nivel">nv ${t.nivel_min}${t.nivel_max<99?'–'+t.nivel_max:'+'}</span>
-        <span class="tc-badge b-tokens">${t.costo_tokens} tok para aplicar</span>
+        <span class="tc-badge b-tok">${t.tok} tok</span>
       </div>
-      <div class="tc-cupos">${t.cupos_ocupados}/${t.cupos_total} cupos
-        <div class="cupos-bar"><div class="cupos-fill" style="width:${cuposPct}%"></div></div>
+      <div class="tc-cupos">${t.ocupados}/${t.cupos} cupos
+        <div class="cupos-bar"><div class="cupos-fill" style="width:${cpct}%"></div></div>
       </div>
-      <div class="tc-protegido">✓ protegido de ataques mientras trabajas</div>
-      ${msg?`<div class="tc-bloqueo-msg">${msg}</div>`:''}
+      <div class="tc-prot">✓ protegido de ataques mientras trabajas</div>
+      ${msg?`<div class="tc-bloqueo">${msg}</div>`:''}
     </div>`;
   });
   c.innerHTML=html;
 }
 
-// ══ ENTREVISTA ══
+// ══ ABRIR ENTREVISTA ══
 function abrirEntrevista(id){
-  const st=GBT.getStats();
-  const t=TRABAJOS.find(x=>x.id===id);
+  const st=GBT.getStats(); const t=TRABAJOS.find(x=>x.id===id);
   if(!t) return;
-  if(st.tokens<t.costo_tokens){ alert('necesitas '+t.costo_tokens+' tokens para aplicar'); return; }
-  GBT.useTokens(t.costo_tokens);
-  updateUI();
-  trabajoEntrevistando=t;
-  respuestasEnt={}; pregActual=0;
-  // seleccionar 5 preguntas al azar del banco
+  if(st.tokens<t.tok){alert('necesitas '+t.tok+' tokens para aplicar');return;}
+  GBT.useTokens(t.tok); updateUI();
+  tEntrev=t; respsEnt={}; pregAct=0;
+
+  // banco aleatorio 4 preguntas con opciones barajadas
   const banco=BANCO[id]||[];
-  preguntasSeleccionadas=shuffle(banco).slice(0,Math.min(5,banco.length)).map(p=>({
-    ...p,
-    opts_shuffled: shuffle(p.opts.map((o,i)=>({o,orig:i}))),
+  pregsSel=shuffle(banco).slice(0,4).map(p=>({
+    ...p, opts_s:shuffle(p.opts.map((o,i)=>({o,i})))
   }));
 
-  document.getElementById('ent-title').textContent='entrevista · '+t.name;
-  const e=t.entrevistador;
-  document.getElementById('ent-perfil').innerHTML=`
-    <img src="${e.img}" class="ent-av" onerror="this.style.background='rgba(201,168,76,.15)';this.removeAttribute('src')">
-    <div><div class="ent-nombre">${e.nombre}</div><div class="ent-cargo">${e.cargo}</div>
-    <div class="ent-empresa">${e.empresa}</div><div class="ent-personalidad">${e.personalidad}</div></div>`;
-  document.getElementById('gi-intro-txt').textContent=
-    'las preguntas son distintas cada vez — no hay respuestas correctas, solo formas de ser — '+
-    t.umbral+' de '+preguntasSeleccionadas.length+' respuestas deciden si '+e.nombre.split(' ')[0]+' te contrata';
-  document.getElementById('ent-resultado').classList.remove('show');
-  document.getElementById('ent-preguntas').style.display='block';
-  renderPregunta(0);
-  document.getElementById('entrevista-overlay').classList.add('show');
+  // setup videollamada
+  const e=t.ent;
+  document.getElementById('vl-av').src=e.img;
+  document.getElementById('vl-bg-img').src=e.img;
+  document.getElementById('vl-nombre').textContent=e.nombre;
+  document.getElementById('vl-cargo').textContent=e.cargo+' · '+e.empresa;
+  document.getElementById('vl-gi-msg').textContent='suerte!';
+  document.getElementById('vl-preguntas').style.display='block';
+  document.getElementById('vl-procesando').classList.remove('show');
+  document.getElementById('vl-carta').classList.remove('show');
+  document.getElementById('videollamada').classList.add('show');
+  renderPregVL(0);
 }
 
-function renderPregunta(idx){
-  const p=preguntasSeleccionadas[idx];
-  const total=preguntasSeleccionadas.length;
-  const dots=preguntasSeleccionadas.map((_,i)=>
+function renderPregVL(idx){
+  const p=pregsSel[idx]; const tot=pregsSel.length;
+  const dots=pregsSel.map((_,i)=>
     `<div class="preg-dot ${i<idx?'done':i===idx?'active':''}"></div>`).join('');
-  document.getElementById('ent-preguntas').innerHTML=`
+  document.getElementById('vl-preguntas').innerHTML=`
     <div class="preg-progreso">${dots}</div>
-    <div class="preg-num">// pregunta ${idx+1} de ${total}</div>
+    <div class="preg-num">// pregunta ${idx+1} de ${tot}</div>
     <div class="preg-txt">${p.txt}</div>
-    <div class="preg-opts">${p.opts_shuffled.map((item,i)=>
-      `<div class="preg-opt" id="opt-${i}" onclick="selOpt(${i})">${item.o}</div>`).join('')}</div>
-    <button class="btn-siguiente" id="btn-sig" onclick="siguiente()" disabled>
-      ${idx<total-1?'siguiente →':'ver resultado'}</button>`;
-  pregActual=idx;
+    <div class="preg-opts">${p.opts_s.map((item,j)=>
+      `<div class="preg-opt" id="vopt-${j}" onclick="selVOpt(${j},${item.i})">${item.o}</div>`).join('')}</div>
+    <button class="btn-sig" id="vbtn-sig" onclick="sigVL()" disabled>
+      ${idx<tot-1?'siguiente →':'ver resultado'}</button>`;
+  pregAct=idx;
 }
 
-function selOpt(i){
+function selVOpt(j,orig){
   document.querySelectorAll('.preg-opt').forEach(o=>o.classList.remove('sel'));
-  document.getElementById('opt-'+i).classList.add('sel');
-  document.getElementById('btn-sig').disabled=false;
-  respuestasEnt[pregActual]=preguntasSeleccionadas[pregActual].opts_shuffled[i].orig;
+  document.getElementById('vopt-'+j).classList.add('sel');
+  document.getElementById('vbtn-sig').disabled=false;
+  respsEnt[pregAct]=orig;
+  // entrevistador "habla"
+  document.getElementById('vl-av').classList.add('speaking');
+  setTimeout(()=>document.getElementById('vl-av').classList.remove('speaking'),1000);
 }
 
-function siguiente(){
-  if(pregActual<preguntasSeleccionadas.length-1){ renderPregunta(pregActual+1); }
-  else{ mostrarSuspense(); }
+function sigVL(){
+  if(pregAct<pregsSel.length-1){ renderPregVL(pregAct+1); }
+  else{ mostrarProcesando(); }
 }
 
-// ══ SUSPENSE — carta ══
-function mostrarSuspense(){
-  const t=trabajoEntrevistando;
-  const e=t.entrevistador;
-  const st=GBT.getStats();
-  const nivel=calcNivel(st.xp);
+function colgarLlamada(){ cerrarVideollamada(); }
 
+// ══ PROCESANDO (suspense) ══
+function mostrarProcesando(){
+  document.getElementById('vl-preguntas').style.display='none';
+  document.getElementById('vl-gi-msg').textContent='procesando tu respuesta...';
+  document.getElementById('vl-estado-txt').textContent='evaluando';
+  const proc=document.getElementById('vl-procesando');
+  proc.classList.add('show');
+  // reiniciar animación barra
+  const fill=proc.querySelector('.proc-fill');
+  fill.style.animation='none';
+  fill.offsetHeight; // reflow
+  fill.style.animation='procAnim 2.5s ease-in-out forwards';
+  setTimeout(()=>{ proc.classList.remove('show'); mostrarCarta(); }, 2800);
+}
+
+// ══ CARTA ══
+function mostrarCarta(){
+  const t=tEntrev; const e=t.ent;
+  const st=GBT.getStats(); const nv=calcN(st.xp);
   let correctas=0;
-  preguntasSeleccionadas.forEach((p,i)=>{ if(respuestasEnt[i]===p.resp) correctas++; });
-  const sobre=nivel>t.nivel_max&&t.nivel_max<99;
-  const pctEnergia=st.energia/GBT.energiaMax(nivel);
-  let prob=(correctas/preguntasSeleccionadas.length)*0.7+Math.random()*0.3;
-  if(pctEnergia<0.5) prob*=0.75;
-  const contratado=!sobre&&prob>=0.45;
+  pregsSel.forEach((p,i)=>{ if(respsEnt[i]===p.resp) correctas++; });
+  const sobre=nv>t.nivel_max&&t.nivel_max<99;
+  const pctE=st.energia/GBT.energiaMax(nv);
+  let prob=(correctas/pregsSel.length)*.7+Math.random()*.3;
+  if(pctE<.5) prob*=.75;
+  const contratado=!sobre&&prob>=.45;
+  esContratado=contratado; trabajoConf=t;
 
-  document.getElementById('susp-av').src=e.img;
-  document.getElementById('susp-nombre').textContent=e.nombre+' está redactando su respuesta...';
-  document.getElementById('entrevista-overlay').classList.remove('show');
+  document.getElementById('carta-av').src=e.img;
+  document.getElementById('carta-nombre').textContent=e.nombre+' escribe:';
+  const avName=GBT.player().avName||'estimado/a';
+  let template=sobre?e.carta_sobre:contratado?e.carta_ok:e.carta_no;
+  const cartaTxt=template.replace('{n}',avName);
 
-  const avName=GBT.player().avName||'candidato';
-  let cartaTemplate=sobre?e.carta_sobre:contratado?e.carta_ok:e.carta_no;
-  const cartaFinal=cartaTemplate.replace('{nombre}',avName);
+  const okBtn=document.getElementById('btn-carta-ok');
+  const volverBtn=document.getElementById('btn-carta-volver');
+  okBtn.style.display='none';
+  volverBtn.style.display='none';
 
-  const susp=document.getElementById('suspense-overlay');
-  const textoEl=document.getElementById('susp-texto');
-  textoEl.innerHTML='';
-  susp.classList.add('show');
+  document.getElementById('carta-txt').innerHTML='';
+  document.getElementById('vl-carta').classList.add('show');
+  document.getElementById('vl-estado-txt').textContent=contratado?'oferta enviada':'respuesta enviada';
 
-  // efecto de escritura
+  // escribir carta
   let i=0;
-  const speed=38;
-  function typeChar(){
-    if(i<cartaFinal.length){
-      textoEl.innerHTML=cartaFinal.substring(0,i+1).replace(/\n/g,'<br>')+
-        '<span class="susp-cursor"></span>';
+  const el=document.getElementById('carta-txt');
+  function type(){
+    if(i<cartaTxt.length){
+      el.innerHTML=cartaTxt.substring(0,i+1).replace(/\n/g,'<br>')+'<span class="cursor-carta"></span>';
       i++;
-      setTimeout(typeChar, speed+(Math.random()*speed*.3));
+      setTimeout(type,30+Math.random()*15);
     } else {
-      textoEl.innerHTML=cartaFinal.replace(/\n/g,'<br>');
+      el.innerHTML=cartaTxt.replace(/\n/g,'<br>');
       setTimeout(()=>{
-        susp.classList.remove('show');
-        mostrarResultado(contratado,sobre,correctas,pctEnergia,nivel);
-        document.getElementById('entrevista-overlay').classList.add('show');
-      },1800);
+        if(contratado){
+          okBtn.style.display='block';
+        }
+        volverBtn.style.display='block';
+        // guardar rey treboles
+        window._reyQuote = contratado ? t.rey_ok : t.rey_no;
+        window._esContratado = contratado;
+      },600);
     }
   }
-  typeChar();
+  type();
+
+  GBT.enviar({tipo:'entrevista',trabajo:t.id,usuario:avName,correctas,total:pregsSel.length,aprobado:contratado,nivel:nv,energia_pct:Math.round(pctE*100)});
 }
 
-function mostrarResultado(contratado,sobre,correctas,pctEnergia,nivel){
-  const t=trabajoEntrevistando;
-  const e=t.entrevistador;
-  document.getElementById('ent-preguntas').style.display='none';
-  const avName=GBT.player().avName||'';
-
-  // reacción
-  let reacArr=sobre?e.reaccion_sobre:contratado?e.reaccion_ok:e.reaccion_no;
-  let reacExtra=(!sobre&&pctEnergia<0.5)?(contratado?' — aunque noto que no tienes mucha energía hoy':' — y con poca energía encima, difícil convencer'):'';
-  document.getElementById('ent-reaccion').innerHTML=`
-    <img src="${e.img}" class="ent-reac-av" onerror="this.style.background='rgba(201,168,76,.15)';this.removeAttribute('src')">
-    <div><div class="ent-reac-nombre">${e.nombre}</div>
-    <div class="ent-reac-txt">"${reacArr[Math.floor(Math.random()*reacArr.length)]}${reacExtra}"</div></div>`;
-
-  document.getElementById('rey-trebol-txt').textContent=contratado?t.rey_ok:t.rey_no;
-
+function aceptarTrabajo(){
+  cerrarVideollamada();
   // logro
-  const li=document.getElementById('logro-icon');
-  const ln=document.getElementById('logro-nombre');
-  const ls=document.getElementById('logro-sub');
-  const lr=document.getElementById('logro-rewards');
-  const btn=document.getElementById('btn-aceptar-trabajo');
-
-  if(sobre){
-    li.textContent='⭐'; ln.className='logro-nombre sobre'; ln.textContent='hay algo mejor para ti';
-    ls.textContent='tu nivel supera este trabajo — busca trabajos de mayor nivel';
-    lr.innerHTML=''; btn.style.display='none';
-  } else if(contratado){
-    li.textContent='🎉'; ln.className='logro-nombre contratado'; ln.textContent='contratado';
-    ls.textContent=t.duracion_dias+' '+(t.duracion_dias===1?'día':'días')+' de trabajo — +'+t.gus_base+' GUS al terminar — protegido de ataques';
-    lr.innerHTML=`<span class="logro-reward logro-xp">+${t.xp_bonus} XP</span><span class="logro-reward logro-gus">+${t.gus_base} GUS</span>`;
-    btn.style.display='block';
-    trabajoConfirmado=t;
-  } else {
-    li.textContent='💪'; ln.className='logro-nombre rechazado'; ln.textContent='no esta vez';
-    ls.textContent='puedes intentarlo de nuevo — el trabajo sigue disponible';
-    lr.innerHTML=''; btn.style.display='none';
-  }
-
-  document.getElementById('ent-resultado').classList.add('show');
-  GBT.enviar({tipo:'entrevista',trabajo:t.id,usuario:avName,correctas,total:preguntasSeleccionadas.length,aprobado:contratado,nivel});
+  const t=trabajoConf;
+  document.getElementById('logro-emoji').textContent='🎉';
+  document.getElementById('logro-nombre-big').textContent='contratado';
+  document.getElementById('logro-sub-txt').textContent=t.dias+(t.dias===1?' día':' días')+' de trabajo — +'+t.gus+' GUS al terminar';
+  document.getElementById('logro-rewards').innerHTML=`<span class="lr-xp">+${t.xp} XP</span><span class="lr-gus">+${t.gus} GUS (al terminar)</span>`;
+  document.getElementById('logro-overlay').classList.add('show');
+  playEpic();
 }
 
-function cerrarEntrevista(){ document.getElementById('entrevista-overlay').classList.remove('show'); renderContent(); }
+function mostrarReyTrebol(){
+  document.getElementById('logro-overlay').classList.remove('show');
+  document.getElementById('rt-quote').textContent=window._reyQuote||'';
+  const btnRt=document.getElementById('btn-rt');
+  if(window._esContratado){
+    btnRt.textContent='iniciar período de prueba';
+    btnRt.onclick=()=>{ document.getElementById('rey-trebol-overlay').classList.remove('show'); iniciarPrueba(); };
+  } else {
+    btnRt.textContent='volver a trabajos';
+    btnRt.onclick=()=>{ document.getElementById('rey-trebol-overlay').classList.remove('show'); renderContent(); };
+  }
+  document.getElementById('rey-trebol-overlay').classList.add('show');
+}
+
+// cuando rechazado — mostrar rey directamente desde cerrar carta
+function cerrarVideollamada(){
+  document.getElementById('videollamada').classList.remove('show');
+  if(!esContratado&&trabajoConf){
+    window._reyQuote=trabajoConf.rey_no; window._esContratado=false;
+    setTimeout(mostrarReyTrebol,300);
+  }
+}
 
 // ══ PRUEBA ANTI-IA ══
-function iniciarPruebaAntiIA(){
-  if(!trabajoConfirmado) return;
-  document.getElementById('entrevista-overlay').classList.remove('show');
-  pruebaIntentos=0;
-  mostrarReto();
+function iniciarPrueba(){
+  pruebaIntentos=0; mostrarReto();
 }
 
 function mostrarReto(){
-  const t=trabajoConfirmado;
+  const t=trabajoConf;
   const retos=RETOS[t.id]||RETOS.analista;
   pruebaReto=retos[Math.floor(Math.random()*retos.length)];
   pruebaOptSel=null;
-
-  document.getElementById('prueba-trabajo-label').textContent='como '+t.name+', tu primera labor será:';
-  document.getElementById('prueba-instruccion').textContent='resuelve esto correctamente para iniciar el trabajo';
+  const optsS=shuffle(pruebaReto.opts.map((o,i)=>({o,i})));
+  document.getElementById('prueba-label').textContent='como '+t.name+', tu primera tarea:';
+  document.getElementById('prueba-titulo').textContent=pruebaReto.txt;
+  document.getElementById('prueba-opts').innerHTML=optsS.map((item,j)=>
+    `<div class="prueba-opt" id="popt-${j}" onclick="selPrueba(${j},${item.i})">${item.o}</div>`).join('');
+  document.getElementById('btn-confirmar').disabled=true;
   document.getElementById('prueba-intentos').textContent='intento '+(pruebaIntentos+1)+' de 3';
 
-  // opciones barajadas
-  const optsShuffled=shuffle(pruebaReto.opts.map((o,i)=>({o,orig:i})));
-  document.getElementById('prueba-reto-txt').textContent=pruebaReto.txt;
-  document.getElementById('prueba-opts').innerHTML=optsShuffled.map((item,i)=>
-    `<div class="prueba-opt" id="popt-${i}" onclick="selPruebaOpt(${i},${item.orig})">${item.o}</div>`).join('');
-  document.getElementById('btn-confirmar-prueba').disabled=true;
-
-  // timer 30 seg
   let seg=30;
-  const timerEl=document.getElementById('prueba-timer');
-  timerEl.textContent=seg;
-  timerEl.className='prueba-timer';
+  const tel=document.getElementById('prueba-timer');
+  tel.textContent=seg; tel.className='prueba-timer';
   clearInterval(pruebaTimer);
   pruebaTimer=setInterval(()=>{
-    seg--;
-    timerEl.textContent=seg<10?'0'+seg:seg;
-    if(seg<=10) timerEl.className='prueba-timer urgente';
+    seg--; tel.textContent=seg<10?'0'+seg:seg;
+    if(seg<=10) tel.className='prueba-timer urgente';
     playTick();
-    if(seg<=0){ clearInterval(pruebaTimer); fallarPrueba(); }
+    if(seg<=0){ clearInterval(pruebaTimer); failPrueba(); }
   },1000);
-
   document.getElementById('prueba-overlay').classList.add('show');
 }
 
-let pruebaOptOrigSel=null;
-function selPruebaOpt(i,orig){
+let pruebaOrigSel=null;
+function selPrueba(j,orig){
   document.querySelectorAll('.prueba-opt').forEach(o=>o.classList.remove('sel'));
-  document.getElementById('popt-'+i).classList.add('sel');
-  pruebaOptOrigSel=orig;
-  document.getElementById('btn-confirmar-prueba').disabled=false;
+  document.getElementById('popt-'+j).classList.add('sel');
+  pruebaOrigSel=orig;
+  document.getElementById('btn-confirmar').disabled=false;
 }
 
 function confirmarPrueba(){
   clearInterval(pruebaTimer);
-  if(pruebaOptOrigSel===pruebaReto.resp){
-    // correcto — iniciar trabajo
+  if(pruebaOrigSel===pruebaReto.resp){
     document.getElementById('prueba-overlay').classList.remove('show');
-    GBT.iniciarTrabajo(trabajoConfirmado.id);
-    trabajoConfirmado=null;
-    renderContent();
-  } else {
-    fallarPrueba();
-  }
+    GBT.iniciarTrabajo(trabajoConf.id);
+    trabajoConf=null; renderContent();
+  } else { failPrueba(); }
 }
 
-function fallarPrueba(){
-  clearInterval(pruebaTimer);
-  pruebaIntentos++;
+function failPrueba(){
+  clearInterval(pruebaTimer); pruebaIntentos++;
   document.getElementById('prueba-overlay').classList.remove('show');
   if(pruebaIntentos>=3){
-    // 3 intentos fallidos — periodo de prueba no superado
-    const t=trabajoConfirmado;
-    const e=t.entrevistador;
-    document.getElementById('pf-av').src=e.img;
-    document.getElementById('pf-nombre').textContent=e.nombre;
+    const t=trabajoConf; const e=t.ent;
     const avName=GBT.player().avName||'estimado/a';
-    document.getElementById('pf-txt').innerHTML=
-      `Estimado/a ${avName},<br><br>`+
-      `Lamentamos comunicarle que no ha superado el periodo de prueba inicial.<br><br>`+
-      `Valoramos el esfuerzo y la disposición que ha demostrado. Le invitamos a prepararse y volver en una próxima oportunidad — la puerta no se cierra definitivamente.<br><br>`+
-      `Con respeto,<br>${e.nombre}<br>${e.empresa}`;
-    document.getElementById('prueba-fallida').classList.add('show');
-    trabajoConfirmado=null;
+    // despido en videollamada
+    document.getElementById('desp-av').src=e.img;
+    document.getElementById('desp-bg-img').src=e.img;
+    document.getElementById('desp-nombre').textContent=e.nombre;
+    document.getElementById('desp-cargo').textContent=e.cargo;
+    document.getElementById('desp-carta-av').src=e.img;
+    document.getElementById('desp-carta-nombre').textContent=e.nombre+' escribe:';
+    const despTxt=e.desp.replace('{n}',avName);
+    const despEl=document.getElementById('desp-carta-txt');
+    despEl.innerHTML='';
+    document.getElementById('despido-overlay').classList.add('show');
+    let i=0;
+    function typeDesp(){
+      if(i<despTxt.length){
+        despEl.innerHTML=despTxt.substring(0,i+1).replace(/\n/g,'<br>')+'<span class="cursor-carta"></span>';
+        i++; setTimeout(typeDesp,32+Math.random()*16);
+      } else { despEl.innerHTML=despTxt.replace(/\n/g,'<br>'); }
+    }
+    typeDesp();
+    trabajoConf=null;
   } else {
-    // nuevo intento con mismo trabajo
-    setTimeout(()=>mostrarReto(), 500);
+    setTimeout(()=>mostrarReto(),400);
   }
 }
 
-function cerrarPruebaFallida(){
-  document.getElementById('prueba-fallida').classList.remove('show');
-  renderContent();
-}
-
-function playTick(){
-  try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    const o=ctx.createOscillator(),g=ctx.createGain();
-    o.type='square';o.frequency.value=600;
-    g.gain.setValueAtTime(.08,ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.05);
-    o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+.05);
-  }catch(e){}
-}
+function cerrarDespido(){ document.getElementById('despido-overlay').classList.remove('show'); renderContent(); }
 
 // ══ TAREAS ══
 function abrirTareas(){
-  const ta=GBT.getTrabajoActivo();
-  if(!ta) return;
+  const ta=GBT.getTrabajoActivo(); if(!ta) return;
   const t=TRABAJOS.find(x=>x.id===ta.id);
-  const tareasComp=GBT.get('trabajo_tareas_'+ta.id,[]);
-  const banco=BANCO[ta.id]||[];
-  // usar preguntas guardadas o generar nuevas
-  let tareasGuardadas=GBT.get('trabajo_tareas_pregs_'+ta.id,null);
-  if(!tareasGuardadas){
-    tareasGuardadas=shuffle(banco).slice(0,3).map(p=>({...p,opts_shuffled:shuffle(p.opts.map((o,i)=>({o,orig:i})))}));
-    GBT.set('trabajo_tareas_pregs_'+ta.id,tareasGuardadas);
+  const comp=GBT.get('trabajo_tareas_'+ta.id,[]);
+  let preg=GBT.get('trabajo_tareas_pregs_'+ta.id,null);
+  if(!preg){
+    preg=shuffle(BANCO[ta.id]||[]).slice(0,3).map(p=>({...p,opts_s:shuffle(p.opts.map((o,i)=>({o,i})))}));
+    GBT.set('trabajo_tareas_pregs_'+ta.id,preg);
   }
   document.getElementById('tar-title').textContent=t.name;
-  const ahora=Date.now();
-  const pctT=Math.min(Math.round((ahora-ta.inicio_ts)/(ta.fin_ts-ta.inicio_ts)*100),100);
-  const gusAcum=Math.round(t.gus_base*(ahora-ta.inicio_ts)/(ta.fin_ts-ta.inicio_ts)*0.9);
+  const now=Date.now(); const pct=Math.min(Math.round((now-ta.inicio_ts)/(ta.fin_ts-ta.inicio_ts)*100),100);
+  const ga=Math.round(t.gus*(now-ta.inicio_ts)/(ta.fin_ts-ta.inicio_ts)*.9);
   document.getElementById('progreso-trabajo').innerHTML=`
-    <div class="pt-label">// progreso</div>
-    <div class="pt-bar"><div class="pt-fill" style="width:${pctT}%"></div></div>
-    <div class="pt-meta">${pctT}% · ${tareasComp.length}/${tareasGuardadas.length} tareas</div>
-    <div class="pt-gus-acum">GUS acumulados: ${gusAcum}</div>`;
-  document.getElementById('tareas-lista').innerHTML=tareasGuardadas.map((tarea,i)=>{
-    const done=tareasComp.includes(i);
+    <div style="background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:10px;padding:14px;margin-bottom:14px">
+      <div style="font-size:10px;color:rgba(221,218,240,.3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px">// progreso</div>
+      <div class="pt-bar"><div class="pt-fill" style="width:${pct}%"></div></div>
+      <div style="font-size:11px;color:rgba(221,218,240,.35)">${pct}% · ${comp.length}/${preg.length} tareas · GUS acumulados: <span style="color:#c9a84c;font-weight:700">${ga}</span></div>
+    </div>`;
+  document.getElementById('tareas-lista').innerHTML=preg.map((p,i)=>{
+    const done=comp.includes(i);
     return `<div class="tarea-card">
-      <div class="tarea-num">// tarea ${i+1}</div>
-      <div class="tarea-txt">${tarea.txt}</div>
-      ${done?`<div class="tarea-opts"><div class="tarea-opt completada">✓ completada</div></div>`
-        :`<div class="tarea-opts" id="topts-${i}">${tarea.opts_shuffled.map((item,j)=>
-          `<div class="tarea-opt" id="topt-${i}-${j}" onclick="selTareaOpt(${i},${j},${item.orig})">${item.o}</div>`).join('')}
-        </div><button class="btn-completar-tarea" id="btn-t-${i}" onclick="completarTarea(${i})" disabled>completar</button>`}
+      <div style="font-size:9px;color:rgba(221,218,240,.25);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">// tarea ${i+1}</div>
+      <div style="font-size:14px;font-weight:700;color:#dddaf0;margin-bottom:12px;line-height:1.5">${p.txt}</div>
+      ${done?`<div class="tarea-opts"><div class="tarea-opt done">✓ completada</div></div>`
+        :`<div class="tarea-opts" id="topts-${i}">${p.opts_s.map((item,j)=>
+          `<div class="tarea-opt" id="topt-${i}-${j}" onclick="selTareaOpt(${i},${j})">${item.o}</div>`).join('')}
+        </div><button class="btn-comp-tarea" id="btn-t-${i}" onclick="compTarea(${i})" disabled>completar</button>`}
     </div>`;
   }).join('');
   document.getElementById('tareas-overlay').classList.add('show');
 }
 
-function selTareaOpt(ti,j,orig){
+function selTareaOpt(ti,j){
   document.querySelectorAll(`#topts-${ti} .tarea-opt`).forEach(o=>o.classList.remove('sel'));
   document.getElementById(`topt-${ti}-${j}`).classList.add('sel');
   document.getElementById(`btn-t-${ti}`).disabled=false;
-  document.getElementById(`btn-t-${ti}`).dataset.orig=orig;
 }
 
-function completarTarea(ti){
-  const ta=GBT.getTrabajoActivo();
-  if(!ta) return;
+function compTarea(ti){
+  const ta=GBT.getTrabajoActivo(); if(!ta) return;
   const saved=GBT.get('trabajo_tareas_'+ta.id,[]);
-  if(!saved.includes(ti)){ saved.push(ti); GBT.set('trabajo_tareas_'+ta.id,saved); GBT.addXP(8); }
+  if(!saved.includes(ti)){saved.push(ti);GBT.set('trabajo_tareas_'+ta.id,saved);GBT.addXP(8);}
   abrirTareas();
 }
-
 function cerrarTareas(){ document.getElementById('tareas-overlay').classList.remove('show'); }
 
 // ══ ABANDONO ══
@@ -889,17 +918,44 @@ function desertar(){
   const res=GBT.abandonarTrabajo(false); updateUI(); renderContent(); alert(res.msg);
 }
 
+// ══ SONIDOS ══
+function playEpic(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const now=ctx.currentTime;
+    [[55,.22,0,2.5],[82,.15,.1,2.2],[110,.12,.2,2],[165,.09,.3,1.8],[220,.07,.4,1.5],[330,.05,.5,1.2]].forEach(([f,v,t,d])=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.type='sine';o.frequency.value=f;
+      g.gain.setValueAtTime(0,now+t);g.gain.linearRampToValueAtTime(v,now+t+.15);g.gain.exponentialRampToValueAtTime(.001,now+t+d);
+      o.connect(g);g.connect(ctx.destination);o.start(now+t);o.stop(now+t+d);
+    });
+    const buf=ctx.createBuffer(1,ctx.sampleRate*.4,ctx.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.exp(-i/(ctx.sampleRate*.05))*.35;
+    const ns=ctx.createBufferSource(),ng=ctx.createGain();ng.gain.value=.6;
+    ns.buffer=buf;ns.connect(ng);ng.connect(ctx.destination);ns.start(now);
+  }catch(e){}
+}
+function playTick(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type='square';o.frequency.value=600;
+    g.gain.setValueAtTime(.08,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.05);
+    o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+.05);
+  }catch(e){}
+}
+
 function navTo(dest){
   const routes={nodo:'p06_tablero.html',misiones:'p07_misiones.html',duelo:'p08_duelo.html',skill:'p09_skill.html',market:'p10_market.html',universo:'p11_universo.html',trabajos:'p12_trabajos.html'};
   document.body.style.transition='opacity .25s';document.body.style.opacity='0';
-  setTimeout(()=>{ window.location.href=routes[dest]||'p06_tablero.html'; },260);
+  setTimeout(()=>{window.location.href=routes[dest]||'p06_tablero.html';},260);
 }
 
 // ══ INIT ══
 const _ta=GBT.get('trabajo_activo',null);
-if(_ta&&Date.now()>_ta.fin_ts){ GBT.completarTrabajo(_ta); }
-updateUI();
-renderContent();
+if(_ta&&Date.now()>_ta.fin_ts){GBT.completarTrabajo(_ta);}
+updateUI(); renderContent();
 </script>
 </body>
 </html>
