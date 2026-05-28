@@ -8,6 +8,40 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
+
+/* AVISO PRIVACIDAD */
+#privacy-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:999;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding:0;
+}
+.privacy-sheet{
+  width:100%;max-width:440px;
+  background:#0d0d1f;
+  border-top:.5px solid rgba(201,168,76,.25);
+  border-radius:20px 20px 0 0;
+  padding:24px 24px 40px;
+  max-height:80vh;
+  overflow-y:auto;
+  animation:sheetUp .35s cubic-bezier(.175,.885,.32,1.275);
+}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.priv-title{font-size:16px;font-weight:700;color:#c9a84c;margin-bottom:4px;}
+.priv-sub{font-size:11px;color:rgba(221,218,240,.35);margin-bottom:16px;letter-spacing:.06em;}
+.priv-section{margin-bottom:14px;}
+.priv-section-title{font-size:12px;font-weight:700;color:#dddaf0;margin-bottom:5px;}
+.priv-txt{font-size:12px;color:rgba(221,218,240,.5);line-height:1.7;}
+.priv-highlight{color:#c9a84c;}
+.priv-check-row{display:flex;gap:12px;align-items:flex-start;padding:14px;background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:8px;margin-bottom:10px;cursor:pointer;}
+.priv-check-row.checked{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.06);}
+.priv-checkbox{width:20px;height:20px;min-width:20px;border-radius:4px;border:.5px solid rgba(221,218,240,.3);display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .2s;margin-top:1px;}
+.priv-check-row.checked .priv-checkbox{background:#c9a84c;border-color:#c9a84c;color:#07070f;}
+.priv-check-txt{font-size:12px;color:rgba(221,218,240,.6);line-height:1.5;flex:1;}
+.priv-check-txt strong{color:#dddaf0;}
+.btn-aceptar-priv{width:100%;background:#c9a84c;color:#07070f;font-family:'Fira Code',monospace;font-size:15px;font-weight:700;border:none;border-radius:8px;padding:14px;cursor:pointer;margin-top:6px;transition:opacity .2s;}
+.btn-aceptar-priv:disabled{opacity:.3;cursor:not-allowed;}
+.priv-ley{font-size:10px;color:rgba(221,218,240,.2);text-align:center;margin-top:10px;line-height:1.6;}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{min-height:100%;background:#000;color:#F0B429;font-family:'Fira Code','Courier New',monospace;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;}
 .wrap{width:100%;max-width:420px;padding:36px 24px 60px;display:flex;flex-direction:column;align-items:center;min-height:100vh;}
@@ -310,6 +344,111 @@ function goWaitlist(anio){
       </div>
     </div>`;
 }
+
+// ── PRIVACIDAD ──
+let check1Accepted = true; // pre-marcado
+let check2Accepted = false;
+
+// mostrar aviso al cargar
+window.addEventListener('load', function(){
+  const yaAcepto = localStorage.getItem('gbt_privacidad_ok');
+  if(!yaAcepto){
+    document.getElementById('privacy-overlay').style.display = 'flex';
+    document.getElementById('check1-row').classList.add('checked');
+    document.getElementById('check1').textContent = '✓';
+    document.getElementById('btn-aceptar-priv').disabled = false;
+  }
+});
+
+function toggleCheck(id){
+  if(id === 'check1'){
+    check1Accepted = !check1Accepted;
+    document.getElementById('check1-row').classList.toggle('checked', check1Accepted);
+    document.getElementById('check1').textContent = check1Accepted ? '✓' : '';
+  } else {
+    check2Accepted = !check2Accepted;
+    document.getElementById('check2-row').classList.toggle('checked', check2Accepted);
+    document.getElementById('check2').textContent = check2Accepted ? '✓' : '';
+  }
+  document.getElementById('btn-aceptar-priv').disabled = !check1Accepted;
+}
+
+function aceptarPrivacidad(){
+  if(!check1Accepted) return;
+  localStorage.setItem('gbt_privacidad_ok', '1');
+  localStorage.setItem('gbt_acepta_comunicaciones', check2Accepted ? '1' : '0');
+  document.getElementById('privacy-overlay').style.display = 'none';
+}
+
 </script>
+
+<!-- AVISO DE PRIVACIDAD -->
+<div id="privacy-overlay">
+  <div class="privacy-sheet">
+    <div class="priv-title">// antes de continuar</div>
+    <div class="priv-sub">gamb1t0_ · aviso de privacidad y consentimiento</div>
+
+    <div class="priv-section">
+      <div class="priv-section-title">¿qué datos recopilamos?</div>
+      <div class="priv-txt">
+        correo electrónico · fecha de nacimiento · distrito · país<br>
+        y los datos del juego: tu avatar, arcano, progreso y preferencias
+      </div>
+    </div>
+
+    <div class="priv-section">
+      <div class="priv-section-title">¿para qué los usamos?</div>
+      <div class="priv-txt">
+        <span class="priv-highlight">·</span> personalizar tu experiencia en el juego<br>
+        <span class="priv-highlight">·</span> investigación académica (tesis MBA — Centrum PUCP)<br>
+        <span class="priv-highlight">·</span> mejorar la plataforma gamb1t0_<br>
+        <span class="priv-highlight">·</span> comunicarte sobre el lanzamiento oficial
+      </div>
+    </div>
+
+    <div class="priv-section">
+      <div class="priv-section-title">¿con quién los compartimos?</div>
+      <div class="priv-txt">
+        con nadie. tus datos no se venden ni se comparten con terceros.<br>
+        se almacenan en Google Sheets bajo acceso restringido.
+      </div>
+    </div>
+
+    <div class="priv-section">
+      <div class="priv-section-title">tus derechos</div>
+      <div class="priv-txt">
+        puedes solicitar acceso, corrección o eliminación de tus datos<br>
+        escribiendo a <span class="priv-highlight">somosgambito.oficial@gmail.com</span>
+      </div>
+    </div>
+
+    <!-- CHECKBOXES CONSENTIMIENTO -->
+    <div class="priv-check-row" id="check1-row" onclick="toggleCheck('check1')">
+      <div class="priv-checkbox" id="check1">✓</div>
+      <div class="priv-check-txt">
+        <strong>acepto</strong> el tratamiento de mis datos personales para los fines descritos,
+        conforme a la <strong>Ley 29733</strong> de Protección de Datos Personales del Perú
+      </div>
+    </div>
+
+    <div class="priv-check-row" id="check2-row" onclick="toggleCheck('check2')">
+      <div class="priv-checkbox" id="check2"></div>
+      <div class="priv-check-txt">
+        <strong>acepto</strong> recibir comunicaciones sobre el lanzamiento de gamb1t0_
+        <span style="color:rgba(221,218,240,.3);font-size:10px;"> · opcional</span>
+      </div>
+    </div>
+
+    <button class="btn-aceptar-priv" id="btn-aceptar-priv" onclick="aceptarPrivacidad()" disabled>
+      entendido — continuar
+    </button>
+
+    <div class="priv-ley">
+      esta demo es parte de una investigación académica · Centrum PUCP · Lima 2026<br>
+      tus datos son confidenciales y se usan solo con fines de investigación
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
