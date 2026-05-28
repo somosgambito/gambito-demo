@@ -340,7 +340,7 @@ const TRABAJOS = [
       nombre:'Ana, Diego y Valeria',
       cargo:'panel de evaluación',
       empresa:'GI Force',
-      img:'img/entrevistador_ana.jpg',
+      img:'img/avatar_base.jpg',
       personalidad:'tres perspectivas — datos, comunidad y creatividad',
       reaccion_ok:['los tres coincidimos — tiene visión','esto es diferente — hay algo real aquí','el panel raramente coincide — hoy sí'],
       reaccion_no:['el panel vio potencial pero falta estructura','buena energía — el proyecto necesita más claridad todavía'],
@@ -490,7 +490,7 @@ function abrirEntrevista(id){
   `;
   document.getElementById('gi-intro-txt').textContent =
     'prepárate — no hay respuestas correctas o incorrectas, solo formas de ser — ' +
-    t.umbral+' de '+t.preguntas.length+' respuestas deciden si '+e.nombre.split(' ')[0]+' te contrata';
+    t.umbral+' de '+t.tareas.length+' respuestas deciden si '+e.nombre.split(' ')[0]+' te contrata';
 
   document.getElementById('ent-resultado').classList.remove('show');
   document.getElementById('ent-preguntas').style.display = 'block';
@@ -500,10 +500,10 @@ function abrirEntrevista(id){
 
 function renderPregunta(idx){
   const t = trabajoEntrevistando;
-  const p = t.preguntas[idx];
-  const total = t.preguntas.length;
+  const p = t.tareas[idx];
+  const total = t.tareas.length;
 
-  const dots = t.preguntas.map((_,i)=>
+  const dots = t.tareas.map((_,i)=>
     `<div class="preg-dot ${i<idx?'done':i===idx?'active':''}"></div>`
   ).join('');
 
@@ -534,7 +534,7 @@ function selOpt(i){
 
 function siguiente(){
   const t = trabajoEntrevistando;
-  if(pregActual < t.preguntas.length-1){
+  if(pregActual < t.tareas.length-1){
     renderPregunta(pregActual+1);
   } else {
     mostrarResultado();
@@ -552,13 +552,13 @@ function mostrarResultado(){
 
   // contar respuestas correctas
   let correctas = 0;
-  t.preguntas.forEach((p,i)=>{ if(respuestasEnt[i]===p.resp) correctas++; });
+  t.tareas.forEach((p,i)=>{ if(respuestasEnt[i]===p.resp) correctas++; });
 
   // sobrecalificado
   const sobrecalificado = nivel > t.nivel_max && t.nivel_max < 99;
 
   // factor azar + energía + nivel
-  let prob = (correctas/t.preguntas.length) * 0.7 + Math.random() * 0.3;
+  let prob = (correctas/t.tareas.length) * 0.7 + Math.random() * 0.3;
   if(pctEnergia < 0.5) prob *= 0.75; // energía baja penaliza
   const contratado = !sobrecalificado && prob >= 0.45;
 
@@ -619,7 +619,7 @@ function mostrarResultado(){
     trabajo:t.id,
     usuario:GBT.player().avName||'',
     correctas,
-    total:t.preguntas.length,
+    total:t.tareas.length,
     aprobado:contratado,
     nivel,
     energia_pct:Math.round(pctEnergia*100),
@@ -725,6 +725,11 @@ function navTo(dest){
 }
 
 // ── INIT ──
+// limpiar trabajo expirado
+const _ta = GBT.get('trabajo_activo', null);
+if(_ta && Date.now() > _ta.fin_ts){
+  GBT.completarTrabajo(_ta);
+}
 updateUI();
 renderContent();
 </script>
