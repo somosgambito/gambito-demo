@@ -83,47 +83,55 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 /* imagen entrevistador — zona superior fija, no tapada por preguntas */
 .vl-av-wrap{
   position:absolute;
-  top:60px; /* debajo del gi bubble */
-  left:50%;
-  transform:translateX(-50%);
-  width:240px;
-  height:300px;
-  border-radius:16px;
+  top:0;left:0;right:0;
+  height:58%; /* mitad superior — cara visible completa */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:transparent;
   overflow:hidden;
-  box-shadow:0 8px 32px rgba(0,0,0,.8);
 }
 .vl-av{
-  width:100%;height:100%;
-  object-fit:cover;object-position:center top;
-  border-radius:16px;
+  width:auto;
+  max-width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center center;
   display:block;
+  filter:drop-shadow(0 8px 32px rgba(0,0,0,.6));
 }
 .vl-av.speaking{
-  box-shadow:0 0 0 3px rgba(201,168,76,.7),0 8px 32px rgba(0,0,0,.8);
+  filter:drop-shadow(0 0 12px rgba(201,168,76,.5)) drop-shadow(0 8px 32px rgba(0,0,0,.6));
 }
 
 /* info entrevistador abajo */
 .vl-info{
   position:absolute;
-  top:370px; /* justo debajo de la foto */
+  top:58%;
   left:0;right:0;
-  padding:10px 20px 12px;
-  background:rgba(7,7,15,.85);
+  padding:10px 20px 10px;
+  background:rgba(7,7,15,.92);
+  border-top:.5px solid rgba(221,218,240,.08);
   text-align:center;
+  z-index:3;
 }
-.vl-nombre{font-size:18px;font-weight:700;color:#fff;margin-bottom:2px;}
-.vl-cargo{font-size:12px;color:rgba(255,255,255,.5);}
+.vl-nombre{font-size:15px;font-weight:700;color:#dddaf0;margin-bottom:1px;}
+.vl-cargo{font-size:11px;color:rgba(221,218,240,.4);}
 .vl-estado{font-size:11px;color:#00e5ff;margin-top:4px;display:flex;align-items:center;gap:6px;}
 .vl-dot{width:7px;height:7px;border-radius:50%;background:#00e5ff;animation:dotPulse 1.2s ease-in-out infinite;}
 @keyframes dotPulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
 
 /* GI burbuja en videollamada */
 .vl-gi{
-  position:absolute;top:16px;left:16px;right:16px;
-  display:flex;gap:10px;align-items:flex-start;
+  position:absolute;top:8px;left:12px;right:12px;
+  display:flex;gap:10px;align-items:center;
   z-index:5;
+  background:rgba(7,7,15,.75);
+  border-radius:30px;
+  padding:6px 10px;
+  backdrop-filter:blur(8px);
 }
-.vl-gi-av{width:36px;height:36px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(0,229,255,.5);flex-shrink:0;}
+.vl-gi-av{width:30px;height:30px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(0,229,255,.4);flex-shrink:0;}
 .vl-gi-bubble{background:rgba(7,7,15,.85);border:.5px solid rgba(0,229,255,.25);border-radius:0 10px 10px 10px;padding:10px 13px;font-size:13px;color:#dddaf0;line-height:1.5;backdrop-filter:blur(8px);}
 
 /* controles videollamada */
@@ -137,13 +145,12 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 /* PREGUNTAS dentro de videollamada */
 .vl-preguntas{
   position:absolute;
-  top:420px; /* siempre debajo de la foto */
+  top:calc(58% + 56px); /* debajo de info */
   bottom:0;left:0;right:0;
-  background:rgba(7,7,15,.97);
-  border-top:.5px solid rgba(221,218,240,.15);
-  padding:16px;
+  background:rgba(7,7,15,.98);
+  border-top:.5px solid rgba(221,218,240,.1);
+  padding:14px;
   overflow-y:auto;
-  backdrop-filter:blur(12px);
 }
 .preg-progreso{display:flex;gap:4px;margin-bottom:12px;}
 .preg-dot{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.1);transition:background .3s;}
