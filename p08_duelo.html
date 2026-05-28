@@ -363,7 +363,7 @@ function selCosto(n, el){
 }
 
 function checkReady(){
-  document.getElementById('btn-duelo').disabled = !(rivalSel && costo>0 && tokens>=costo);
+  document.getElementById('btn-duelo').disabled = !(rivalSel && costo>0 && GBT.getStats().tokens>=costo);
 }
 
 function iniciarDuelo(){
@@ -371,7 +371,7 @@ function iniciarDuelo(){
   if(!rivalSel||costo<=0||st.tokens<costo) return;
   const max=GBT.energiaMax(GBT.nivel(st.xp));
   const estado=GBT.estadoEnergia(st.energia,max);
-  if(estado.label==='agotado'){alert('tu avatar está agotado... no puede duchar ahora'); return;}
+  if(estado.label==='agotado'){alert('tu avatar está agotado... descansa primero'); return;}
   GBT.useTokens(costo);
   GBT.consumirEnergia(GBT.CONSUMO.duelo);
   updateUI();

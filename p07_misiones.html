@@ -153,7 +153,6 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 
 <div class="energia-bar-wrap"><div class="energia-bar-inner"><div class="energia-bar-fill" id="e-bar"></div></div></div>
 <div class="energia-label" id="e-label">energía</div>
-<div class="energia-aviso" id="e-aviso"></div>
   <div class="topbar">
     <div class="back-btn" onclick="goBack()">←</div>
     <div class="top-title">misiones</div>
@@ -166,6 +165,7 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
     <button class="tab" onclick="swTab('completadas',this)">completadas</button>
   </div>
 
+  <div class="energia-aviso" id="e-aviso"></div>
   <div class="mis-list" id="mis-list"></div>
 
 </div>
@@ -229,9 +229,7 @@ let cronoSecs = 0;
 let cronoRunning = false;
 let contadorN = 0;
 
-function saveTokens(){ localStorage.setItem('gbt_tokens', tokens); }
-
-document.getElementById('tok-disp').textContent = tokens;
+function saveTokens(){ GBT.set('tokens', GBT.get('tokens',120)); }
 
 // ── MISIONES DATA ──
 const MISIONES_DIA = [
