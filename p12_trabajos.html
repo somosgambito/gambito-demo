@@ -10,12 +10,10 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Code','Courier New',monospace;overflow-x:hidden;}
-
 .energia-bar-wrap{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;z-index:20;padding:0 16px;pointer-events:none;}
 .energia-bar-inner{height:3px;width:100%;background:rgba(255,255,255,.06);}
 .energia-bar-fill{height:100%;transition:width .8s,background .5s;}
 .energia-label{position:fixed;top:4px;right:20px;font-size:9px;letter-spacing:.06em;z-index:21;font-family:'Fira Code',monospace;}
-
 .page{width:100%;max-width:440px;margin:0 auto;padding-bottom:80px;}
 .topbar{display:flex;align-items:center;gap:12px;padding:14px 16px 10px;border-bottom:.5px solid rgba(221,218,240,.08);position:sticky;top:0;background:#07070f;z-index:10;}
 .back-btn{font-size:20px;cursor:pointer;color:rgba(221,218,240,.4);padding:4px 8px 4px 0;}
@@ -24,34 +22,29 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 .top-right{margin-left:auto;display:flex;gap:10px;font-size:11px;}
 .top-stat{color:rgba(221,218,240,.4);}
 .top-stat span{font-weight:700;color:#c9a84c;}
-
 .content{padding:16px;}
 .sec-label{font-size:10px;color:rgba(221,218,240,.25);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;}
 
 /* TRABAJO ACTIVO */
-.trabajo-activo-card{background:rgba(0,200,150,.06);border:.5px solid rgba(0,200,150,.3);border-radius:12px;padding:16px;margin-bottom:16px;cursor:pointer;}
+.trabajo-activo-card{background:rgba(0,200,150,.06);border:.5px solid rgba(0,200,150,.3);border-radius:12px;padding:16px;margin-bottom:16px;}
 .ta-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.ta-icon{font-size:22px;}
-.ta-name{font-size:14px;font-weight:700;color:#00c896;}
 .ta-badge{font-size:9px;color:#07070f;background:#00c896;border-radius:10px;padding:2px 8px;margin-left:4px;}
-.ta-prog-wrap{margin-bottom:8px;}
 .ta-prog-bar{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;}
-.ta-prog-fill{height:100%;background:#00c896;border-radius:3px;transition:width 1s;}
+.ta-prog-fill{height:100%;background:#00c896;border-radius:3px;}
 .ta-meta{font-size:11px;color:rgba(221,218,240,.35);margin-top:4px;}
 .ta-btns{display:flex;gap:8px;margin-top:12px;}
-.btn-ta{flex:1;font-family:'Fira Code',monospace;font-size:11px;padding:8px;border-radius:6px;cursor:pointer;transition:all .2s;}
+.btn-ta{flex:1;font-family:'Fira Code',monospace;font-size:11px;padding:8px;border-radius:6px;cursor:pointer;}
 .btn-avisar{background:rgba(201,168,76,.1);color:#c9a84c;border:.5px solid rgba(201,168,76,.25);}
 .btn-desertar{background:rgba(255,77,109,.08);color:#ff4d6d;border:.5px solid rgba(255,77,109,.2);}
 .btn-tareas{background:rgba(0,200,150,.1);color:#00c896;border:.5px solid rgba(0,200,150,.25);}
 
 /* TRABAJO CARD */
-.trabajo-card{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:16px;margin-bottom:10px;position:relative;overflow:hidden;transition:all .2s;}
+.trabajo-card{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:16px;margin-bottom:10px;position:relative;transition:all .2s;}
 .trabajo-card.disponible{cursor:pointer;}
 .trabajo-card.disponible:hover{border-color:rgba(201,168,76,.3);transform:translateY(-1px);}
 .trabajo-card.bloqueado{opacity:.5;}
 .tc-top{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px;}
 .tc-entrevistador{width:44px;height:44px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(221,218,240,.15);flex-shrink:0;}
-.tc-info{flex:1;}
 .tc-name{font-size:14px;font-weight:700;color:#dddaf0;margin-bottom:2px;}
 .tc-entrev-nombre{font-size:10px;color:rgba(221,218,240,.35);margin-bottom:4px;}
 .tc-desc{font-size:11px;color:rgba(221,218,240,.4);line-height:1.5;}
@@ -61,6 +54,7 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 .b-gus{background:rgba(201,168,76,.1);color:#c9a84c;border:.5px solid rgba(201,168,76,.2);}
 .b-xp{background:rgba(127,106,240,.1);color:#7f6af0;border:.5px solid rgba(127,106,240,.2);}
 .b-nivel{background:rgba(255,255,255,.04);color:rgba(221,218,240,.45);border:.5px solid rgba(221,218,240,.1);}
+.b-tokens{background:rgba(0,229,255,.06);color:#00e5ff;border:.5px solid rgba(0,229,255,.15);}
 .tc-cupos{font-size:10px;color:rgba(221,218,240,.3);margin-bottom:6px;}
 .cupos-bar{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;margin-top:3px;}
 .cupos-fill{height:100%;background:#ff4d6d;border-radius:2px;}
@@ -73,68 +67,121 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 .ent-wrap{width:100%;max-width:440px;margin:0 auto;padding:20px 20px 80px;}
 .ent-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
 .ent-back{font-size:20px;cursor:pointer;color:rgba(221,218,240,.4);}
-.ent-title{font-size:15px;font-weight:700;color:#dddaf0;}
-
-/* PERFIL ENTREVISTADOR */
+.ent-title{font-size:15px;font-weight:700;}
 .ent-perfil{display:flex;gap:14px;align-items:center;background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:14px;margin-bottom:20px;}
 .ent-av{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.3);flex-shrink:0;}
-.ent-info{flex:1;}
 .ent-nombre{font-size:14px;font-weight:700;color:#dddaf0;margin-bottom:2px;}
 .ent-cargo{font-size:11px;color:#c9a84c;margin-bottom:2px;}
 .ent-empresa{font-size:10px;color:rgba(221,218,240,.35);}
 .ent-personalidad{font-size:10px;color:rgba(221,218,240,.25);font-style:italic;margin-top:4px;}
-
-/* GI ROW */
 .gi-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:20px;}
 .gi-av{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(0,229,255,.3);flex-shrink:0;background:rgba(0,229,255,.1);}
 .gi-bubble{background:rgba(0,229,255,.06);border:.5px solid rgba(0,229,255,.15);border-radius:0 10px 10px 10px;padding:11px 14px;font-size:13px;color:#dddaf0;line-height:1.6;flex:1;}
 
 /* PREGUNTAS */
-.preg-wrap{margin-bottom:20px;}
 .preg-progreso{display:flex;gap:4px;margin-bottom:14px;}
 .preg-dot{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.08);transition:background .3s;}
 .preg-dot.done{background:#c9a84c;}
-.preg-dot.active{background:#c9a84c;opacity:.5;}
+.preg-dot.active{background:rgba(201,168,76,.5);}
 .preg-num{font-size:9px;color:rgba(221,218,240,.25);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
 .preg-txt{font-size:14px;color:#dddaf0;line-height:1.55;margin-bottom:14px;font-weight:700;}
 .preg-opts{display:flex;flex-direction:column;gap:8px;}
 .preg-opt{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:8px;padding:13px 14px;cursor:pointer;font-size:13px;color:rgba(221,218,240,.6);transition:all .2s;line-height:1.4;}
 .preg-opt:hover{border-color:rgba(201,168,76,.3);color:#dddaf0;}
 .preg-opt.sel{border-color:#c9a84c;background:rgba(201,168,76,.08);color:#dddaf0;}
-.btn-siguiente{width:100%;background:#c9a84c;color:#07070f;font-family:'Fira Code',monospace;font-size:15px;font-weight:700;border:none;border-radius:8px;padding:14px;cursor:pointer;margin-top:12px;transition:opacity .2s;}
+.btn-siguiente{width:100%;background:#c9a84c;color:#07070f;font-family:'Fira Code',monospace;font-size:15px;font-weight:700;border:none;border-radius:8px;padding:14px;cursor:pointer;margin-top:12px;}
 .btn-siguiente:disabled{opacity:.3;cursor:not-allowed;}
+
+/* SUSPENSE — entrevistador escribiendo */
+#suspense-overlay{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:400;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px;}
+#suspense-overlay.show{display:flex;}
+.susp-av{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.4);margin-bottom:16px;}
+.susp-nombre{font-size:13px;color:#c9a84c;margin-bottom:16px;}
+.susp-carta{background:rgba(255,255,255,.05);border:.5px solid rgba(221,218,240,.15);border-radius:12px;padding:20px;width:100%;max-width:320px;margin-bottom:20px;min-height:120px;}
+.susp-texto{font-size:13px;color:rgba(221,218,240,.8);line-height:1.8;font-style:italic;}
+.susp-cursor{display:inline-block;width:2px;height:14px;background:#c9a84c;margin-left:2px;vertical-align:middle;animation:cursorBlink .7s step-start infinite;}
+@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
+.susp-dots{display:flex;gap:6px;justify-content:center;margin-top:8px;}
+.susp-dot{width:8px;height:8px;border-radius:50%;background:rgba(201,168,76,.3);animation:dotPulse 1.2s ease-in-out infinite;}
+.susp-dot:nth-child(2){animation-delay:.2s;}
+.susp-dot:nth-child(3){animation-delay:.4s;}
+@keyframes dotPulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
 
 /* RESULTADO */
 #ent-resultado{display:none;text-align:center;padding:20px 0;}
 #ent-resultado.show{display:block;}
-
-/* ENTREVISTADOR REACCIÓN */
-.ent-reaccion{display:flex;gap:14px;align-items:flex-start;background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:14px;margin-bottom:20px;text-align:left;}
+.ent-reaccion{display:flex;gap:14px;align-items:flex-start;background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:14px;margin-bottom:16px;text-align:left;}
 .ent-reac-av{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.25);flex-shrink:0;}
-.ent-reac-bubble{flex:1;}
 .ent-reac-nombre{font-size:11px;color:#c9a84c;margin-bottom:6px;}
 .ent-reac-txt{font-size:13px;color:rgba(221,218,240,.7);line-height:1.6;font-style:italic;}
 
-/* REY TRÉBOLES */
-.rey-trebol-card{display:flex;gap:12px;align-items:center;background:rgba(0,200,150,.05);border:.5px solid rgba(0,200,150,.2);border-radius:12px;padding:14px;margin-bottom:20px;text-align:left;}
-.rey-trebol-img{width:52px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0;}
-.rey-trebol-txt{font-size:12px;color:rgba(221,218,240,.55);font-style:italic;line-height:1.6;flex:1;}
+/* REY TRÉBOLES — grande */
+.rey-trebol-wrap{text-align:center;margin-bottom:20px;animation:cardIn .5s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes cardIn{from{transform:scale(.4) rotate(-8deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.rey-trebol-img{width:100%;max-width:260px;height:auto;border-radius:16px;box-shadow:0 0 40px rgba(0,200,150,.3),0 20px 60px rgba(0,0,0,.8);margin:0 auto 12px;display:block;}
+.rey-trebol-txt{font-size:13px;color:rgba(221,218,240,.55);font-style:italic;line-height:1.6;padding:0 8px;}
 
-.res-titulo{font-size:22px;font-weight:700;margin-bottom:6px;}
-.res-titulo.contratado{color:#00c896;}
-.res-titulo.rechazado{color:#ff4d6d;}
-.res-titulo.sobrecalificado{color:#c9a84c;}
-.res-sub{font-size:13px;color:rgba(221,218,240,.4);margin-bottom:20px;line-height:1.6;}
+/* LOGRO CARD */
+.logro-card{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:16px;margin-bottom:16px;}
+.logro-icon{font-size:48px;display:block;margin-bottom:10px;animation:logroFloat 2s ease-in-out infinite;}
+@keyframes logroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.logro-titulo{font-size:10px;color:rgba(221,218,240,.3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.logro-nombre{font-size:20px;font-weight:700;margin-bottom:4px;}
+.logro-nombre.contratado{color:#00c896;}
+.logro-nombre.rechazado{color:#ff4d6d;}
+.logro-nombre.sobre{color:#c9a84c;}
+.logro-sub{font-size:13px;color:rgba(221,218,240,.4);line-height:1.6;margin-bottom:12px;}
+.logro-rewards{display:flex;gap:8px;justify-content:center;margin-bottom:0;}
+.logro-reward{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;}
+.logro-xp{background:rgba(127,106,240,.12);color:#7f6af0;border:.5px solid rgba(127,106,240,.25);}
+.logro-gus{background:rgba(201,168,76,.1);color:#c9a84c;border:.5px solid rgba(201,168,76,.2);}
+
 .btn-aceptar-trabajo{width:100%;background:#00c896;color:#07070f;font-family:'Fira Code',monospace;font-size:15px;font-weight:700;border:none;border-radius:8px;padding:14px;cursor:pointer;margin-bottom:10px;}
 .btn-cerrar-ent{width:100%;background:rgba(255,255,255,.06);color:rgba(221,218,240,.5);font-family:'Fira Code',monospace;font-size:13px;border:.5px solid rgba(221,218,240,.12);border-radius:8px;padding:12px;cursor:pointer;}
 
-/* TAREAS TRABAJO */
-#tareas-overlay{position:fixed;inset:0;background:#07070f;z-index:400;display:none;flex-direction:column;overflow-y:auto;}
+/* PRUEBA ANTI-IA */
+#prueba-overlay{position:fixed;inset:0;background:#07070f;z-index:500;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+#prueba-overlay.show{display:flex;}
+.prueba-wrap{width:100%;max-width:400px;}
+.prueba-header{text-align:center;margin-bottom:20px;}
+.prueba-trabajo{font-size:11px;color:rgba(221,218,240,.35);letter-spacing:.08em;margin-bottom:6px;}
+.prueba-titulo{font-size:16px;font-weight:700;color:#c9a84c;margin-bottom:4px;}
+.prueba-instruccion{font-size:13px;color:rgba(221,218,240,.5);line-height:1.5;}
+.prueba-timer{font-size:52px;font-weight:700;color:#c9a84c;text-align:center;margin:16px 0;line-height:1;}
+.prueba-timer.urgente{color:#ff4d6d;animation:timerPulse .5s step-start infinite;}
+@keyframes timerPulse{0%,100%{opacity:1}50%{opacity:.3}}
+.prueba-reto{background:rgba(255,255,255,.05);border:.5px solid rgba(221,218,240,.12);border-radius:12px;padding:16px;margin-bottom:16px;}
+.prueba-reto-txt{font-size:14px;color:#dddaf0;line-height:1.6;margin-bottom:12px;font-weight:700;}
+.prueba-opts{display:flex;flex-direction:column;gap:8px;}
+.prueba-opt{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:8px;padding:12px 14px;cursor:pointer;font-size:13px;color:rgba(221,218,240,.6);transition:all .2s;}
+.prueba-opt:hover{border-color:rgba(201,168,76,.3);color:#dddaf0;}
+.prueba-opt.sel{border-color:#c9a84c;background:rgba(201,168,76,.08);color:#dddaf0;}
+.btn-confirmar-prueba{width:100%;background:#c9a84c;color:#07070f;font-family:'Fira Code',monospace;font-size:15px;font-weight:700;border:none;border-radius:8px;padding:14px;cursor:pointer;margin-top:8px;}
+.btn-confirmar-prueba:disabled{opacity:.3;cursor:not-allowed;}
+.prueba-intentos{font-size:11px;color:rgba(221,218,240,.3);text-align:center;margin-top:8px;}
+
+/* PERIODO PRUEBA FALLIDO */
+#prueba-fallida{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:600;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;}
+#prueba-fallida.show{display:flex;}
+.pf-av{width:100px;height:100px;border-radius:50%;object-fit:cover;margin:0 auto 16px;display:block;border:2px solid rgba(255,77,109,.3);}
+.pf-nombre{font-size:12px;color:#ff4d6d;margin-bottom:12px;}
+.pf-carta{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:20px;max-width:320px;margin-bottom:20px;}
+.pf-txt{font-size:13px;color:rgba(221,218,240,.7);line-height:1.8;font-style:italic;}
+.btn-pf-cerrar{background:rgba(255,255,255,.06);color:rgba(221,218,240,.5);font-family:'Fira Code',monospace;font-size:13px;border:.5px solid rgba(221,218,240,.12);border-radius:8px;padding:12px 28px;cursor:pointer;}
+
+/* TAREAS */
+#tareas-overlay{position:fixed;inset:0;background:#07070f;z-index:300;display:none;flex-direction:column;overflow-y:auto;}
 #tareas-overlay.show{display:flex;}
 .tar-wrap{width:100%;max-width:440px;margin:0 auto;padding:20px 20px 80px;}
 .tar-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
 .tar-back{font-size:20px;cursor:pointer;color:rgba(221,218,240,.4);}
 .tar-title{font-size:15px;font-weight:700;}
+.progreso-trabajo{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:10px;padding:14px;margin-bottom:14px;}
+.pt-label{font-size:10px;color:rgba(221,218,240,.3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;}
+.pt-bar{height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;margin-bottom:6px;}
+.pt-fill{height:100%;background:#c9a84c;border-radius:3px;}
+.pt-meta{font-size:11px;color:rgba(221,218,240,.35);}
+.pt-gus-acum{font-size:13px;color:#c9a84c;font-weight:700;margin-top:4px;}
 .tarea-card{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:10px;padding:14px;margin-bottom:10px;}
 .tarea-num{font-size:9px;color:rgba(221,218,240,.25);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
 .tarea-txt{font-size:14px;font-weight:700;color:#dddaf0;margin-bottom:12px;line-height:1.5;}
@@ -145,12 +192,6 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 .tarea-opt.completada{border-color:rgba(0,200,150,.3);color:#00c896;background:rgba(0,200,150,.05);pointer-events:none;}
 .btn-completar-tarea{background:#c9a84c;color:#07070f;font-family:'Fira Code',monospace;font-size:13px;font-weight:700;border:none;border-radius:6px;padding:10px 20px;cursor:pointer;}
 .btn-completar-tarea:disabled{opacity:.3;cursor:not-allowed;}
-.progreso-trabajo{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:10px;padding:14px;margin-bottom:14px;}
-.pt-label{font-size:10px;color:rgba(221,218,240,.3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;}
-.pt-bar{height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;margin-bottom:6px;}
-.pt-fill{height:100%;background:#c9a84c;border-radius:3px;transition:width .5s;}
-.pt-meta{font-size:11px;color:rgba(221,218,240,.35);}
-.pt-gus-acum{font-size:13px;color:#c9a84c;font-weight:700;margin-top:4px;}
 
 /* BOTTOM NAV */
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;background:rgba(7,7,15,.95);border-top:.5px solid rgba(221,218,240,.08);display:flex;align-items:center;justify-content:space-around;padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:100;backdrop-filter:blur(16px);}
@@ -163,7 +204,6 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 </head>
 <body>
 <script src="gbt_core.js"></script>
-
 <div class="energia-bar-wrap"><div class="energia-bar-inner"><div class="energia-bar-fill" id="e-bar"></div></div></div>
 <div class="energia-label" id="e-label">energía</div>
 
@@ -179,6 +219,16 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
   <div class="content" id="content"></div>
 </div>
 
+<!-- SUSPENSE -->
+<div id="suspense-overlay">
+  <img src="" alt="" class="susp-av" id="susp-av">
+  <div class="susp-nombre" id="susp-nombre"></div>
+  <div class="susp-carta">
+    <div class="susp-texto" id="susp-texto"></div>
+  </div>
+  <div class="susp-dots"><div class="susp-dot"></div><div class="susp-dot"></div><div class="susp-dot"></div></div>
+</div>
+
 <!-- ENTREVISTA -->
 <div id="entrevista-overlay">
 <div class="ent-wrap">
@@ -189,21 +239,54 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
   <div class="ent-perfil" id="ent-perfil"></div>
   <div class="gi-row">
     <img src="img/gi_face.jpg" alt="gi" class="gi-av" onerror="this.style.background='rgba(0,229,255,.15)';this.removeAttribute('src')">
-    <div class="gi-bubble" id="gi-intro-txt">prepárate — no hay respuestas correctas o incorrectas, solo formas de ser</div>
+    <div class="gi-bubble" id="gi-intro-txt">prepárate</div>
   </div>
   <div id="ent-preguntas"></div>
   <div id="ent-resultado">
     <div class="ent-reaccion" id="ent-reaccion"></div>
-    <div class="rey-trebol-card">
+    <div class="rey-trebol-wrap">
       <img src="img/rey_treboles.jpg" alt="rey de tréboles" class="rey-trebol-img" onerror="this.style.background='rgba(0,200,150,.1)';this.removeAttribute('src')">
-      <div class="rey-trebol-txt" id="rey-trebol-txt">---</div>
+      <div class="rey-trebol-txt" id="rey-trebol-txt"></div>
     </div>
-    <div class="res-titulo" id="res-titulo">---</div>
-    <div class="res-sub" id="res-sub">---</div>
-    <button class="btn-aceptar-trabajo" id="btn-aceptar-trabajo" onclick="confirmarTrabajo()" style="display:none">aceptar trabajo</button>
+    <div class="logro-card" id="logro-card">
+      <span class="logro-icon" id="logro-icon">◈</span>
+      <div class="logro-titulo">// resultado</div>
+      <div class="logro-nombre" id="logro-nombre"></div>
+      <div class="logro-sub" id="logro-sub"></div>
+      <div class="logro-rewards" id="logro-rewards"></div>
+    </div>
+    <button class="btn-aceptar-trabajo" id="btn-aceptar-trabajo" onclick="iniciarPruebaAntiIA()" style="display:none">aceptar trabajo → prueba de inicio</button>
     <button class="btn-cerrar-ent" onclick="cerrarEntrevista()">volver a trabajos</button>
   </div>
 </div>
+</div>
+
+<!-- PRUEBA ANTI-IA -->
+<div id="prueba-overlay">
+<div class="prueba-wrap">
+  <div class="prueba-header">
+    <div class="prueba-trabajo" id="prueba-trabajo-label"></div>
+    <div class="prueba-titulo">tu primera tarea</div>
+    <div class="prueba-instruccion" id="prueba-instruccion"></div>
+  </div>
+  <div class="prueba-timer" id="prueba-timer">30</div>
+  <div class="prueba-reto">
+    <div class="prueba-reto-txt" id="prueba-reto-txt"></div>
+    <div class="prueba-opts" id="prueba-opts"></div>
+  </div>
+  <button class="btn-confirmar-prueba" id="btn-confirmar-prueba" onclick="confirmarPrueba()" disabled>confirmar respuesta</button>
+  <div class="prueba-intentos" id="prueba-intentos">intento 1 de 3</div>
+</div>
+</div>
+
+<!-- PERIODO PRUEBA FALLIDO -->
+<div id="prueba-fallida">
+  <img src="" alt="" class="pf-av" id="pf-av">
+  <div class="pf-nombre" id="pf-nombre"></div>
+  <div class="pf-carta">
+    <div class="pf-txt" id="pf-txt"></div>
+  </div>
+  <button class="btn-pf-cerrar" onclick="cerrarPruebaFallida()">entendido</button>
 </div>
 
 <!-- TAREAS -->
@@ -227,509 +310,594 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 </div>
 
 <script>
-// ── DATOS ──
+// ══ BANCO DE PREGUNTAS ══
+const BANCO = {
+  analista:[
+    {txt:'tienes 200 registros de jugadores. el primer paso es:',opts:['ordenarlos por nombre','identificar columnas con datos incompletos','graficarlos todos','imprimirlos para revisarlos'],resp:1},
+    {txt:'¿qué diferencia hay entre una media y una mediana?',opts:['son lo mismo','la media suma y divide; la mediana encuentra el valor central','la mediana es más difícil de calcular','solo la mediana sirve para datos reales'],resp:1},
+    {txt:'encuentras un dato que parece incorrecto. ¿qué haces?',opts:['lo corrijo sin avisar','lo borro','documento y reporto antes de tocarlo','lo dejo igual por si acaso'],resp:2},
+    {txt:'¿para qué sirve una tabla dinámica?',opts:['para hacer el diseño más bonito','para resumir y cruzar grandes cantidades de datos rápido','para agregar más filas','para cambiar los colores de la hoja'],resp:1},
+    {txt:'te piden el "dato más valioso" sobre actividad de usuarios. ¿cuál eliges?',opts:['el nombre del usuario','la fecha del último acceso','el color favorito','el distrito'],resp:1},
+    {txt:'¿qué es un valor atípico (outlier)?',opts:['un dato que se repite mucho','un dato muy diferente al resto del conjunto','un error de escritura siempre','el promedio del conjunto'],resp:1},
+    {txt:'tienes datos de lunes a viernes. el martes falta. ¿qué haces?',opts:['eliminas toda la semana','inventas un número parecido','marcas el valor como nulo y lo documentas','promedias lunes y miércoles sin documentar'],resp:2},
+    {txt:'¿cuál es la mejor forma de presentar una tendencia a lo largo del tiempo?',opts:['gráfico de torta','gráfico de barras separadas','gráfico de líneas','tabla de texto'],resp:2},
+    {txt:'alguien te pide "los 10 jugadores más activos". ¿cómo lo resuelves?',opts:['los busco manualmente uno por uno','ordeno por frecuencia de acceso de mayor a menor y tomo los primeros 10','pregunto cuáles son los 10','cuento los nombres más largos'],resp:1},
+    {txt:'¿qué significa que dos variables están correlacionadas?',opts:['que una causa a la otra siempre','que cuando una cambia, la otra tiende a cambiar también','que son iguales','que no tienen relación'],resp:1},
+  ],
+  community:[
+    {txt:'el clan lleva 3 días sin actividad. ¿qué haces primero?',opts:['esperas a que alguien más publique','propones un reto con recompensa y límite de tiempo','mandas un buen día genérico','culpas a los inactivos públicamente'],resp:1},
+    {txt:'dos jugadores se insultan en el chat. primer movimiento:',opts:['baneas a los dos','contactas al que inició en privado','ignoras — son cosas del juego','haces un post público'],resp:1},
+    {txt:'¿cuál es la métrica más importante para saber si el clan está vivo?',opts:['cuántos miembros tiene','jugadores activos esta semana vs la anterior','cuántos mensajes mandaste tú','cuántos me siguen a ti'],resp:1},
+    {txt:'un jugador nuevo pregunta lo mismo por tercera vez. ¿qué haces?',opts:['le dices que lea el manual','creas un mensaje fijo de bienvenida con los 3 puntos clave','lo ignoras','lo mandas a buscar en Google'],resp:1},
+    {txt:'recibes críticas por una decisión que tomaste. ¿cómo respondes?',opts:['defiendes sin escuchar','escuchas, reconoces lo válido y explicas tu razonamiento','cambias todo para evitar conflicto','eliminas los comentarios'],resp:1},
+    {txt:'¿qué tipo de contenido genera más participación orgánica?',opts:['anuncios del sistema','retos con recompensa y tiempo límite','fotos del logo','felicitaciones de cumpleaños'],resp:1},
+    {txt:'un jugador amenaza con irse del clan. ¿qué haces?',opts:['le dices adiós','le preguntas en privado qué pasó y qué necesitaría para quedarse','lo ignoras','haces una votación pública'],resp:1},
+    {txt:'¿cuál es la diferencia entre moderación y animación de comunidad?',opts:['son lo mismo','moderación controla el comportamiento; animación genera vida y participación','animación es más fácil','moderación solo sirve para resolver peleas'],resp:1},
+    {txt:'el clan tiene 50 miembros pero solo 5 participan. ¿qué indica eso?',opts:['que el clan está bien','que hay un problema de engagement que necesita acción','que necesitas más miembros','que los 5 activos son suficientes'],resp:1},
+    {txt:'¿cómo mides el éxito de una campaña dentro del clan?',opts:['por cuántos posts hiciste','por el incremento de participación activa antes vs después','por cuántos likes recibiste tú','por el número de nuevos miembros'],resp:1},
+  ],
+  disenador:[
+    {txt:'te piden una skin para un guerrero nivel 5. ¿por dónde empiezas?',opts:['buscas imágenes en internet','defines qué emoción debe provocar al verla','haces algo rápido para entregar','preguntas qué colores le gustan'],resp:1},
+    {txt:'tu diseño es rechazado. ¿cuál es tu reacción?',opts:['te enojas','preguntas exactamente qué no funcionó y propones nueva dirección','aceptas sin entender','abandonas'],resp:1},
+    {txt:'¿cómo sabes si una skin tiene valor real?',opts:['si a ti te gusta','si genera reacción en los primeros 10 segundos','si tardaste mucho en hacerla','si tiene muchos colores'],resp:1},
+    {txt:'un jugador nivel 1 quiere tu skin nivel 5. ¿qué le dices?',opts:['no puede — punto','le explico qué logros necesita y lo motivo','le vendo igual','lo ignoro'],resp:1},
+    {txt:'¿qué hace que un diseño sea memorable?',opts:['que sea colorido','que tenga una idea clara que no necesita explicación','que sea complejo','que use muchos elementos'],resp:1},
+    {txt:'te piden diseñar en 2 horas. ¿qué priorizas?',opts:['el detalle fino','la idea central que comunica el concepto','el color exacto','la tipografía perfecta'],resp:1},
+    {txt:'¿cuál es la diferencia entre estilo y tendencia?',opts:['son lo mismo','el estilo es consistente y propio; la tendencia es temporal y externa','la tendencia dura más','el estilo cambia cada año'],resp:1},
+    {txt:'¿para qué sirve pedir feedback antes de terminar un diseño?',opts:['para mostrar que trabajas','para identificar problemas antes de invertir más tiempo','para que otros hagan tu trabajo','para tener más reuniones'],resp:1},
+    {txt:'te dan libertad total para diseñar. ¿por dónde empiezas?',opts:['con el color','con la emoción que quieres que sienta el usuario al ver el diseño','con el tamaño','con la tipografía'],resp:1},
+    {txt:'¿qué es el "espacio negativo" en diseño?',opts:['los errores del diseño','el espacio vacío que también forma parte del diseño','el color negro','el fondo siempre blanco'],resp:1},
+  ],
+  emprender:[
+    {txt:'¿cuál es el primer paso para validar una idea?',opts:['diseñar el logo','hablar con personas que tengan el problema','calcular ganancias','buscar inversores'],resp:1},
+    {txt:'tu prototipo es feo y básico. ¿lo muestras?',opts:['no — espero a que esté perfecto','sí — el feedback temprano vale más que la perfección','solo a amigos cercanos','lo describo sin mostrarlo'],resp:1},
+    {txt:'alguien dice "no pagaría por eso". ¿cómo lo usas?',opts:['lo ignoras','preguntas por qué y qué sí pagaría','buscas otro mercado','abandonas la idea'],resp:1},
+    {txt:'¿qué hace que un pitch de 60 segundos funcione?',opts:['muchas diapositivas','el problema es claro antes de hablar de la solución','términos técnicos avanzados','que dure exactamente 60 segundos'],resp:1},
+    {txt:'¿dónde buscas tu primer cliente?',opts:['redes con publicidad pagada','personas que ya tienen el problema que resuelves','ferias de emprendimiento','esperando que lleguen solos'],resp:1},
+    {txt:'la diferencia entre una startup y un negocio tradicional es:',opts:['el tamaño','la startup busca crecer rápido con un modelo escalable','que la startup no gana dinero','el local físico'],resp:1},
+    {txt:'¿qué es el "product-market fit"?',opts:['cuando el producto se ve bien','cuando el mercado realmente quiere y usa lo que ofreces','cuando tienes muchos usuarios en redes','cuando el precio es bajo'],resp:1},
+    {txt:'tienes 3 ideas de negocio. ¿cómo eliges cuál desarrollar primero?',opts:['la que más te gusta a ti','la que tiene un problema real, mercado existente y puedes empezar esta semana','la más original','la que más dinero promete'],resp:1},
+    {txt:'¿qué es el método lean startup?',opts:['un método para hacer empresas pequeñas','construir, medir y aprender rápido con el mínimo recurso posible','un software de gestión','solo para empresas de tecnología'],resp:1},
+    {txt:'un competidor lanza algo similar a tu idea. ¿qué haces?',opts:['abandonas','analizas sus fortalezas y debilidades y buscas tu diferenciador','los copias','los demandas'],resp:1},
+  ],
+};
+
+// RETOS ANTI-IA por trabajo
+const RETOS = {
+  analista:[
+    {txt:'¿cuál número NO pertenece a esta serie? 2, 5, 10, 17, 26, 37, 50',opts:['17','26','37','50'],resp:2,
+     exp:'la serie suma +3,+5,+7,+9,+11,+13 — 26+11=37 ✓ pero 37+13=50 ✓ — el que no pertenece es 37 porque debería ser +11=37... espera: 2+3=5, 5+5=10, 10+7=17, 17+9=26, 26+11=37, 37+13=50 — todos correctos — reformulado: ¿cuál sería el siguiente? 50+15=65'},
+    {txt:'en una tabla de ventas: lunes 45, martes 52, miércoles ?, jueves 68, viernes 75. ¿qué valor completaría el patrón?',opts:['55','59','61','63'],resp:1,
+     exp:'el patrón sube +7,+7,+7 — 52+7=59'},
+    {txt:'tienes 5 vendedores con estas ventas: 12, 18, 15, 22, 8. ¿cuál es el promedio?',opts:['14','15','16','17'],resp:2,
+     exp:'12+18+15+22+8=75 / 5 = 15'},
+    {txt:'¿cuál de estos datos es un OUTLIER (valor atípico)? ventas diarias: 120, 115, 118, 122, 9, 119',opts:['120','122','9','118'],resp:2,
+     exp:'9 es muy diferente al resto que está entre 115-122'},
+  ],
+  community:[
+    {txt:'publicaste 3 contenidos esta semana. los resultados: post A=45 comentarios, post B=8 comentarios, post C=31 comentarios. ¿cuál replicarías?',opts:['post B','post C','post A','ninguno'],resp:2,
+     exp:'post A generó más interacción — 45 comentarios indica mayor engagement'},
+    {txt:'el clan tenía 80 activos hace 2 semanas, 65 hace 1 semana, y hoy tiene 50. ¿qué tendencia describes?',opts:['crecimiento lento','estabilidad','caída constante de ~15 por semana','datos insuficientes'],resp:2,
+     exp:'80→65→50 baja exactamente 15 por semana — tendencia de caída constante'},
+    {txt:'si el 20% de tus 100 miembros genera el 80% de la actividad, ¿cuántos son los más activos?',opts:['80 miembros','20 miembros','50 miembros','10 miembros'],resp:1,
+     exp:'20% de 100 = 20 miembros — es la regla de Pareto 80/20'},
+  ],
+  disenador:[
+    {txt:'tienes 4 colores: rojo, azul, verde, amarillo. para una skin de guerrero nocturno, ¿cuál palette tiene más coherencia?',opts:['rojo brillante y amarillo','azul oscuro y negro','verde lima y naranja','rosa y celeste'],resp:1,
+     exp:'azul oscuro y negro evocan noche, misterio y poder — coherente con el concepto'},
+    {txt:'¿qué regla de composición divide la imagen en 9 partes iguales para ubicar los elementos principales?',opts:['regla de los tercios','simetría perfecta','regla de oro','contraste máximo'],resp:0,
+     exp:'la regla de los tercios coloca los puntos de interés en las intersecciones de 9 partes'},
+    {txt:'tu skin usa 8 colores diferentes. el feedback es "se ve recargado". ¿qué harías?',opts:['agregar más colores para equilibrar','reducir a 2-3 colores principales y usar los demás como acentos mínimos','cambiar todos los colores','usar solo blanco y negro'],resp:1,
+     exp:'menos colores principales con acentos controlados dan coherencia visual'},
+  ],
+  emprender:[
+    {txt:'tienes S/500 para validar tu idea. ¿cómo los usas mejor?',opts:['en publicidad en redes','en entrevistas con 20 usuarios potenciales + prototipo básico','en diseño del logo profesional','en registro de la empresa'],resp:1,
+     exp:'conocer al usuario y tener algo tangible que mostrar es la mejor inversión temprana'},
+    {txt:'tu idea resuelve un problema que afecta a 1,000 personas en Lima que pagarían S/30/mes. ¿cuál es el mercado potencial mensual?',opts:['S/3,000','S/30,000','S/300,000','S/3,000,000'],resp:1,
+     exp:'1,000 × S/30 = S/30,000 mensuales de mercado potencial'},
+    {txt:'lanzaste hace 1 mes: 100 usuarios registrados, 15 activos diarios. ¿qué métrica te preocupa más?',opts:['los 100 registrados son pocos','solo el 15% está activo — problema de retención','el precio es muy alto','necesitas más publicidad'],resp:1,
+     exp:'15% de retención diaria es bajo — el producto no está enganchando suficiente'},
+  ],
+};
+
+// ══ TRABAJOS DATA ══
 const TRABAJOS = [
-  {
-    id:'analista',
-    name:'analista de datos junior',
-    icon:'📊',
-    desc:'organiza y analiza datos del universo gamb1t0 — rankings, actividad, tendencias',
-    nivel_min:1,
-    nivel_max:3,
-    duracion_dias:1,
-    gus_base:18,
-    xp_bonus:25,
-    cupos_total:10,
-    cupos_ocupados:7,
-    umbral:3,
-    entrevistador:{
-      nombre:'Ana Quispe',
-      cargo:'Analista de Datos Sr.',
-      empresa:'DataLima Startup',
-      img:'img/entrevistador_ana.jpg',
-      personalidad:'directa, observadora, no sonríe fácil',
-      reaccion_ok:['buena presencia, aunque el trabajo habla por sí solo... veremos','tus respuestas dicen bastante — bienvenida la actitud','no esperaba ese perfil — interesante'],
-      reaccion_no:['el rol necesita otro enfoque — no es lo que buscamos ahora','hay potencial pero no para esta posición todavía'],
-      reaccion_sobre:['con tu nivel esto te quedaría chico — hay posiciones mejores para ti','no tiene sentido que estés aquí, ¿ya viste los trabajos de nivel superior?'],
-    },
-    tareas:[
-      {txt:'tienes una tabla con 50 registros de jugadores. ¿cuál es tu primer paso?',opts:['los ordeno por nombre alfabético','identifico qué columnas tienen datos incompletos','los borro y empiezo de cero','los imprimo para revisarlos mejor'],resp:1},
-      {txt:'¿qué dato es más valioso para entender si un jugador está activo?',opts:['su nombre de usuario','la fecha de su último acceso','cuántas misiones tiene en total','su distrito'],resp:1},
-      {txt:'encuentras un error en los datos. ¿qué haces?',opts:['lo corrijo sin avisar a nadie','documento el error y lo reporto antes de tocarlo','lo ignoro si es pequeño','borro el registro completo'],resp:1},
-    ],
-    rey_ok:'los números no mienten — y tú tampoco — eso vale',
-    rey_no:'no te salió esta vez — los datos también fallan a veces — lo importante es saber por qué',
+  {id:'analista',name:'analista de datos junior',icon:'📊',
+   desc:'organiza y analiza datos del universo gamb1t0 — rankings, actividad, tendencias',
+   nivel_min:1,nivel_max:3,duracion_dias:1,gus_base:18,xp_bonus:25,
+   cupos_total:10,cupos_ocupados:7,costo_tokens:4,umbral:3,
+   entrevistador:{nombre:'Ana Quispe',cargo:'Analista de Datos Sr.',empresa:'DataLima Startup',
+     img:'img/entrevistador_ana.jpg',personalidad:'directa, observadora, no sonríe fácil',
+     carta_ok:'Estimado/a {nombre},\n\nLuego de evaluar su perfil, nos complace comunicarle que ha sido seleccionado/a para el puesto de Analista de Datos Junior.\n\nEsperamos su incorporación inmediata.\n\nAna Quispe\nDataLima Startup',
+     carta_no:'Estimado/a {nombre},\n\nAgradecemos su interés en nuestra organización. En esta oportunidad, hemos decidido continuar con otro perfil.\n\nLe animamos a seguir preparándose.\n\nAna Quispe\nDataLima Startup',
+     carta_sobre:'Estimado/a {nombre},\n\nSu perfil supera ampliamente los requisitos de esta posición. Le recomendamos explorar roles de mayor responsabilidad.\n\nCon respeto,\nAna Quispe'},
+   reaccion_ok:['buena presencia — el trabajo habla por sí solo... veremos','tus respuestas dicen bastante — bienvenida la actitud'],
+   reaccion_no:['el rol necesita otro enfoque — no es lo que buscamos ahora','hay potencial pero no para esta posición todavía'],
+   reaccion_sobre:['con tu nivel esto te quedaría chico — hay posiciones mejores para ti'],
+   rey_ok:'los números no mienten — y tú tampoco — eso vale',
+   rey_no:'no te salió esta vez — los datos también fallan — lo importante es saber por qué',
   },
-  {
-    id:'community',
-    name:'community manager',
-    icon:'📣',
-    desc:'activa y modera el clan — conectas jugadores, resuelves conflictos, generas movimiento',
-    nivel_min:2,
-    nivel_max:5,
-    duracion_dias:2,
-    gus_base:40,
-    xp_bonus:55,
-    cupos_total:6,
-    cupos_ocupados:4,
-    umbral:3,
-    entrevistador:{
-      nombre:'Diego Mamani',
-      cargo:'Head of Community',
-      empresa:'GI Force Digital',
-      img:'img/entrevistador_diego.jpg',
-      personalidad:'relajado, observador, lee entre líneas',
-      reaccion_ok:['tiene lo que el clan necesita — energía real','me convence — no es fácil de hacer pero lo entiendes','bien — hay que ver cómo lo aplicas en campo'],
-      reaccion_no:['el clan es complicado — necesitamos más experiencia en esto','buena actitud pero el rol pide otro perfil'],
-      reaccion_sobre:['oye — tú deberías estar liderando esto, no aplicando — algo más grande te espera','con ese nivel ya no eres community, eres estrategia'],
-    },
-    tareas:[
-      {txt:'llevas 2 días sin publicar nada en el clan. ¿qué haces?',opts:['espero a que alguien más publique','propongo un reto con límite de tiempo y recompensa','mando un mensaje de buenos días','culpo a los inactivos públicamente'],resp:1},
-      {txt:'dos jugadores se están insultando en el chat. ¿cuál es tu primer movimiento?',opts:['los baneas a los dos','contacto al que inició en privado antes de actuar','ignoro — son cosas del juego','hago un post público exponiendo la situación'],resp:1},
-      {txt:'¿cuál es la métrica más importante para saber si el clan está vivo?',opts:['cuántos miembros tiene','jugadores activos esta semana vs la anterior','cuántos me siguen a mí','cuántos mensajes mandé yo'],resp:1},
-    ],
-    rey_ok:'la comunidad se construye con personas así — constantes sin hacer ruido',
-    rey_no:'el clan necesita alguien que lo entienda — sigue observando, el momento llega',
+  {id:'community',name:'community manager',icon:'📣',
+   desc:'activa y modera el clan — conectas jugadores, resuelves conflictos, generas movimiento',
+   nivel_min:2,nivel_max:5,duracion_dias:2,gus_base:40,xp_bonus:55,
+   cupos_total:6,cupos_ocupados:4,costo_tokens:8,umbral:3,
+   entrevistador:{nombre:'Diego Mamani',cargo:'Head of Community',empresa:'GI Force Digital',
+     img:'img/entrevistador_diego.jpg',personalidad:'relajado, observador, lee entre líneas',
+     carta_ok:'Hola {nombre},\n\nTe escribo para confirmarte que tienes el puesto. El clan te está esperando.\n\nBienvenido/a al equipo.\n\nDiego',
+     carta_no:'Hola {nombre},\n\nValoro tu tiempo. Por ahora vamos con otro perfil, pero el camino que estás tomando es el correcto.\n\nDiego',
+     carta_sobre:'{nombre}, con lo que tienes deberías estar liderando esto, no aplicando. Busca algo más grande.\n\nDiego'},
+   reaccion_ok:['tiene lo que el clan necesita — energía real','me convence — no es fácil de hacer pero lo entiendes'],
+   reaccion_no:['el clan es complicado — necesitamos más experiencia','buena actitud pero el rol pide otro perfil'],
+   reaccion_sobre:['oye — tú deberías estar liderando esto, no aplicando — algo más grande te espera'],
+   rey_ok:'la comunidad se construye con personas así — constantes sin hacer ruido',
+   rey_no:'el clan necesita alguien que lo entienda — sigue observando, el momento llega',
   },
-  {
-    id:'disenador',
-    name:'diseñador de skins',
-    icon:'🎨',
-    desc:'crea skins para el market — concepto, descripción y valor — los jugadores votan',
-    nivel_min:3,
-    nivel_max:99,
-    duracion_dias:3,
-    gus_base:70,
-    xp_bonus:90,
-    cupos_total:4,
-    cupos_ocupados:2,
-    umbral:4,
-    entrevistador:{
-      nombre:'Valeria Torres',
-      cargo:'Directora Creativa',
-      empresa:'GI Studios',
-      img:'img/entrevistador_valeria.jpg',
-      personalidad:'pocas palabras, alto criterio, no improvisa',
-      reaccion_ok:['interesante — el criterio está ahí... veamos el trabajo','no muchos entienden qué hace una skin memorable — tú sí','bien — el ojo se entrena o se tiene — parece que lo tienes'],
-      reaccion_no:['el diseño no es decorar — todavía no llegamos ahí','necesito más profundidad en el criterio — no es el momento'],
-      reaccion_sobre:['con ese nivel tú deberías estar diseñando la siguiente versión del juego, no aplicando aquí'],
-    },
-    tareas:[
-      {txt:'te piden una skin para un guerrero de nivel 5. ¿por dónde empiezas?',opts:['busco imágenes en internet y copio el estilo','defino qué emoción debe provocar al verla','hago algo rápido para entregar pronto','pregunto qué colores le gustan al cliente'],resp:1},
-      {txt:'tu primer diseño es rechazado. ¿cuál es tu reacción?',opts:['me enojo — el cliente no entiende','pregunto exactamente qué no funcionó y propongo nueva dirección','acepto sin entender y repito','abandono el proyecto'],resp:1},
-      {txt:'¿cómo sabes si una skin tiene valor real para los jugadores?',opts:['si a ti te gusta','si genera reacción en los primeros 10 segundos','si tardaste mucho en hacerla','si tiene muchos colores'],resp:1},
-      {txt:'un jugador nivel 1 quiere comprar tu skin nivel 5. ¿qué le dices?',opts:['no puede — punto','le explico qué logros necesita y lo motivo a seguir','le vendo igual — el GUS es el GUS','lo ignoro'],resp:1},
-    ],
-    rey_ok:'la mejor skin es la que no necesita explicación — eso es lo que buscamos',
-    rey_no:'el ojo creativo se afina — no te rindas, vuelve cuando hayas visto más',
+  {id:'disenador',name:'diseñador de skins',icon:'🎨',
+   desc:'crea skins para el market — concepto, descripción y valor — los jugadores votan',
+   nivel_min:3,nivel_max:99,duracion_dias:3,gus_base:70,xp_bonus:90,
+   cupos_total:4,cupos_ocupados:2,costo_tokens:12,umbral:4,
+   entrevistador:{nombre:'Valeria Torres',cargo:'Directora Creativa',empresa:'GI Studios',
+     img:'img/entrevistador_valeria.jpg',personalidad:'pocas palabras, alto criterio',
+     carta_ok:'Hola {nombre}.\n\nEl criterio está. El trabajo también.\n\nBienvenido/a.\n\nValeria Torres\nGI Studios',
+     carta_no:'{nombre},\n\nEl ojo creativo se entrena. Este no era el momento, pero puede llegar.\n\nValeria',
+     carta_sobre:'Con ese nivel deberías estar rediseñando el juego completo. Esto es demasiado básico para ti.\n\nValeria'},
+   reaccion_ok:['interesante — el criterio está ahí... veamos el trabajo','no muchos entienden qué hace una skin memorable — tú sí'],
+   reaccion_no:['el diseño no es decorar — todavía no llegamos ahí'],
+   reaccion_sobre:['con ese nivel tú deberías estar diseñando la siguiente versión del juego'],
+   rey_ok:'la mejor skin es la que no necesita explicación — eso es lo que buscamos',
+   rey_no:'el ojo creativo se afina — no te rindas, vuelve cuando hayas visto más',
   },
-  {
-    id:'emprender',
-    name:'¡a emprender!',
-    icon:'🚀',
-    desc:'lanza tu primer proyecto — define el problema, valida la idea, prepara el pitch y preséntalo',
-    nivel_min:4,
-    nivel_max:99,
-    duracion_dias:5,
-    gus_base:120,
-    xp_bonus:160,
-    cupos_total:3,
-    cupos_ocupados:1,
-    umbral:4,
-    entrevistador:{
-      nombre:'Ana, Diego y Valeria',
-      cargo:'panel de evaluación',
-      empresa:'GI Force',
-      img:'img/avatar_base.jpg',
-      personalidad:'tres perspectivas — datos, comunidad y creatividad',
-      reaccion_ok:['los tres coincidimos — tiene visión','esto es diferente — hay algo real aquí','el panel raramente coincide — hoy sí'],
-      reaccion_no:['el panel vio potencial pero falta estructura','buena energía — el proyecto necesita más claridad todavía'],
-      reaccion_sobre:['con ese nivel ya deberías estar mentoreando a otros emprendedores — ¿seguro que quieres este trabajo?'],
-    },
-    tareas:[
-      {txt:'¿cuál es el primer paso para validar una idea de negocio?',opts:['diseñar el logo','hablar con 5 personas que tendrían el problema','calcular cuánto dinero vas a ganar','buscar inversores'],resp:1},
-      {txt:'tu primer prototipo es feo y básico. ¿lo muestras igual?',opts:['no — espero a que esté perfecto','sí — el feedback temprano vale más que la perfección','lo muestro solo a amigos cercanos','lo describo con palabras sin mostrarlo'],resp:0},
-      {txt:'alguien te dice "no pagaría por eso". ¿cómo lo usas?',opts:['lo ignoro — no entiende la visión','pregunto por qué y qué sí pagaría','busco otro mercado que sí pague','abandono la idea'],resp:1},
-      {txt:'¿qué hace que un pitch de 60 segundos funcione?',opts:['que tenga muchas diapositivas','que el problema sea claro antes de hablar de la solución','que uses términos técnicos avanzados','que dure exactamente 60 segundos'],resp:1},
-      {txt:'tu startup necesita su primer cliente. ¿dónde lo buscas?',opts:['en redes sociales con publicidad pagada','entre personas que ya tienen el problema que resuelves','en ferias de emprendimiento','esperando que lleguen solos'],resp:1},
-    ],
-    rey_ok:'emprender es caer bien parado — y tú ya sabes cómo pararte',
-    rey_no:'cada intento fallido es un capítulo del libro que vas a escribir — sigue',
+  {id:'emprender',name:'¡a emprender!',icon:'🚀',
+   desc:'lanza tu primer proyecto — define el problema, valida la idea, prepara el pitch y preséntalo',
+   nivel_min:4,nivel_max:99,duracion_dias:5,gus_base:120,xp_bonus:160,
+   cupos_total:3,cupos_ocupados:1,costo_tokens:18,umbral:4,
+   entrevistador:{nombre:'Ana, Diego y Valeria',cargo:'panel de evaluación',empresa:'GI Force',
+     img:'img/avatar_base.jpg',personalidad:'tres perspectivas — datos, comunidad y creatividad',
+     carta_ok:'Estimado/a {nombre},\n\nEl panel ha deliberado. Hay algo real en lo que presentas. Bienvenido/a.\n\nAna, Diego y Valeria\nGI Force',
+     carta_no:'Estimado/a {nombre},\n\nAgradecemos tu energía y valentía. El proyecto necesita más claridad. No es un no definitivo.\n\nEl panel',
+     carta_sobre:'Con tu experiencia, deberías estar mentoreando a otros emprendedores. Este programa es para quienes están empezando.\n\nEl panel'},
+   reaccion_ok:['los tres coincidimos — tiene visión','esto es diferente — hay algo real aquí'],
+   reaccion_no:['el panel vio potencial pero falta estructura'],
+   reaccion_sobre:['con ese nivel ya deberías estar mentoreando a otros — ¿seguro que quieres este trabajo?'],
+   rey_ok:'emprender es caer bien parado — y tú ya sabes cómo pararte',
+   rey_no:'cada intento fallido es un capítulo del libro que vas a escribir — sigue',
   },
 ];
 
-// ── ESTADO ──
+// ══ ESTADO ══
 let trabajoEntrevistando = null;
+let preguntasSeleccionadas = [];
 let respuestasEnt = {};
 let pregActual = 0;
-let tareaActualIdx = 0;
+let pruebaIntentos = 0;
+let pruebaReto = null;
+let pruebaTimer = null;
+let pruebaOptSel = null;
+let trabajoConfirmado = null;
 
 function calcNivel(x){return x<200?1:x<500?2:x<1000?3:x<2000?4:x<4000?5:Math.floor(x/1000)+1;}
 
+function shuffle(arr){ return [...arr].sort(()=>Math.random()-.5); }
+
 function updateUI(){
-  const st = GBT.getStats();
-  const nivel = calcNivel(st.xp);
-  document.getElementById('gus-disp').textContent = st.gus;
-  document.getElementById('lvl-disp').textContent = nivel;
-  const max = GBT.energiaMax(nivel);
-  const pct = Math.round(st.energia/max*100);
-  const estado = GBT.estadoEnergia(st.energia, max);
-  const bar = document.getElementById('e-bar'), lbl = document.getElementById('e-label');
+  const st=GBT.getStats();
+  const nivel=calcNivel(st.xp);
+  document.getElementById('gus-disp').textContent=st.gus;
+  document.getElementById('lvl-disp').textContent=nivel;
+  const max=GBT.energiaMax(nivel);
+  const pct=Math.round(st.energia/max*100);
+  const estado=GBT.estadoEnergia(st.energia,max);
+  const bar=document.getElementById('e-bar'),lbl=document.getElementById('e-label');
   if(bar){bar.style.width=pct+'%';bar.style.background=estado.color;}
   if(lbl){lbl.textContent=pct+'% · '+estado.label;lbl.style.color=estado.color+'aa';}
 }
 
 function renderContent(){
-  const c = document.getElementById('content');
-  const st = GBT.getStats();
-  const nivel = calcNivel(st.xp);
-  const energia = st.energia;
-  const max = GBT.energiaMax(nivel);
-  const estado = GBT.estadoEnergia(energia, max);
-  const trabajoActivo = GBT.getTrabajoActivo();
-  let html = '';
+  const c=document.getElementById('content');
+  const st=GBT.getStats();
+  const nivel=calcNivel(st.xp);
+  const energia=st.energia;
+  const max=GBT.energiaMax(nivel);
+  const estado=GBT.estadoEnergia(energia,max);
+  const trabajoActivo=GBT.getTrabajoActivo();
+  let html='';
 
-  // TRABAJO ACTIVO
   if(trabajoActivo){
-    const t = TRABAJOS.find(x=>x.id===trabajoActivo.id);
-    const ahora = Date.now();
-    const total = trabajoActivo.fin_ts - trabajoActivo.inicio_ts;
-    const transcurrido = Math.min(ahora - trabajoActivo.inicio_ts, total);
-    const pct = Math.round(transcurrido/total*100);
-    const horasR = Math.max(0, Math.round((trabajoActivo.fin_ts-ahora)/3600000));
-    const gusAcum = Math.round((t.gus_base * transcurrido/total) * 0.9);
-
-    html += `<div class="sec-label">// en progreso</div>
+    const t=TRABAJOS.find(x=>x.id===trabajoActivo.id);
+    const ahora=Date.now();
+    const total=trabajoActivo.fin_ts-trabajoActivo.inicio_ts;
+    const trans=Math.min(ahora-trabajoActivo.inicio_ts,total);
+    const pct=Math.round(trans/total*100);
+    const horasR=Math.max(0,Math.round((trabajoActivo.fin_ts-ahora)/3600000));
+    const gusAcum=Math.round(t.gus_base*trans/total*0.9);
+    html+=`<div class="sec-label">// en progreso</div>
     <div class="trabajo-activo-card">
       <div class="ta-header">
-        <div class="ta-icon">${t.icon}</div>
-        <div style="flex:1">
-          <div style="font-size:13px;font-weight:700;color:#00c896;">${t.name}</div>
-          <div style="font-size:10px;color:rgba(221,218,240,.35);">protegido de ataques mientras trabajas</div>
-        </div>
+        <span style="font-size:22px">${t.icon}</span>
+        <div style="flex:1"><div style="font-size:13px;font-weight:700;color:#00c896">${t.name}</div>
+        <div style="font-size:10px;color:rgba(221,218,240,.35)">protegido de ataques</div></div>
         <span class="ta-badge">activo</span>
       </div>
-      <div class="ta-prog-wrap">
-        <div class="ta-prog-bar"><div class="ta-prog-fill" style="width:${pct}%"></div></div>
-        <div class="ta-meta">${pct}% · ${horasR}h restantes · acumulado: ${gusAcum} GUS</div>
-      </div>
+      <div class="ta-prog-bar"><div class="ta-prog-fill" style="width:${pct}%"></div></div>
+      <div class="ta-meta">${pct}% · ${horasR}h restantes · acumulado: ${gusAcum} GUS</div>
       <div class="ta-btns">
-        <button class="btn-ta btn-tareas" onclick="abrirTareas()">ver tareas</button>
+        <button class="btn-ta btn-tareas" onclick="abrirTareas()">tareas</button>
         <button class="btn-ta btn-avisar" onclick="abandonarConAviso()">avisar y salir</button>
         <button class="btn-ta btn-desertar" onclick="desertar()">salir sin avisar</button>
       </div>
     </div>`;
   }
 
-  html += `<div class="sec-label">// trabajos disponibles</div>`;
-
+  html+=`<div class="sec-label">// trabajos disponibles</div>`;
   TRABAJOS.forEach(t=>{
-    const cuposPct = Math.round(t.cupos_ocupados/t.cupos_total*100);
-    const lleno = t.cupos_ocupados >= t.cupos_total;
-    const bloqNivel = nivel < t.nivel_min;
-    const sobrecalificado = nivel > t.nivel_max && t.nivel_max < 99;
-    const trabajando = trabajoActivo !== null;
-    const sinEnergia = estado.label === 'agotado';
-    const disponible = !lleno && !bloqNivel && !trabajando && !sinEnergia;
-    const yaCompletado = GBT.get('trabajo_completado_'+t.id, false);
-
-    let bloqueoMsg = '';
-    if(bloqNivel) bloqueoMsg = `// requiere nivel ${t.nivel_min} — estás en nivel ${nivel}`;
-    else if(lleno) bloqueoMsg = `// no hay cupos disponibles ahora`;
-    else if(trabajando) bloqueoMsg = `// ya estás en un trabajo — termínalo primero`;
-    else if(sinEnergia) bloqueoMsg = `// tu avatar está agotado — descansa primero`;
-
-    html += `<div class="trabajo-card ${disponible?'disponible':'bloqueado'}"
-      onclick="${disponible?`abrirEntrevista('${t.id}')`:''}"
-    >
+    const cuposPct=Math.round(t.cupos_ocupados/t.cupos_total*100);
+    const lleno=t.cupos_ocupados>=t.cupos_total;
+    const bloqNivel=nivel<t.nivel_min;
+    const sobre=nivel>t.nivel_max&&t.nivel_max<99;
+    const trabajando=trabajoActivo!==null;
+    const sinEnergia=estado.label==='agotado';
+    const sinTokens=st.tokens<t.costo_tokens;
+    const disponible=!lleno&&!bloqNivel&&!trabajando&&!sinEnergia&&!sinTokens;
+    let msg='';
+    if(bloqNivel) msg=`// requiere nivel ${t.nivel_min} — estás en nivel ${nivel}`;
+    else if(sobre) msg=`// tu nivel supera este trabajo — busca uno más exigente`;
+    else if(lleno) msg=`// sin cupos disponibles`;
+    else if(trabajando) msg=`// ya estás trabajando — termínalo primero`;
+    else if(sinEnergia) msg=`// avatar agotado — descansa primero`;
+    else if(sinTokens) msg=`// necesitas ${t.costo_tokens} tokens para aplicar`;
+    html+=`<div class="trabajo-card ${disponible?'disponible':'bloqueado'}" onclick="${disponible?`abrirEntrevista('${t.id}')`:''}"">
       <div class="tc-top">
-        <img src="${t.entrevistador.img}" alt="${t.entrevistador.nombre}" class="tc-entrevistador"
-          onerror="this.style.background='rgba(201,168,76,.15)';this.removeAttribute('src')">
-        <div class="tc-info">
-          <div class="tc-name">${t.icon} ${t.name}${yaCompletado?' <span style="font-size:10px;color:#00c896;">✓ completado</span>':''}</div>
-          <div class="tc-entrev-nombre">entrevista con ${t.entrevistador.nombre}</div>
-          <div class="tc-desc">${t.desc}</div>
-        </div>
+        <img src="${t.entrevistador.img}" class="tc-entrevistador" onerror="this.style.background='rgba(201,168,76,.15)';this.removeAttribute('src')">
+        <div><div class="tc-name">${t.icon} ${t.name}</div>
+        <div class="tc-entrev-nombre">entrevista con ${t.entrevistador.nombre}</div>
+        <div class="tc-desc">${t.desc}</div></div>
       </div>
       <div class="tc-badges">
-        <span class="tc-badge b-dias">${t.duracion_dias} ${t.duracion_dias===1?'día':'días'}</span>
+        <span class="tc-badge b-dias">${t.duracion_dias}${t.duracion_dias===1?' día':' días'}</span>
         <span class="tc-badge b-gus">+${t.gus_base} GUS</span>
         <span class="tc-badge b-xp">+${t.xp_bonus} XP</span>
         <span class="tc-badge b-nivel">nv ${t.nivel_min}${t.nivel_max<99?'–'+t.nivel_max:'+'}</span>
+        <span class="tc-badge b-tokens">${t.costo_tokens} tok para aplicar</span>
       </div>
-      <div class="tc-cupos">
-        ${t.cupos_ocupados}/${t.cupos_total} cupos ocupados
+      <div class="tc-cupos">${t.cupos_ocupados}/${t.cupos_total} cupos
         <div class="cupos-bar"><div class="cupos-fill" style="width:${cuposPct}%"></div></div>
       </div>
       <div class="tc-protegido">✓ protegido de ataques mientras trabajas</div>
-      ${bloqueoMsg?`<div class="tc-bloqueo-msg">${bloqueoMsg}</div>`:''}
+      ${msg?`<div class="tc-bloqueo-msg">${msg}</div>`:''}
     </div>`;
   });
-
-  c.innerHTML = html;
+  c.innerHTML=html;
 }
 
-// ── ENTREVISTA ──
+// ══ ENTREVISTA ══
 function abrirEntrevista(id){
-  trabajoEntrevistando = TRABAJOS.find(t=>t.id===id);
-  if(!trabajoEntrevistando) return;
-  respuestasEnt = {}; pregActual = 0;
+  const st=GBT.getStats();
+  const t=TRABAJOS.find(x=>x.id===id);
+  if(!t) return;
+  if(st.tokens<t.costo_tokens){ alert('necesitas '+t.costo_tokens+' tokens para aplicar'); return; }
+  GBT.useTokens(t.costo_tokens);
+  updateUI();
+  trabajoEntrevistando=t;
+  respuestasEnt={}; pregActual=0;
+  // seleccionar 5 preguntas al azar del banco
+  const banco=BANCO[id]||[];
+  preguntasSeleccionadas=shuffle(banco).slice(0,Math.min(5,banco.length)).map(p=>({
+    ...p,
+    opts_shuffled: shuffle(p.opts.map((o,i)=>({o,orig:i}))),
+  }));
 
-  const t = trabajoEntrevistando;
-  const e = t.entrevistador;
-
-  document.getElementById('ent-title').textContent = 'entrevista · '+t.name;
-  document.getElementById('ent-perfil').innerHTML = `
-    <img src="${e.img}" alt="${e.nombre}" class="ent-av" onerror="this.style.background='rgba(201,168,76,.15)';this.removeAttribute('src')">
-    <div class="ent-info">
-      <div class="ent-nombre">${e.nombre}</div>
-      <div class="ent-cargo">${e.cargo}</div>
-      <div class="ent-empresa">${e.empresa}</div>
-      <div class="ent-personalidad">${e.personalidad}</div>
-    </div>
-  `;
-  document.getElementById('gi-intro-txt').textContent =
-    'prepárate — no hay respuestas correctas o incorrectas, solo formas de ser — ' +
-    t.umbral+' de '+t.tareas.length+' respuestas deciden si '+e.nombre.split(' ')[0]+' te contrata';
-
+  document.getElementById('ent-title').textContent='entrevista · '+t.name;
+  const e=t.entrevistador;
+  document.getElementById('ent-perfil').innerHTML=`
+    <img src="${e.img}" class="ent-av" onerror="this.style.background='rgba(201,168,76,.15)';this.removeAttribute('src')">
+    <div><div class="ent-nombre">${e.nombre}</div><div class="ent-cargo">${e.cargo}</div>
+    <div class="ent-empresa">${e.empresa}</div><div class="ent-personalidad">${e.personalidad}</div></div>`;
+  document.getElementById('gi-intro-txt').textContent=
+    'las preguntas son distintas cada vez — no hay respuestas correctas, solo formas de ser — '+
+    t.umbral+' de '+preguntasSeleccionadas.length+' respuestas deciden si '+e.nombre.split(' ')[0]+' te contrata';
   document.getElementById('ent-resultado').classList.remove('show');
-  document.getElementById('ent-preguntas').style.display = 'block';
+  document.getElementById('ent-preguntas').style.display='block';
   renderPregunta(0);
   document.getElementById('entrevista-overlay').classList.add('show');
 }
 
 function renderPregunta(idx){
-  const t = trabajoEntrevistando;
-  const p = t.tareas[idx];
-  const total = t.tareas.length;
-
-  const dots = t.tareas.map((_,i)=>
-    `<div class="preg-dot ${i<idx?'done':i===idx?'active':''}"></div>`
-  ).join('');
-
-  document.getElementById('ent-preguntas').innerHTML = `
-    <div class="preg-wrap">
-      <div class="preg-progreso">${dots}</div>
-      <div class="preg-num">// pregunta ${idx+1} de ${total}</div>
-      <div class="preg-txt">${p.txt}</div>
-      <div class="preg-opts">
-        ${p.opts.map((o,i)=>`
-          <div class="preg-opt" id="opt-${i}" onclick="selOpt(${i})">${o}</div>
-        `).join('')}
-      </div>
-    </div>
+  const p=preguntasSeleccionadas[idx];
+  const total=preguntasSeleccionadas.length;
+  const dots=preguntasSeleccionadas.map((_,i)=>
+    `<div class="preg-dot ${i<idx?'done':i===idx?'active':''}"></div>`).join('');
+  document.getElementById('ent-preguntas').innerHTML=`
+    <div class="preg-progreso">${dots}</div>
+    <div class="preg-num">// pregunta ${idx+1} de ${total}</div>
+    <div class="preg-txt">${p.txt}</div>
+    <div class="preg-opts">${p.opts_shuffled.map((item,i)=>
+      `<div class="preg-opt" id="opt-${i}" onclick="selOpt(${i})">${item.o}</div>`).join('')}</div>
     <button class="btn-siguiente" id="btn-sig" onclick="siguiente()" disabled>
-      ${idx<total-1?'siguiente →':'ver resultado'}
-    </button>
-  `;
-  pregActual = idx;
+      ${idx<total-1?'siguiente →':'ver resultado'}</button>`;
+  pregActual=idx;
 }
 
 function selOpt(i){
   document.querySelectorAll('.preg-opt').forEach(o=>o.classList.remove('sel'));
   document.getElementById('opt-'+i).classList.add('sel');
-  document.getElementById('btn-sig').disabled = false;
-  respuestasEnt[pregActual] = i;
+  document.getElementById('btn-sig').disabled=false;
+  respuestasEnt[pregActual]=preguntasSeleccionadas[pregActual].opts_shuffled[i].orig;
 }
 
 function siguiente(){
-  const t = trabajoEntrevistando;
-  if(pregActual < t.tareas.length-1){
-    renderPregunta(pregActual+1);
-  } else {
-    mostrarResultado();
-  }
+  if(pregActual<preguntasSeleccionadas.length-1){ renderPregunta(pregActual+1); }
+  else{ mostrarSuspense(); }
 }
 
-function mostrarResultado(){
-  const t = trabajoEntrevistando;
-  const e = t.entrevistador;
-  const st = GBT.getStats();
-  const nivel = calcNivel(st.xp);
-  const energia = st.energia;
-  const max = GBT.energiaMax(nivel);
-  const pctEnergia = energia/max;
+// ══ SUSPENSE — carta ══
+function mostrarSuspense(){
+  const t=trabajoEntrevistando;
+  const e=t.entrevistador;
+  const st=GBT.getStats();
+  const nivel=calcNivel(st.xp);
 
-  // contar respuestas correctas
-  let correctas = 0;
-  t.tareas.forEach((p,i)=>{ if(respuestasEnt[i]===p.resp) correctas++; });
+  let correctas=0;
+  preguntasSeleccionadas.forEach((p,i)=>{ if(respuestasEnt[i]===p.resp) correctas++; });
+  const sobre=nivel>t.nivel_max&&t.nivel_max<99;
+  const pctEnergia=st.energia/GBT.energiaMax(nivel);
+  let prob=(correctas/preguntasSeleccionadas.length)*0.7+Math.random()*0.3;
+  if(pctEnergia<0.5) prob*=0.75;
+  const contratado=!sobre&&prob>=0.45;
 
-  // sobrecalificado
-  const sobrecalificado = nivel > t.nivel_max && t.nivel_max < 99;
+  document.getElementById('susp-av').src=e.img;
+  document.getElementById('susp-nombre').textContent=e.nombre+' está redactando su respuesta...';
+  document.getElementById('entrevista-overlay').classList.remove('show');
 
-  // factor azar + energía + nivel
-  let prob = (correctas/t.tareas.length) * 0.7 + Math.random() * 0.3;
-  if(pctEnergia < 0.5) prob *= 0.75; // energía baja penaliza
-  const contratado = !sobrecalificado && prob >= 0.45;
+  const avName=GBT.player().avName||'candidato';
+  let cartaTemplate=sobre?e.carta_sobre:contratado?e.carta_ok:e.carta_no;
+  const cartaFinal=cartaTemplate.replace('{nombre}',avName);
 
-  document.getElementById('ent-preguntas').style.display = 'none';
+  const susp=document.getElementById('suspense-overlay');
+  const textoEl=document.getElementById('susp-texto');
+  textoEl.innerHTML='';
+  susp.classList.add('show');
 
-  // reacción entrevistador
-  let reaccionArr, reaccionExtra = '';
-  if(sobrecalificado){
-    reaccionArr = e.reaccion_sobre;
-  } else if(contratado){
-    reaccionArr = e.reaccion_ok;
-    if(pctEnergia < 0.5) reaccionExtra = ' — aunque noto que no tienes mucha energía hoy...';
-  } else {
-    reaccionArr = e.reaccion_no;
-    if(pctEnergia < 0.5) reaccionExtra = ' — y con poca energía encima, difícil convencer';
+  // efecto de escritura
+  let i=0;
+  const speed=38;
+  function typeChar(){
+    if(i<cartaFinal.length){
+      textoEl.innerHTML=cartaFinal.substring(0,i+1).replace(/\n/g,'<br>')+
+        '<span class="susp-cursor"></span>';
+      i++;
+      setTimeout(typeChar, speed+(Math.random()*speed*.3));
+    } else {
+      textoEl.innerHTML=cartaFinal.replace(/\n/g,'<br>');
+      setTimeout(()=>{
+        susp.classList.remove('show');
+        mostrarResultado(contratado,sobre,correctas,pctEnergia,nivel);
+        document.getElementById('entrevista-overlay').classList.add('show');
+      },1800);
+    }
   }
-  const reaccionTxt = reaccionArr[Math.floor(Math.random()*reaccionArr.length)] + reaccionExtra;
+  typeChar();
+}
 
-  document.getElementById('ent-reaccion').innerHTML = `
-    <img src="${e.img}" alt="${e.nombre}" class="ent-reac-av" onerror="this.style.background='rgba(201,168,76,.15)';this.removeAttribute('src')">
-    <div class="ent-reac-bubble">
-      <div class="ent-reac-nombre">${e.nombre}</div>
-      <div class="ent-reac-txt">"${reaccionTxt}"</div>
-    </div>
-  `;
+function mostrarResultado(contratado,sobre,correctas,pctEnergia,nivel){
+  const t=trabajoEntrevistando;
+  const e=t.entrevistador;
+  document.getElementById('ent-preguntas').style.display='none';
+  const avName=GBT.player().avName||'';
 
-  // rey de tréboles
-  const reyTxt = contratado ? t.rey_ok : t.rey_no;
-  document.getElementById('rey-trebol-txt').textContent = reyTxt;
+  // reacción
+  let reacArr=sobre?e.reaccion_sobre:contratado?e.reaccion_ok:e.reaccion_no;
+  let reacExtra=(!sobre&&pctEnergia<0.5)?(contratado?' — aunque noto que no tienes mucha energía hoy':' — y con poca energía encima, difícil convencer'):'';
+  document.getElementById('ent-reaccion').innerHTML=`
+    <img src="${e.img}" class="ent-reac-av" onerror="this.style.background='rgba(201,168,76,.15)';this.removeAttribute('src')">
+    <div><div class="ent-reac-nombre">${e.nombre}</div>
+    <div class="ent-reac-txt">"${reacArr[Math.floor(Math.random()*reacArr.length)]}${reacExtra}"</div></div>`;
 
-  // resultado
-  const tituloEl = document.getElementById('res-titulo');
-  const subEl = document.getElementById('res-sub');
-  const btnAceptar = document.getElementById('btn-aceptar-trabajo');
+  document.getElementById('rey-trebol-txt').textContent=contratado?t.rey_ok:t.rey_no;
 
-  if(sobrecalificado){
-    tituloEl.className = 'res-titulo sobrecalificado';
-    tituloEl.textContent = 'hay algo mejor para ti';
-    subEl.textContent = 'tu nivel supera lo que este trabajo ofrece — busca los trabajos de nivel superior';
-    btnAceptar.style.display = 'none';
+  // logro
+  const li=document.getElementById('logro-icon');
+  const ln=document.getElementById('logro-nombre');
+  const ls=document.getElementById('logro-sub');
+  const lr=document.getElementById('logro-rewards');
+  const btn=document.getElementById('btn-aceptar-trabajo');
+
+  if(sobre){
+    li.textContent='⭐'; ln.className='logro-nombre sobre'; ln.textContent='hay algo mejor para ti';
+    ls.textContent='tu nivel supera este trabajo — busca trabajos de mayor nivel';
+    lr.innerHTML=''; btn.style.display='none';
   } else if(contratado){
-    tituloEl.className = 'res-titulo contratado';
-    tituloEl.textContent = 'contratado';
-    subEl.textContent = `${t.duracion_dias} ${t.duracion_dias===1?'día':'días'} de trabajo — +${t.gus_base} GUS al terminar — protegido de ataques`;
-    btnAceptar.style.display = 'block';
+    li.textContent='🎉'; ln.className='logro-nombre contratado'; ln.textContent='contratado';
+    ls.textContent=t.duracion_dias+' '+(t.duracion_dias===1?'día':'días')+' de trabajo — +'+t.gus_base+' GUS al terminar — protegido de ataques';
+    lr.innerHTML=`<span class="logro-reward logro-xp">+${t.xp_bonus} XP</span><span class="logro-reward logro-gus">+${t.gus_base} GUS</span>`;
+    btn.style.display='block';
+    trabajoConfirmado=t;
   } else {
-    tituloEl.className = 'res-titulo rechazado';
-    tituloEl.textContent = 'no esta vez';
-    subEl.textContent = 'puedes intentarlo de nuevo cuando estés listo — el trabajo sigue disponible';
-    btnAceptar.style.display = 'none';
+    li.textContent='💪'; ln.className='logro-nombre rechazado'; ln.textContent='no esta vez';
+    ls.textContent='puedes intentarlo de nuevo — el trabajo sigue disponible';
+    lr.innerHTML=''; btn.style.display='none';
   }
 
   document.getElementById('ent-resultado').classList.add('show');
-
-  // enviar a sheets
-  GBT.enviar({
-    tipo:'entrevista',
-    trabajo:t.id,
-    usuario:GBT.player().avName||'',
-    correctas,
-    total:t.tareas.length,
-    aprobado:contratado,
-    nivel,
-    energia_pct:Math.round(pctEnergia*100),
-  });
+  GBT.enviar({tipo:'entrevista',trabajo:t.id,usuario:avName,correctas,total:preguntasSeleccionadas.length,aprobado:contratado,nivel});
 }
 
-function confirmarTrabajo(){
-  if(!trabajoEntrevistando) return;
-  GBT.iniciarTrabajo(trabajoEntrevistando.id);
-  cerrarEntrevista();
-  renderContent();
-}
+function cerrarEntrevista(){ document.getElementById('entrevista-overlay').classList.remove('show'); renderContent(); }
 
-function cerrarEntrevista(){
+// ══ PRUEBA ANTI-IA ══
+function iniciarPruebaAntiIA(){
+  if(!trabajoConfirmado) return;
   document.getElementById('entrevista-overlay').classList.remove('show');
+  pruebaIntentos=0;
+  mostrarReto();
+}
+
+function mostrarReto(){
+  const t=trabajoConfirmado;
+  const retos=RETOS[t.id]||RETOS.analista;
+  pruebaReto=retos[Math.floor(Math.random()*retos.length)];
+  pruebaOptSel=null;
+
+  document.getElementById('prueba-trabajo-label').textContent='como '+t.name+', tu primera labor será:';
+  document.getElementById('prueba-instruccion').textContent='resuelve esto correctamente para iniciar el trabajo';
+  document.getElementById('prueba-intentos').textContent='intento '+(pruebaIntentos+1)+' de 3';
+
+  // opciones barajadas
+  const optsShuffled=shuffle(pruebaReto.opts.map((o,i)=>({o,orig:i})));
+  document.getElementById('prueba-reto-txt').textContent=pruebaReto.txt;
+  document.getElementById('prueba-opts').innerHTML=optsShuffled.map((item,i)=>
+    `<div class="prueba-opt" id="popt-${i}" onclick="selPruebaOpt(${i},${item.orig})">${item.o}</div>`).join('');
+  document.getElementById('btn-confirmar-prueba').disabled=true;
+
+  // timer 30 seg
+  let seg=30;
+  const timerEl=document.getElementById('prueba-timer');
+  timerEl.textContent=seg;
+  timerEl.className='prueba-timer';
+  clearInterval(pruebaTimer);
+  pruebaTimer=setInterval(()=>{
+    seg--;
+    timerEl.textContent=seg<10?'0'+seg:seg;
+    if(seg<=10) timerEl.className='prueba-timer urgente';
+    playTick();
+    if(seg<=0){ clearInterval(pruebaTimer); fallarPrueba(); }
+  },1000);
+
+  document.getElementById('prueba-overlay').classList.add('show');
+}
+
+let pruebaOptOrigSel=null;
+function selPruebaOpt(i,orig){
+  document.querySelectorAll('.prueba-opt').forEach(o=>o.classList.remove('sel'));
+  document.getElementById('popt-'+i).classList.add('sel');
+  pruebaOptOrigSel=orig;
+  document.getElementById('btn-confirmar-prueba').disabled=false;
+}
+
+function confirmarPrueba(){
+  clearInterval(pruebaTimer);
+  if(pruebaOptOrigSel===pruebaReto.resp){
+    // correcto — iniciar trabajo
+    document.getElementById('prueba-overlay').classList.remove('show');
+    GBT.iniciarTrabajo(trabajoConfirmado.id);
+    trabajoConfirmado=null;
+    renderContent();
+  } else {
+    fallarPrueba();
+  }
+}
+
+function fallarPrueba(){
+  clearInterval(pruebaTimer);
+  pruebaIntentos++;
+  document.getElementById('prueba-overlay').classList.remove('show');
+  if(pruebaIntentos>=3){
+    // 3 intentos fallidos — periodo de prueba no superado
+    const t=trabajoConfirmado;
+    const e=t.entrevistador;
+    document.getElementById('pf-av').src=e.img;
+    document.getElementById('pf-nombre').textContent=e.nombre;
+    const avName=GBT.player().avName||'estimado/a';
+    document.getElementById('pf-txt').innerHTML=
+      `Estimado/a ${avName},<br><br>`+
+      `Lamentamos comunicarle que no ha superado el periodo de prueba inicial.<br><br>`+
+      `Valoramos el esfuerzo y la disposición que ha demostrado. Le invitamos a prepararse y volver en una próxima oportunidad — la puerta no se cierra definitivamente.<br><br>`+
+      `Con respeto,<br>${e.nombre}<br>${e.empresa}`;
+    document.getElementById('prueba-fallida').classList.add('show');
+    trabajoConfirmado=null;
+  } else {
+    // nuevo intento con mismo trabajo
+    setTimeout(()=>mostrarReto(), 500);
+  }
+}
+
+function cerrarPruebaFallida(){
+  document.getElementById('prueba-fallida').classList.remove('show');
   renderContent();
 }
 
-// ── TAREAS DEL TRABAJO ──
+function playTick(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type='square';o.frequency.value=600;
+    g.gain.setValueAtTime(.08,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.05);
+    o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+.05);
+  }catch(e){}
+}
+
+// ══ TAREAS ══
 function abrirTareas(){
-  const ta = GBT.getTrabajoActivo();
+  const ta=GBT.getTrabajoActivo();
   if(!ta) return;
-  const t = TRABAJOS.find(x=>x.id===ta.id);
-  const tareasCompletadas = GBT.get('trabajo_tareas_'+ta.id, []);
-  const total = t.tareas.length;
-  const completadas = tareasCompletadas.length;
-
-  document.getElementById('tar-title').textContent = t.name;
-
-  // progreso
-  const ahora = Date.now();
-  const pctTiempo = Math.min(Math.round((ahora-ta.inicio_ts)/(ta.fin_ts-ta.inicio_ts)*100),100);
-  const gusAcum = Math.round(t.gus_base * (ahora-ta.inicio_ts)/(ta.fin_ts-ta.inicio_ts) * 0.9);
-  document.getElementById('progreso-trabajo').innerHTML = `
-    <div class="pt-label">// progreso del trabajo</div>
-    <div class="pt-bar"><div class="pt-fill" style="width:${pctTiempo}%"></div></div>
-    <div class="pt-meta">${pctTiempo}% del tiempo · ${completadas}/${total} tareas completadas</div>
-    <div class="pt-gus-acum">GUS acumulados: ${gusAcum}</div>
-  `;
-
-  // tareas
-  const lista = document.getElementById('tareas-lista');
-  lista.innerHTML = t.tareas.map((tarea,i)=>{
-    const done = tareasCompletadas.includes(i);
+  const t=TRABAJOS.find(x=>x.id===ta.id);
+  const tareasComp=GBT.get('trabajo_tareas_'+ta.id,[]);
+  const banco=BANCO[ta.id]||[];
+  // usar preguntas guardadas o generar nuevas
+  let tareasGuardadas=GBT.get('trabajo_tareas_pregs_'+ta.id,null);
+  if(!tareasGuardadas){
+    tareasGuardadas=shuffle(banco).slice(0,3).map(p=>({...p,opts_shuffled:shuffle(p.opts.map((o,i)=>({o,orig:i})))}));
+    GBT.set('trabajo_tareas_pregs_'+ta.id,tareasGuardadas);
+  }
+  document.getElementById('tar-title').textContent=t.name;
+  const ahora=Date.now();
+  const pctT=Math.min(Math.round((ahora-ta.inicio_ts)/(ta.fin_ts-ta.inicio_ts)*100),100);
+  const gusAcum=Math.round(t.gus_base*(ahora-ta.inicio_ts)/(ta.fin_ts-ta.inicio_ts)*0.9);
+  document.getElementById('progreso-trabajo').innerHTML=`
+    <div class="pt-label">// progreso</div>
+    <div class="pt-bar"><div class="pt-fill" style="width:${pctT}%"></div></div>
+    <div class="pt-meta">${pctT}% · ${tareasComp.length}/${tareasGuardadas.length} tareas</div>
+    <div class="pt-gus-acum">GUS acumulados: ${gusAcum}</div>`;
+  document.getElementById('tareas-lista').innerHTML=tareasGuardadas.map((tarea,i)=>{
+    const done=tareasComp.includes(i);
     return `<div class="tarea-card">
-      <div class="tarea-num">// tarea ${i+1} de ${total}</div>
+      <div class="tarea-num">// tarea ${i+1}</div>
       <div class="tarea-txt">${tarea.txt}</div>
-      ${done
-        ? `<div class="tarea-opts"><div class="tarea-opt completada">✓ completada</div></div>`
-        : `<div class="tarea-opts" id="tarea-opts-${i}">
-            ${tarea.opts.map((o,j)=>`<div class="tarea-opt" id="topt-${i}-${j}" onclick="selTareaOpt(${i},${j})">${o}</div>`).join('')}
-          </div>
-          <button class="btn-completar-tarea" id="btn-tarea-${i}" onclick="completarTarea(${i})" disabled>completar esta tarea</button>`
-      }
+      ${done?`<div class="tarea-opts"><div class="tarea-opt completada">✓ completada</div></div>`
+        :`<div class="tarea-opts" id="topts-${i}">${tarea.opts_shuffled.map((item,j)=>
+          `<div class="tarea-opt" id="topt-${i}-${j}" onclick="selTareaOpt(${i},${j},${item.orig})">${item.o}</div>`).join('')}
+        </div><button class="btn-completar-tarea" id="btn-t-${i}" onclick="completarTarea(${i})" disabled>completar</button>`}
     </div>`;
   }).join('');
-
   document.getElementById('tareas-overlay').classList.add('show');
 }
 
-function selTareaOpt(tareaIdx, optIdx){
-  document.querySelectorAll(`#tarea-opts-${tareaIdx} .tarea-opt`).forEach(o=>o.classList.remove('sel'));
-  document.getElementById(`topt-${tareaIdx}-${optIdx}`).classList.add('sel');
-  document.getElementById(`btn-tarea-${tareaIdx}`).disabled = false;
+function selTareaOpt(ti,j,orig){
+  document.querySelectorAll(`#topts-${ti} .tarea-opt`).forEach(o=>o.classList.remove('sel'));
+  document.getElementById(`topt-${ti}-${j}`).classList.add('sel');
+  document.getElementById(`btn-t-${ti}`).disabled=false;
+  document.getElementById(`btn-t-${ti}`).dataset.orig=orig;
 }
 
-function completarTarea(tareaIdx){
-  const ta = GBT.getTrabajoActivo();
+function completarTarea(ti){
+  const ta=GBT.getTrabajoActivo();
   if(!ta) return;
-  const saved = GBT.get('trabajo_tareas_'+ta.id, []);
-  if(!saved.includes(tareaIdx)){
-    saved.push(tareaIdx);
-    GBT.set('trabajo_tareas_'+ta.id, saved);
-    GBT.addXP(8); // pequeño bonus por tarea
-  }
-  abrirTareas(); // re-render
+  const saved=GBT.get('trabajo_tareas_'+ta.id,[]);
+  if(!saved.includes(ti)){ saved.push(ti); GBT.set('trabajo_tareas_'+ta.id,saved); GBT.addXP(8); }
+  abrirTareas();
 }
 
-function cerrarTareas(){
-  document.getElementById('tareas-overlay').classList.remove('show');
-}
+function cerrarTareas(){ document.getElementById('tareas-overlay').classList.remove('show'); }
 
-// ── ABANDONO ──
+// ══ ABANDONO ══
 function abandonarConAviso(){
-  if(!confirm('si avisas, recibes el GUS proporcional al tiempo trabajado')) return;
-  const res = GBT.abandonarTrabajo(true);
-  updateUI(); renderContent();
-  alert(res.msg);
+  if(!confirm('si avisas recibes GUS proporcional al tiempo trabajado')) return;
+  const res=GBT.abandonarTrabajo(true); updateUI(); renderContent(); alert(res.msg);
 }
-
 function desertar(){
-  if(!confirm('si sales sin avisar pierdes TODO el GUS acumulado — ¿seguro?')) return;
-  const res = GBT.abandonarTrabajo(false);
-  updateUI(); renderContent();
-  alert(res.msg);
+  if(!confirm('sin avisar pierdes TODO el GUS — ¿seguro?')) return;
+  const res=GBT.abandonarTrabajo(false); updateUI(); renderContent(); alert(res.msg);
 }
 
-// ── NAV ──
 function navTo(dest){
   const routes={nodo:'p06_tablero.html',misiones:'p07_misiones.html',duelo:'p08_duelo.html',skill:'p09_skill.html',market:'p10_market.html',universo:'p11_universo.html',trabajos:'p12_trabajos.html'};
   document.body.style.transition='opacity .25s';document.body.style.opacity='0';
   setTimeout(()=>{ window.location.href=routes[dest]||'p06_tablero.html'; },260);
 }
 
-// ── INIT ──
-// limpiar trabajo expirado
-const _ta = GBT.get('trabajo_activo', null);
-if(_ta && Date.now() > _ta.fin_ts){
-  GBT.completarTrabajo(_ta);
-}
+// ══ INIT ══
+const _ta=GBT.get('trabajo_activo',null);
+if(_ta&&Date.now()>_ta.fin_ts){ GBT.completarTrabajo(_ta); }
 updateUI();
 renderContent();
 </script>
