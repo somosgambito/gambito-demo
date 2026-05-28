@@ -8,6 +8,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
+.energia-bar-wrap{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;z-index:20;padding:0 16px;pointer-events:none;}
+.energia-bar-inner{height:3px;width:100%;background:rgba(255,255,255,.06);}
+.energia-bar-fill{height:100%;transition:width .8s,background .5s;border-radius:0 2px 2px 0;}
+.energia-label{position:fixed;top:4px;right:20px;font-size:9px;letter-spacing:.06em;z-index:21;font-family:'Fira Code',monospace;}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Code','Courier New',monospace;overflow-x:hidden;}
 .page{width:100%;max-width:440px;margin:0 auto;padding-bottom:80px;}
@@ -148,8 +153,11 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 </style>
 </head>
 <body>
+<script src="gbt_core.js"></script>
 <div class="page">
 
+<div class="energia-bar-wrap"><div class="energia-bar-inner"><div class="energia-bar-fill" id="e-bar"></div></div></div>
+<div class="energia-label" id="e-label">energía</div>
   <div class="topbar">
     <div class="back-btn" onclick="navTo('misiones')">←</div>
     <div class="top-title">duelo</div>
@@ -258,12 +266,19 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 </div>
 
 <script>
-const player = JSON.parse(localStorage.getItem('gbt_player')||'{}');
-let tokens = parseInt(localStorage.getItem('gbt_tokens')||'120');
-let xp = parseInt(localStorage.getItem('gbt_xp')||'100');
-let gus = parseInt(localStorage.getItem('gbt_gus')||'50');
-let costo = 0;
-let rivalSel = null;
+const player = GBT.player();
+let costo=0, rivalSel=null;
+
+function updateEnergiaUI(){
+  const st=GBT.getStats();
+  const max=GBT.energiaMax(GBT.nivel(st.xp));
+  const pct=Math.round(st.energia/max*100);
+  const estado=GBT.estadoEnergia(st.energia,max);
+  const bar=document.getElementById('e-bar');
+  const lbl=document.getElementById('e-label');
+  if(bar){bar.style.width=pct+'%';bar.style.background=estado.color;}
+  if(lbl){lbl.textContent=pct+'% · '+estado.label;lbl.style.color=estado.color+'aa';}
+}
 
 // NIVEL basado en XP
 function calcNivel(xp){
@@ -297,10 +312,12 @@ const CARTAS = {
 };
 
 function updateUI(){
+  const st=GBT.getStats();
   document.getElementById('my-name').textContent = player.avName||'tú';
-  document.getElementById('my-xp').textContent = xp+' XP';
-  document.getElementById('my-lvl').textContent = calcNivel(xp);
-  document.getElementById('tok-disp').textContent = tokens;
+  document.getElementById('my-xp').textContent = st.xp+' XP';
+  document.getElementById('my-lvl').textContent = calcNivel(st.xp);
+  document.getElementById('tok-disp').textContent = st.tokens;
+  updateEnergiaUI();
 }
 
 function renderRivals(){
@@ -350,29 +367,34 @@ function checkReady(){
 }
 
 function iniciarDuelo(){
-  if(!rivalSel || costo<=0 || tokens<costo) return;
-  tokens -= costo;
-  localStorage.setItem('gbt_tokens', tokens);
+  const st=GBT.getStats();
+  if(!rivalSel||costo<=0||st.tokens<costo) return;
+  const max=GBT.energiaMax(GBT.nivel(st.xp));
+  const estado=GBT.estadoEnergia(st.energia,max);
+  if(estado.label==='agotado'){alert('tu avatar está agotado... no puede duchar ahora'); return;}
+  GBT.useTokens(costo);
+  GBT.consumirEnergia(GBT.CONSUMO.duelo);
   updateUI();
-  document.getElementById('btn-duelo').disabled = true;
-  document.getElementById('btn-duelo').textContent = '// procesando...';
+  document.getElementById('btn-duelo').disabled=true;
+  document.getElementById('btn-duelo').textContent='// procesando...';
   playDuelStart();
-  setTimeout(()=>{ showResultado(Math.random()>.45); }, 1800);
+  // probabilidad base 0.45 + factor energía
+  const prob = 0.35 + estado.bonus*0.15;
+  setTimeout(()=>{ showResultado(Math.random()<prob); },1800);
 }
 
 function showResultado(win){
-  const r = RECOMPENSAS[costo]||RECOMPENSAS[10];
-  const xpGain = win ? r.xpWin : r.xpLose;
-  const gusGain = win ? r.gusWin : 0;
-  const nivelAntes = calcNivel(xp);
+  const st=GBT.getStats();
+  const max=GBT.energiaMax(GBT.nivel(st.xp));
+  const estado=GBT.estadoEnergia(st.energia,max);
+  const r=RECOMPENSAS[costo]||RECOMPENSAS[10];
+  const xpGain=Math.round((win?r.xpWin:r.xpLose)*estado.bonus);
+  const gusGain=win?Math.round(r.gusWin*estado.bonus):0;
+  const nivelAntes=calcNivel(st.xp);
+  GBT.addXP(xpGain); GBT.addGUS(gusGain);
 
-  xp += xpGain;
-  gus += gusGain;
-  localStorage.setItem('gbt_xp', xp);
-  localStorage.setItem('gbt_gus', gus);
-
-  const nivelDespues = calcNivel(xp);
-  const subiNivel = nivelDespues > nivelAntes;
+  const nivelDespues=calcNivel(GBT.get('xp',100));
+  const subiNivel=nivelDespues>nivelAntes;
 
   // carta
   const carta = win ? CARTAS.win : CARTAS.lose;
@@ -402,10 +424,10 @@ function showResultado(win){
   }
 
   // historial
-  const hist = JSON.parse(localStorage.getItem('gbt_duelo_hist')||'[]');
+  const hist = GBT.get('duelo_hist',[]);
   hist.unshift({rival:rivalSel.name, win, xpGain, gusGain});
   if(hist.length>10) hist.pop();
-  localStorage.setItem('gbt_duelo_hist', JSON.stringify(hist));
+  GBT.set('duelo_hist',hist);
 
   document.getElementById('resultado-overlay').classList.add('show');
   win ? playWin() : playLose();
@@ -427,7 +449,7 @@ function closeResultado(){
 }
 
 function renderHist(){
-  const hist = JSON.parse(localStorage.getItem('gbt_duelo_hist')||'[]');
+  const hist = GBT.get('duelo_hist',[]);
   const el = document.getElementById('hist-list');
   if(!hist.length){ el.innerHTML='<div style="font-size:12px;color:rgba(221,218,240,.2);padding:12px 0;">// aún no has duelado</div>'; return; }
   el.innerHTML = hist.map(h=>`

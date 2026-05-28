@@ -8,6 +8,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
+.energia-bar-wrap{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;z-index:20;padding:0 16px;pointer-events:none;}
+.energia-bar-inner{height:3px;width:100%;background:rgba(255,255,255,.06);}
+.energia-bar-fill{height:100%;transition:width .8s,background .5s;}
+.energia-label{position:fixed;top:4px;right:20px;font-size:9px;letter-spacing:.06em;z-index:21;font-family:'Fira Code',monospace;}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Code','Courier New',monospace;overflow:hidden;}
 
@@ -119,11 +124,14 @@ html,body{height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Code','
 </style>
 </head>
 <body>
+<script src="gbt_core.js"></script>
 
 <!-- FONDO DEL NODO -->
 <div id="nodo-bg-skill"><canvas id="bg-canvas"></canvas></div>
 
 <!-- PÁGINA ACTIVAR -->
+<div class="energia-bar-wrap"><div class="energia-bar-inner"><div class="energia-bar-fill" id="e-bar"></div></div></div>
+<div class="energia-label" id="e-label">energía</div>
 <div class="page active" id="p-activar">
   <div class="topbar">
     <div class="back-btn" onclick="navTo('nodo')">←</div>
@@ -500,11 +508,11 @@ const ARBOLES = {
 
 // ── ESTADO ──
 const player = JSON.parse(localStorage.getItem('gbt_player')||'{}');
-let xp = parseInt(localStorage.getItem('gbt_xp')||'100');
-let gus = parseInt(localStorage.getItem('gbt_gus')||'50');
+let xp = GBT.get('xp',100);
+let gus = GBT.get('gus',50);
 let arbolActivo = localStorage.getItem('gbt_arbol_meta')||null;
 let arbolData = null;
-let nodosCompletados = JSON.parse(localStorage.getItem('gbt_nodos_completados')||'[]');
+let nodosCompletados = GBT.get('nodos_completados',[]);
 let currentNodo = null;
 let animFrame = null;
 let nodeHitAreas = [];
@@ -809,9 +817,16 @@ function completarNodo(){
   const nodo=currentNodo.nodo, rama=currentNodo.rama;
   const key=rama.name+'_'+nodo.name;
   nodosCompletados.push(key);
-  localStorage.setItem('gbt_nodos_completados',JSON.stringify(nodosCompletados));
-  xp+=nodo.xp; gus+=nodo.gus;
-  localStorage.setItem('gbt_xp',xp); localStorage.setItem('gbt_gus',gus);
+  GBT.set('nodos_completados',nodosCompletados);
+  GBT.addXP(nodo.xp); GBT.addGUS(nodo.gus);
+  GBT.consumirEnergia(GBT.CONSUMO.skill_nodo);
+  xp = GBT.get('xp',100); gus = GBT.get('gus',50);
+  // update energy bar
+  const st=GBT.getStats(); const max=GBT.energiaMax(GBT.nivel(st.xp));
+  const pct=Math.round(st.energia/max*100); const estado=GBT.estadoEnergia(st.energia,max);
+  const bar=document.getElementById('e-bar'); const lbl=document.getElementById('e-label');
+  if(bar){bar.style.width=pct+'%';bar.style.background=estado.color;}
+  if(lbl){lbl.textContent=pct+'% · '+estado.label;lbl.style.color=estado.color+'aa';}
   localStorage.removeItem('gbt_ntasks_'+rama.name+'_'+nodo.name);
   updateTopStats();
   logroActual={nodo,rama};

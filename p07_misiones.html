@@ -8,6 +8,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
+.energia-bar-wrap{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;z-index:20;padding:0 16px;pointer-events:none;}
+.energia-bar-inner{height:3px;width:100%;background:rgba(255,255,255,.06);overflow:hidden;}
+.energia-bar-fill{height:100%;transition:width .8s ease,background .5s;border-radius:0 2px 2px 0;}
+.energia-label{position:fixed;top:4px;right:20px;font-size:9px;letter-spacing:.06em;z-index:21;font-family:'Fira Code',monospace;}
+.energia-aviso{width:calc(100% - 32px);margin:0 16px 10px;background:rgba(255,77,109,.08);border:.5px solid rgba(255,77,109,.2);border-radius:8px;padding:9px 14px;font-size:12px;color:#ff4d6d;display:none;}
+.energia-aviso.show{display:block;}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Code','Courier New',monospace;overflow-x:hidden;}
 
@@ -141,8 +148,12 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 </style>
 </head>
 <body>
+<script src="gbt_core.js"></script>
 <div class="page">
 
+<div class="energia-bar-wrap"><div class="energia-bar-inner"><div class="energia-bar-fill" id="e-bar"></div></div></div>
+<div class="energia-label" id="e-label">energía</div>
+<div class="energia-aviso" id="e-aviso"></div>
   <div class="topbar">
     <div class="back-btn" onclick="goBack()">←</div>
     <div class="top-title">misiones</div>
@@ -193,9 +204,26 @@ html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Cod
 </div>
 
 <script>
-const player = JSON.parse(localStorage.getItem('gbt_player')||'{}');
-let tokens = parseInt(localStorage.getItem('gbt_tokens')||'120');
-let completadas = JSON.parse(localStorage.getItem('gbt_completadas')||'[]');
+const player = GBT.player();
+let completadas = GBT.get('completadas',[]);
+
+function updateEnergiaUI(){
+  const st=GBT.getStats();
+  const max=GBT.energiaMax(GBT.nivel(st.xp));
+  const estado=GBT.estadoEnergia(st.energia,max);
+  const pct=Math.round(st.energia/max*100);
+  const bar=document.getElementById('e-bar');
+  const lbl=document.getElementById('e-label');
+  const aviso=document.getElementById('e-aviso');
+  if(bar){bar.style.width=pct+'%';bar.style.background=estado.color;}
+  if(lbl){lbl.textContent=pct+'% · '+estado.label;lbl.style.color=estado.color+'aa';}
+  if(aviso){
+    if(estado.label==='agotado'){aviso.textContent='tu avatar está agotado... solo puede hacer misiones fáciles y descansar';aviso.classList.add('show');}
+    else if(estado.label==='cansado'){aviso.textContent='tu avatar está cansado — el rendimiento baja un poco';aviso.classList.add('show');}
+    else{aviso.classList.remove('show');}
+  }
+  document.getElementById('tok-disp').textContent=st.tokens;
+}
 let cronoInterval = null;
 let cronoSecs = 0;
 let cronoRunning = false;
@@ -246,7 +274,7 @@ function renderList(){
 
   misiones.forEach(m=>{
     const done = completadas.includes(m.id);
-    const canAfford = tokens >= m.cost;
+    const canAfford = GBT.getStats().tokens >= m.cost;
     const card = document.createElement('div');
     card.className = 'mis-card' + (done?' completada':!canAfford?' bloqueada':'');
     const prog = getProgress(m.id);
@@ -385,17 +413,36 @@ function toggleTask(mid, idx){
 function completarMision(){
   if(!currentMision) return;
   const m = currentMision;
-  if(tokens < m.cost){ return; }
-  tokens -= m.cost;
-  const xp = parseInt(localStorage.getItem('gbt_xp')||'100') + (m.xp||0);
-  const gus = parseInt(localStorage.getItem('gbt_gus')||'50') + (m.gus||0);
-  localStorage.setItem('gbt_tokens', tokens);
-  localStorage.setItem('gbt_xp', xp);
-  localStorage.setItem('gbt_gus', gus);
+  const st = GBT.getStats();
+  if(st.tokens < m.cost){ return; }
+
+  // verificar energía — bloquear difíciles si agotado
+  const max = GBT.energiaMax(GBT.nivel(st.xp));
+  const estado = GBT.estadoEnergia(st.energia, max);
+  if(estado.label==='agotado' && m.type!=='simple'){
+    const errEl=document.getElementById('msg-err')||document.createElement('div');
+    alert('tu avatar está agotado... descansa primero'); return;
+  }
+
+  // consumo energía por dificultad
+  const consumoMap={fácil:'mision_facil',medio:'mision_media',difícil:'mision_dificil'};
+  const consumoKey = consumoMap[m.diff]||'mision_facil';
+  GBT.consumirEnergia(GBT.CONSUMO[consumoKey]);
+
+  // bonus/penalización por energía
+  const factor = estado.bonus;
+  const xpReal = Math.round((m.xp||0)*factor);
+  const gusReal = Math.round((m.gus||0)*factor);
+
+  GBT.useTokens(m.cost);
+  GBT.addXP(xpReal);
+  GBT.addGUS(gusReal);
+
   if(!completadas.includes(m.id)) completadas.push(m.id);
-  localStorage.setItem('gbt_completadas', JSON.stringify(completadas));
-  localStorage.removeItem('gbt_tasks_'+m.id);
-  document.getElementById('tok-disp').textContent = tokens;
+  GBT.set('completadas', completadas);
+  GBT.set('tasks_'+m.id, []);
+
+  updateEnergiaUI();
   playComplete();
   closeDet();
 }
@@ -499,6 +546,7 @@ function goBack(){ navTo('nodo'); }
 setTimeout(()=>{ if(Math.random()>.5) triggerDuelo(); }, 90000);
 
 // ── INIT ──
+updateEnergiaUI();
 renderList();
 </script>
 </body>

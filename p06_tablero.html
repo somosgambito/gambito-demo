@@ -163,6 +163,31 @@ html,body{height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Code','
 /* SLEEP */
 #sleep-overlay{position:fixed;inset:0;background:rgba(0,0,5,.96);z-index:500;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px;}
 #sleep-overlay.show{display:flex;}
+
+/* BARRA ENERGÍA */
+.energia-bar-wrap{
+  position:fixed;top:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:440px;
+  z-index:20;padding:0 16px;
+  pointer-events:none;
+}
+.energia-bar-inner{
+  height:3px;width:100%;
+  background:rgba(255,255,255,.06);
+  overflow:hidden;
+}
+.energia-bar-fill{
+  height:100%;
+  transition:width .8s ease, background .5s;
+  border-radius:0 2px 2px 0;
+}
+.energia-label{
+  position:fixed;top:4px;right:20px;
+  font-size:9px;color:rgba(221,218,240,.35);
+  letter-spacing:.06em;z-index:21;
+  font-family:'Fira Code',monospace;
+}
+
 .sleep-av{width:90px;height:90px;border-radius:50%;object-fit:cover;filter:brightness(.25) saturate(.2);margin-bottom:14px;}
 .sleep-title{font-size:18px;font-weight:700;color:#7f6af0;margin-bottom:8px;}
 .sleep-msg{font-size:13px;color:rgba(221,218,240,.4);text-align:center;line-height:1.7;margin-bottom:16px;max-width:240px;}
@@ -172,6 +197,16 @@ html,body{height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Code','
 </style>
 </head>
 <body>
+<script src="gbt_core.js"></script>
+
+
+<!-- BARRA ENERGÍA -->
+<div class="energia-bar-wrap">
+  <div class="energia-bar-inner">
+    <div class="energia-bar-fill" id="e-bar"></div>
+  </div>
+</div>
+<div class="energia-label" id="e-label">energía</div>
 
 <!-- FONDO -->
 <div id="nodo-bg">
@@ -264,16 +299,37 @@ html,body{height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Code','
 </div>
 
 <script>
-const player = JSON.parse(localStorage.getItem('gbt_player')||'{}');
-let tokens=120,xp=100,gus=50;
+const player = GBT.player();
 
 function updateStats(){
+  const st = GBT.getStats();
+  const xp = st.xp, gus = st.gus, tokens = st.tokens;
+  const energia = st.energia;
+  const max = GBT.energiaMax(GBT.nivel(xp));
+  const estado = GBT.estadoEnergia(energia, max);
+  const pct = Math.round(energia/max*100);
+
   document.getElementById('av-nm').textContent   = player.avName    ||'---';
   document.getElementById('av-arc').textContent  = player.arcanoName||'---';
   document.getElementById('s-xp').textContent    = xp;
   document.getElementById('s-gus').textContent   = gus;
   document.getElementById('s-tok').textContent   = tokens;
   document.getElementById('wake-cost').textContent='tienes '+tokens+' tokens';
+
+  // barra energía
+  const bar = document.getElementById('e-bar');
+  const lbl = document.getElementById('e-label');
+  if(bar){ bar.style.width=pct+'%'; bar.style.background=estado.color; }
+  if(lbl){ lbl.textContent=pct+'% · '+estado.label; lbl.style.color=estado.color+'aa'; }
+
+  // aviso gi si agotado
+  if(estado.label==='agotado'){
+    document.getElementById('gi-hint').textContent='tu avatar está agotado...';
+  } else if(estado.label==='cansado'){
+    document.getElementById('gi-hint').textContent='tu avatar está cansado';
+  } else {
+    document.getElementById('gi-hint').textContent='siempre está mirando';
+  }
 }
 updateStats();
 
@@ -416,8 +472,8 @@ function checkSleep(){
   }
 }
 function wakeUp(){
-  if(tokens<5) return;
-  tokens-=5; updateStats();
+  const st=GBT.getStats(); if(st.tokens<5) return;
+  GBT.useTokens(5); updateStats();
   document.getElementById('sleep-overlay').classList.remove('show');
 }
 

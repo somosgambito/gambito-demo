@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>gamb1t0_ · trabajos</title>
+<link rel="icon" href="img/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;background:#07070f;color:#dddaf0;font-family:'Fira Code','Courier New',monospace;overflow-x:hidden;}
+.page{width:100%;max-width:440px;margin:0 auto;padding-bottom:80px;}
+
+.energia-bar-wrap{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;z-index:20;padding:0 16px;pointer-events:none;}
+.energia-bar-inner{height:3px;width:100%;background:rgba(255,255,255,.06);}
+.energia-bar-fill{height:100%;transition:width .8s,background .5s;}
+.energia-label{position:fixed;top:4px;right:20px;font-size:9px;letter-spacing:.06em;z-index:21;font-family:'Fira Code',monospace;}
+
+.topbar{display:flex;align-items:center;gap:12px;padding:14px 16px 10px;border-bottom:.5px solid rgba(221,218,240,.08);position:sticky;top:0;background:#07070f;z-index:10;}
+.back-btn{font-size:20px;cursor:pointer;color:rgba(221,218,240,.4);padding:4px 8px 4px 0;}
+.back-btn:hover{color:#c9a84c;}
+.top-title{font-size:15px;font-weight:700;}
+.top-gus{margin-left:auto;font-size:11px;color:rgba(221,218,240,.4);}
+.top-gus span{color:#c9a84c;font-weight:700;}
+
+.content{padding:16px;}
+
+/* TRABAJO ACTIVO */
+.trabajo-activo{background:rgba(201,168,76,.06);border:.5px solid rgba(201,168,76,.3);border-radius:12px;padding:16px;margin-bottom:16px;}
+.ta-label{font-size:9px;color:rgba(201,168,76,.5);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;}
+.ta-name{font-size:16px;font-weight:700;color:#c9a84c;margin-bottom:6px;}
+.ta-progress{height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;margin-bottom:8px;}
+.ta-progress-fill{height:100%;background:#c9a84c;border-radius:3px;transition:width 1s;}
+.ta-meta{font-size:11px;color:rgba(221,218,240,.4);}
+.ta-btns{display:flex;gap:8px;margin-top:12px;}
+.btn-avisar{flex:1;background:rgba(255,180,41,.1);color:#c9a84c;font-family:'Fira Code',monospace;font-size:12px;border:.5px solid rgba(255,180,41,.25);border-radius:6px;padding:9px;cursor:pointer;}
+.btn-desertar{flex:1;background:rgba(255,77,109,.08);color:#ff4d6d;font-family:'Fira Code',monospace;font-size:12px;border:.5px solid rgba(255,77,109,.2);border-radius:6px;padding:9px;cursor:pointer;}
+
+/* TRABAJOS LISTA */
+.sec-label{font-size:10px;color:rgba(221,218,240,.25);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;}
+.trabajo-card{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:12px;padding:16px;margin-bottom:10px;transition:all .2s;cursor:pointer;position:relative;overflow:hidden;}
+.trabajo-card:hover{border-color:rgba(201,168,76,.3);}
+.trabajo-card.bloqueado{opacity:.4;cursor:not-allowed;}
+.trabajo-card.lleno{opacity:.5;cursor:not-allowed;}
+.tc-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+.tc-icon{font-size:28px;flex-shrink:0;}
+.tc-info{flex:1;}
+.tc-name{font-size:14px;font-weight:700;color:#dddaf0;margin-bottom:3px;}
+.tc-desc{font-size:11px;color:rgba(221,218,240,.4);line-height:1.5;}
+.tc-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+.tc-badge{font-size:10px;padding:3px 8px;border-radius:4px;}
+.tc-dias{background:rgba(0,229,255,.08);color:#00e5ff;border:.5px solid rgba(0,229,255,.2);}
+.tc-gus{background:rgba(201,168,76,.1);color:#c9a84c;border:.5px solid rgba(201,168,76,.2);}
+.tc-xp{background:rgba(127,106,240,.1);color:#7f6af0;border:.5px solid rgba(127,106,240,.2);}
+.tc-nivel{background:rgba(255,255,255,.04);color:rgba(221,218,240,.45);border:.5px solid rgba(221,218,240,.1);}
+.tc-cupos{font-size:11px;color:rgba(221,218,240,.35);margin-top:4px;}
+.cupos-bar{height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;margin-top:4px;}
+.cupos-fill{height:100%;background:#ff4d6d;border-radius:2px;}
+.tc-protegido{font-size:10px;color:#00c896;margin-top:6px;}
+.tc-umbral{font-size:10px;color:rgba(221,218,240,.3);margin-top:4px;}
+
+/* ENTREVISTA OVERLAY */
+#entrevista-overlay{position:fixed;inset:0;background:#07070f;z-index:300;display:none;flex-direction:column;overflow-y:auto;}
+#entrevista-overlay.show{display:flex;}
+.ent-wrap{width:100%;max-width:440px;margin:0 auto;padding:24px 20px 80px;}
+.ent-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.ent-back{font-size:20px;cursor:pointer;color:rgba(221,218,240,.4);}
+.ent-title{font-size:15px;font-weight:700;}
+.ent-empresa{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.08);border-radius:10px;padding:12px 14px;margin-bottom:20px;}
+.ent-emp-icon{font-size:24px;}
+.ent-emp-info{flex:1;}
+.ent-emp-name{font-size:13px;font-weight:700;color:#dddaf0;}
+.ent-emp-meta{font-size:10px;color:rgba(221,218,240,.35);}
+.gi-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:20px;}
+.gi-av{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(0,229,255,.4);flex-shrink:0;background:rgba(0,229,255,.1);}
+.gi-bubble{background:rgba(0,229,255,.07);border:.5px solid rgba(0,229,255,.18);border-radius:0 10px 10px 10px;padding:11px 14px;font-size:13px;color:#dddaf0;line-height:1.6;flex:1;}
+
+.pregunta-wrap{margin-bottom:20px;}
+.preg-num{font-size:9px;color:rgba(221,218,240,.25);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.preg-txt{font-size:14px;color:#dddaf0;line-height:1.55;margin-bottom:12px;font-weight:700;}
+.preg-opts{display:flex;flex-direction:column;gap:6px;}
+.preg-opt{background:rgba(255,255,255,.04);border:.5px solid rgba(221,218,240,.1);border-radius:8px;padding:12px 14px;cursor:pointer;font-size:13px;color:rgba(221,218,240,.6);transition:all .2s;line-height:1.4;}
+.preg-opt:hover{border-color:rgba(201,168,76,.3);color:#dddaf0;}
+.preg-opt.sel{border-color:#c9a84c;background:rgba(201,168,76,.08);color:#dddaf0;}
+
+.btn-siguiente{width:100%;background:#c9a84c;color:#07070f;font-family:'Fira Code',monospace;font-size:15px;font-weight:700;border:none;border-radius:8px;padding:14px;cursor:pointer;margin-top:8px;}
+.btn-siguiente:disabled{opacity:.3;cursor:not-allowed;}
+
+/* RESULTADO ENTREVISTA */
+#ent-resultado{display:none;text-align:center;padding:32px 0;}
+#ent-resultado.show{display:block;}
+.res-icon-ent{font-size:64px;margin-bottom:16px;display:block;}
+.res-titulo-ent{font-size:22px;font-weight:700;margin-bottom:8px;}
+.res-titulo-ent.ok{color:#00c896;}
+.res-titulo-ent.fail{color:#ff4d6d;}
+.res-msg-ent{font-size:13px;color:rgba(221,218,240,.45);line-height:1.7;max-width:280px;margin:0 auto 24px;}
+.res-score{font-size:16px;color:rgba(221,218,240,.5);margin-bottom:20px;}
+.res-score span{color:#c9a84c;font-weight:700;}
+.btn-res-ok{width:100%;background:#00c896;color:#07070f;font-family:'Fira Code',monospace;font-size:15px;font-weight:700;border:none;border-radius:8px;padding:14px;cursor:pointer;margin-bottom:10px;}
+.btn-res-fail{width:100%;background:rgba(255,255,255,.06);color:rgba(221,218,240,.5);font-family:'Fira Code',monospace;font-size:13px;border:.5px solid rgba(221,218,240,.12);border-radius:8px;padding:12px;cursor:pointer;}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;background:rgba(7,7,15,.95);border-top:.5px solid rgba(221,218,240,.08);display:flex;align-items:center;justify-content:space-around;padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:100;backdrop-filter:blur(16px);}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 10px;border-radius:8px;background:none;border:none;font-family:'Fira Code',monospace;transition:all .2s;}
+.nav-btn.active{background:rgba(201,168,76,.08);}
+.nav-icon{font-size:19px;line-height:1;}
+.nav-label{font-size:9px;color:rgba(221,218,240,.35);letter-spacing:.05em;text-transform:uppercase;}
+.nav-btn.active .nav-label,.nav-btn.active .nav-icon{color:#c9a84c;}
+</style>
+</head>
+<body>
+<script src="gbt_core.js"></script>
+
+<div class="energia-bar-wrap"><div class="energia-bar-inner"><div class="energia-bar-fill" id="e-bar"></div></div></div>
+<div class="energia-label" id="e-label">energía</div>
+
+<div class="page">
+  <div class="topbar">
+    <div class="back-btn" onclick="navTo('misiones')">←</div>
+    <div class="top-title">trabajos</div>
+    <div class="top-gus">GUS: <span id="gus-disp">50</span></div>
+  </div>
+  <div class="content" id="content"></div>
+</div>
+
+<!-- ENTREVISTA -->
+<div id="entrevista-overlay">
+<div class="ent-wrap">
+  <div class="ent-header">
+    <div class="ent-back" onclick="cerrarEntrevista()">←</div>
+    <div class="ent-title" id="ent-title">entrevista</div>
+  </div>
+  <div class="ent-empresa" id="ent-empresa"></div>
+  <div class="gi-row">
+    <img src="img/gi_face.jpg" alt="gi" class="gi-av" onerror="this.style.background='rgba(0,229,255,.2)';this.removeAttribute('src')">
+    <div class="gi-bubble" id="gi-intro">esta es tu oportunidad — responde con cuidado</div>
+  </div>
+  <div id="ent-preguntas"></div>
+  <div id="ent-resultado">
+    <span class="res-icon-ent" id="res-icon-ent">◈</span>
+    <div class="res-titulo-ent" id="res-titulo-ent">---</div>
+    <div class="res-score">respondiste <span id="res-score-n">0</span> de 5 correctamente</div>
+    <div class="res-msg-ent" id="res-msg-ent">---</div>
+    <button class="btn-res-ok" id="btn-res-ok" onclick="confirmarTrabajo()">aceptar trabajo</button>
+    <button class="btn-res-fail" onclick="cerrarEntrevista()">volver a trabajos</button>
+  </div>
+</div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-btn" onclick="navTo('nodo')"><span class="nav-icon">◈</span><span class="nav-label">nodo</span></button>
+  <button class="nav-btn active"><span class="nav-icon">💼</span><span class="nav-label">trabajos</span></button>
+  <button class="nav-btn" onclick="navTo('duelo')"><span class="nav-icon">◉</span><span class="nav-label">duelo</span></button>
+  <button class="nav-btn" onclick="navTo('skill')"><span class="nav-icon">◆</span><span class="nav-label">skill tree</span></button>
+</div>
+
+<script>
+// ── ESTADO ──
+let trabajoEntrevistando = null;
+let respuestasEnt = {};
+let pregActual = 0;
+
+function updateUI(){
+  const st = GBT.getStats();
+  document.getElementById('gus-disp').textContent = st.gus;
+  const max = GBT.energiaMax(GBT.nivel(st.xp));
+  const pct = Math.round(st.energia/max*100);
+  const estado = GBT.estadoEnergia(st.energia,max);
+  const bar=document.getElementById('e-bar'), lbl=document.getElementById('e-label');
+  if(bar){bar.style.width=pct+'%';bar.style.background=estado.color;}
+  if(lbl){lbl.textContent=pct+'% · '+estado.label;lbl.style.color=estado.color+'aa';}
+}
+
+function renderContent(){
+  const c = document.getElementById('content');
+  const trabajoActivo = GBT.getTrabajoActivo();
+
+  let html = '';
+
+  // TRABAJO ACTIVO
+  if(trabajoActivo){
+    const t = GBT.TRABAJOS.find(x=>x.id===trabajoActivo.id);
+    const ahora = Date.now();
+    const total = trabajoActivo.fin_ts - trabajoActivo.inicio_ts;
+    const transcurrido = ahora - trabajoActivo.inicio_ts;
+    const pct = Math.min(Math.round(transcurrido/total*100),100);
+    const horasRestantes = Math.max(0,Math.round((trabajoActivo.fin_ts-ahora)/3600000));
+
+    html += `<div class="trabajo-activo">
+      <div class="ta-label">// trabajando ahora</div>
+      <div class="ta-name">${t.icon} ${t.name}</div>
+      <div class="ta-progress"><div class="ta-progress-fill" style="width:${pct}%"></div></div>
+      <div class="ta-meta">${pct}% completado · ${horasRestantes}h restantes · protegido de ataques</div>
+      <div class="ta-btns">
+        <button class="btn-avisar" onclick="abandonarConAviso()">avisar y salir</button>
+        <button class="btn-desertar" onclick="desertar()">salir sin avisar</button>
+      </div>
+    </div>`;
+  }
+
+  // LISTA TRABAJOS
+  html += `<div class="sec-label">// trabajos disponibles</div>`;
+
+  const st = GBT.getStats();
+  const nivel = GBT.nivel(st.xp);
+
+  GBT.TRABAJOS.forEach(t=>{
+    const cuposOcupados = GBT.getCuposOcupados(t.id);
+    const cuposPct = Math.round(cuposOcupados/t.cupos_total*100);
+    const lleno = cuposOcupados >= t.cupos_total;
+    const bloqueado = nivel < t.nivel_min;
+    const trabajando = trabajoActivo !== null;
+    const yaCompletado = GBT.get('trabajo_completado_'+t.id, false);
+
+    let estado_label = '';
+    if(lleno) estado_label = '// sin cupos disponibles';
+    else if(bloqueado) estado_label = '// requiere nivel '+t.nivel_min;
+    else if(trabajando) estado_label = '// ya estás trabajando';
+
+    html += `<div class="trabajo-card ${lleno||bloqueado||trabajando?'bloqueado':''}" 
+      onclick="${lleno||bloqueado||trabajando?'':'abrirEntrevista(\''+t.id+'\')'}"
+    >
+      <div class="tc-top">
+        <div class="tc-icon">${t.icon}</div>
+        <div class="tc-info">
+          <div class="tc-name">${t.name}${yaCompletado?' <span style="color:#00c896;font-size:10px">// completado</span>':''}</div>
+          <div class="tc-desc">${t.desc}</div>
+        </div>
+      </div>
+      <div class="tc-meta">
+        <span class="tc-badge tc-dias">${t.duracion_dias} ${t.duracion_dias===1?'día':'días'}</span>
+        <span class="tc-badge tc-gus">+${t.gus_base} GUS</span>
+        <span class="tc-badge tc-xp">+${t.xp_bonus} XP</span>
+        <span class="tc-badge tc-nivel">nv ${t.nivel_min}+</span>
+      </div>
+      <div class="tc-cupos">cupos: ${cuposOcupados}/${t.cupos_total} ocupados
+        <div class="cupos-bar"><div class="cupos-fill" style="width:${cuposPct}%"></div></div>
+      </div>
+      <div class="tc-protegido">✓ protegido de ataques mientras trabajas</div>
+      <div class="tc-umbral">entrevista: ${t.umbral_aprobacion}/5 respuestas correctas para aprobar</div>
+      ${estado_label?`<div style="font-size:11px;color:#ff4d6d;margin-top:8px;">${estado_label}</div>`:''}
+    </div>`;
+  });
+
+  c.innerHTML = html;
+}
+
+// ── ENTREVISTA ──
+function abrirEntrevista(id){
+  trabajoEntrevistando = GBT.TRABAJOS.find(t=>t.id===id);
+  if(!trabajoEntrevistando) return;
+  respuestasEnt = {}; pregActual = 0;
+
+  document.getElementById('ent-title').textContent = 'entrevista · '+trabajoEntrevistando.name;
+  document.getElementById('ent-empresa').innerHTML = `
+    <div class="ent-emp-icon">${trabajoEntrevistando.icon}</div>
+    <div class="ent-emp-info">
+      <div class="ent-emp-name">${trabajoEntrevistando.name}</div>
+      <div class="ent-emp-meta">${trabajoEntrevistando.duracion_dias} ${trabajoEntrevistando.duracion_dias===1?'día':'días'} · ${trabajoEntrevistando.gus_base} GUS · nivel ${trabajoEntrevistando.nivel_min}+</div>
+    </div>
+  `;
+  document.getElementById('gi-intro').textContent = 'esta es tu oportunidad — responde con cuidado — '+trabajoEntrevistando.umbral_aprobacion+' de 5 correctas para ser contratado';
+  document.getElementById('ent-resultado').classList.remove('show');
+  document.getElementById('ent-preguntas').style.display = 'block';
+  renderPregunta(0);
+  document.getElementById('entrevista-overlay').classList.add('show');
+}
+
+function renderPregunta(idx){
+  const t = trabajoEntrevistando;
+  if(!t) return;
+  const p = t.preguntas[idx];
+  const total = t.preguntas.length;
+
+  document.getElementById('ent-preguntas').innerHTML = `
+    <div class="pregunta-wrap">
+      <div class="preg-num">// pregunta ${idx+1} de ${total}</div>
+      <div class="preg-txt">${p.p}</div>
+      <div class="preg-opts">
+        ${p.opts.map((o,i)=>`
+          <div class="preg-opt" id="opt-${i}" onclick="selOpt(${i})">${o}</div>
+        `).join('')}
+      </div>
+    </div>
+    <button class="btn-siguiente" id="btn-sig" onclick="siguiente()" disabled>
+      ${idx<total-1?'siguiente →':'ver resultado'}
+    </button>
+  `;
+  pregActual = idx;
+}
+
+function selOpt(i){
+  document.querySelectorAll('.preg-opt').forEach(o=>o.classList.remove('sel'));
+  document.getElementById('opt-'+i).classList.add('sel');
+  document.getElementById('btn-sig').disabled = false;
+  respuestasEnt[pregActual] = i;
+}
+
+function siguiente(){
+  const t = trabajoEntrevistando;
+  if(pregActual < t.preguntas.length-1){
+    renderPregunta(pregActual+1);
+  } else {
+    mostrarResultadoEnt();
+  }
+}
+
+function mostrarResultadoEnt(){
+  const t = trabajoEntrevistando;
+  let correctas = 0;
+  t.preguntas.forEach((p,i)=>{ if(respuestasEnt[i]===p.ok) correctas++; });
+  const aprobado = correctas >= t.umbral_aprobacion;
+
+  document.getElementById('ent-preguntas').style.display = 'none';
+  document.getElementById('res-icon-ent').textContent = aprobado ? '✓' : '✗';
+  document.getElementById('res-titulo-ent').className = 'res-titulo-ent '+(aprobado?'ok':'fail');
+  document.getElementById('res-titulo-ent').textContent = aprobado ? 'contratado' : 'no esta vez';
+  document.getElementById('res-score-n').textContent = correctas;
+
+  const msgs = {
+    ok: [
+      'tienes lo que se necesita — el trabajo es tuyo',
+      'tus respuestas muestran que entiendes el trabajo — adelante',
+      'bien — nos vemos en el primer turno',
+    ],
+    fail: [
+      'no llegaste al puntaje mínimo — vuelve cuando estés listo',
+      'hay respuestas que revelan que necesitas más preparación',
+      'el trabajo requiere más de lo que mostraste — intenta de nuevo',
+    ],
+  };
+  const arr = aprobado ? msgs.ok : msgs.fail;
+  document.getElementById('res-msg-ent').textContent = arr[Math.floor(Math.random()*arr.length)];
+
+  const btnOk = document.getElementById('btn-res-ok');
+  btnOk.style.display = aprobado ? 'block' : 'none';
+
+  document.getElementById('ent-resultado').classList.add('show');
+
+  // enviar resultado al webhook
+  GBT.enviar({
+    tipo:'entrevista',
+    trabajo:t.id,
+    correcto:correctas,
+    total:5,
+    aprobado,
+    usuario: GBT.player().avName||'',
+  });
+}
+
+function confirmarTrabajo(){
+  if(!trabajoEntrevistando) return;
+  const t = GBT.iniciarTrabajo(trabajoEntrevistando.id);
+  cerrarEntrevista();
+  renderContent();
+}
+
+function cerrarEntrevista(){
+  document.getElementById('entrevista-overlay').classList.remove('show');
+}
+
+// ── ABANDONO ──
+function abandonarConAviso(){
+  if(!confirm('¿seguro que quieres salir? se te pagará proporcional al tiempo trabajado')) return;
+  const res = GBT.abandonarTrabajo(true);
+  updateUI();
+  renderContent();
+  alert(res.msg);
+}
+
+function desertar(){
+  if(!confirm('si sales sin avisar perderás todo el GUS acumulado — ¿seguro?')) return;
+  const res = GBT.abandonarTrabajo(false);
+  updateUI();
+  renderContent();
+  alert(res.msg);
+}
+
+// ── NAV ──
+function navTo(dest){
+  const routes={nodo:'p06_tablero.html',misiones:'p07_misiones.html',duelo:'p08_duelo.html',skill:'p09_skill.html',market:'p10_market.html',universo:'p11_universo.html',trabajos:'p12_trabajos.html'};
+  document.body.style.transition='opacity .25s';document.body.style.opacity='0';
+  setTimeout(()=>{ window.location.href=routes[dest]||'p06_tablero.html'; },260);
+}
+
+// ── INIT ──
+updateUI();
+renderContent();
+// check si hay trabajo completado
+const ta = GBT.getTrabajoActivo();
+if(!ta){
+  const prev = GBT.get('trabajo_activo_prev',null);
+  if(prev) GBT.set('trabajo_activo_prev',null);
+}
+</script>
+</body>
+</html>

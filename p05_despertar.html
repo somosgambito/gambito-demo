@@ -169,6 +169,7 @@ html,body{
 </style>
 </head>
 <body>
+<script src="gbt_core.js"></script>
 <div class="scene">
 
   <div class="av-wrap" id="av-wrap">
@@ -340,8 +341,13 @@ function runAwaken(){
     subEl.classList.add('show');
   },4600);
 
-  // t=5.2s — stats
-  setTimeout(()=>{ statsEl.classList.add('show'); },5200);
+  // t=5.2s — stats + guardar estado inicial en GBT
+  setTimeout(()=>{
+    statsEl.classList.add('show');
+    GBT.set('xp',100); GBT.set('gus',50); GBT.set('tokens',120);
+    GBT.set('energia', GBT.energiaMax(1));
+    GBT.set('energia_ts', Date.now());
+  },5200);
 
   // t=5.8s — gi habla
   setTimeout(()=>{
